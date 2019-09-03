@@ -2,7 +2,7 @@
 
 namespace Bluewing\SharedServer;
 
-use App\Http\Requests\LoginRequest;
+use Bluewing\SharedServer\Requests\LoginRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
