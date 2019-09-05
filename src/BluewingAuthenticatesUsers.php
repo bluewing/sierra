@@ -94,7 +94,7 @@ trait BluewingAuthenticatesUsers {
      * TODO: Fill out completely.
      */
     protected function sendFailedLoginResponse(LoginRequest $request) {
-        return response(null, 400);
+        return response(null, 401);
     }
 
     /**

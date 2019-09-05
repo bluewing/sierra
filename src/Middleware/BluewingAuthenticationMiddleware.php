@@ -34,13 +34,13 @@ class BluewingAuthenticationMiddleware
     public function handle($request, Closure $next)
     {
         if (!$request->hasHeader('Authorization')) {
-            return response(null, 400);
+            return response(null, 401);
         }
 
         $authorizationHeaderString = $request->header('Authorization');
 
         if (!$this->jwtManager->isTokenVerified($authorizationHeaderString)) {
-            return response(null, 400);
+            return response(null, 401);
         }
 
         Auth::setUserId(1);
