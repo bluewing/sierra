@@ -2,12 +2,14 @@
 
 namespace Bluewing\SharedServer\Testing;
 
+use Illuminate\Foundation\Testing\TestResponse;
+
 interface BluewingTestHelpersInterface {
-    public function signUp(array $props = []);
+    public function signUp(array $props = []): TestResponse;
 
-    public function organizationVerify(string $token);
+    public function organizationVerify(string $token): TestResponse;
 
-    public function userVerify(string $token);
+    public function userVerify(string $token): TestResponse;
 
-    public function logIn(string $email, string $password);
+    public function logIn(string $email, string $password): TestResponse;
 }
