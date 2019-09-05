@@ -3,11 +3,11 @@
 namespace Bluewing\SharedServer\Testing;
 
 interface BluewingTestHelpersInterface {
-    public function signUp();
+    public function signUp(array $props = []);
 
-    public function organizationVerify();
+    public function organizationVerify(string $token);
 
-    public function userVerify();
+    public function userVerify(string $token);
 
-    public function logIn();
+    public function logIn(string $email, string $password);
 }
