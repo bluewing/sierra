@@ -11,41 +11,71 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 
 /**
- * Managers the construction and verification of
+ * Managers the construction and verification of JSON Web Tokens for Bluewing properties.
  */
 class JwtManager {
 
     /**
-     * @param BluewingAuthenticationContract $authenticatable
+     * What scope is this token permitted for?
+     */
+    private $permitted;
+
+    /**
+     * The private key that should be used to sign the token.
+     */
+    private $key;
+
+    /**
+     * Constructor for JwtManager.
      *
-     * @return string
+     * @param string $permitted - What scope is this token permitted for?
+     *
+     * @param string $key - The private key that should be used to sign the token.
+     */
+    public function __construct(string $permitted, string $key) {
+        $this->permitted = $permitted;
+        $this->key = $key;
+    }
+
+    /**
+     * Builds a token for the entity which implements `BluewingAuthenticationContract`. Usually,
+     * this is a `UserOrganization`.
+     *
+     * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
+     * authentication functionality.
+     *
+     * @return string - The completed token, prefixed with the string 'Bearer'.
      */
     public function buildTokenFor(BluewingAuthenticationContract $authenticatable): string {
         return 'Bearer ' . $this->buildToken($authenticatable);
     }
 
     /**
-     * Constructs a `Token` object
+     * Constructs a `Token` object using information supplied by the `BluewingAuthenticationContract`
+     * implementor.
      *
-     * @param BluewingAuthenticationContract $authenticatable
+     * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
+     * authentication functionality.
      *
      * @return Token
      */
     private function buildToken(BluewingAuthenticationContract $authenticatable): Token {
-        $signer = new Sha256();
-
-        return (new Builder())->issuedBy('horizon.app')
-            ->permittedFor('horizon.app')
+        return (new Builder())->issuedBy('Bluewing LLC')
+            ->permittedFor($this->permitted)
             ->issuedAt(time())
             ->expiresAt(time() + 3600)
             ->withClaim('uid', $authenticatable->getAuthIdentifier())
-            ->getToken($signer, new Key('testing'));
+            ->getToken(new Sha256(), new Key($this-key));
     }
 
     /**
-     * @param string $tokenString
+     * Verifies the `Token` by extracting it from its string state in the `Authorization` header, parses it, and then
+     * verifies it against the `Key` provided.
      *
-     * @return bool
+     * @param string $tokenString - The string representation of the `Token`.
+     *
+     * @return bool - `true` if the token verifies successfully, `false` if the token is invalid or otherwise
+     * not verifiable.
      */
     public function isTokenVerified(string $tokenString): bool {
         if (substr($tokenString, 0, 6) !== "Bearer") {
@@ -53,26 +83,26 @@ class JwtManager {
         }
 
         $tokenString = explode(" ", $tokenString)[1];
-
-
         $token = (new Parser())->parse($tokenString);
 
         if (!$this->isTokenValid($token)) {
             return false;
         }
 
-        return $token->verify(new Sha256(), new Key('testing'));
+        return $token->verify(new Sha256(), new Key($this->key));
     }
 
     /**
-     * @param Token $token
+     * Ensures the provided `Token` is valid by comparing it against the `ValidationData`.
      *
-     * @return bool
+     * @param Token $token - The token to check for validity.
+     *
+     * @return bool - `true` if the token is valid, `false` if it is not.
      */
     private function isTokenValid(Token $token): bool {
         $data = new ValidationData();
-        $data->setIssuer('horizon.app');
-        $data->setAudience('horizon.app');
+        $data->setIssuer('Bluewing LLC');
+        $data->setAudience($this->permitted);
 
         return $token->validate($data);
     }
