@@ -34,16 +34,17 @@ class BluewingAuthenticationMiddleware
     public function handle($request, Closure $next)
     {
         if (!$request->hasHeader('Authorization')) {
-            return response(null, 401);
+            return response("No Authorization header provided", 401);
         }
 
         $authorizationHeaderString = $request->header('Authorization');
 
         if (!$this->jwtManager->isTokenVerified($authorizationHeaderString)) {
-            return response(null, 401);
+            return response("Token provided is not verifiable", 401);
         }
 
-        Auth::setUserId(1);
+        $userId = $this->jwtManager->getToken()->getClaim('uid');
+        Auth::setUserId($userId);
 
         return $next($request);
     }

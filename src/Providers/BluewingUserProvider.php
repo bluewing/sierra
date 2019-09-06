@@ -62,7 +62,8 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
     /**
      * Retrieve a user by their unique identifier.
      *
-     * @param  mixed  $identifier
+     * @param mixed $identifier - The identifier used to identify an `Authenticatable`.
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function retrieveById($identifier)

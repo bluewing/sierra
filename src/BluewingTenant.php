@@ -2,6 +2,9 @@
 
 namespace Bluewing\SharedServer;
 
+/**
+ *
+ */
 trait BluewingTenant {
 
 }

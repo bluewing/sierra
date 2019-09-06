@@ -69,6 +69,17 @@ class JwtManager {
     }
 
     /**
+     * Retrieves a `Token` from the provided `tokenString`.
+     *
+     * @param string $tokenString - A string of the `Token`, not prefixed with "Bearer".
+     *
+     * @return Token - The parsed `Token` object.
+     */
+    public function getToken(string $tokenString): Token {
+        return (new Parser())->parse($tokenString);
+    }
+
+    /**
      * Verifies the `Token` by extracting it from its string state in the `Authorization` header, parses it, and then
      * verifies it against the `Key` provided.
      *
@@ -83,13 +94,9 @@ class JwtManager {
         }
 
         $tokenString = explode(" ", $tokenString)[1];
-        $token = (new Parser())->parse($tokenString);
+        $token = $this->getToken($tokenString);
 
-        if (!$this->isTokenValid($token)) {
-            return false;
-        }
-
-        return $token->verify(new Sha256(), new Key($this->key));
+        return $this->isTokenValid($token) && $token->verify(new Sha256(), new Key($this->key));
     }
 
     /**
