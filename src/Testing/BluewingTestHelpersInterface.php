@@ -11,5 +11,5 @@ interface BluewingTestHelpersInterface {
 
     public function userVerify(string $token): TestResponse;
 
-    public function logIn(string $email, string $password): TestResponse;
+    public function logIn(string $email, string $password): array;
 }
