@@ -65,7 +65,7 @@ class JwtManager {
             ->issuedAt(time())
             ->expiresAt(time() + 3600)
             ->withClaim('uid', $authenticatable->getAuthIdentifier())
-            ->getToken(new Sha256(), new Key($this-key));
+            ->getToken(new Sha256(), new Key($this->key));
     }
 
     /**
