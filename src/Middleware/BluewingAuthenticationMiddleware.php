@@ -43,7 +43,7 @@ class BluewingAuthenticationMiddleware
             return response("Token provided is not verifiable", 401);
         }
 
-        $userId = $this->jwtManager->getToken()->getClaim('uid');
+        $userId = $this->jwtManager->tokenFromString($authorizationHeaderString)->getClaim('uid');
         Auth::setUserId($userId);
 
         return $next($request);

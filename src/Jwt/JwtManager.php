@@ -69,13 +69,17 @@ class JwtManager {
     }
 
     /**
-     * Retrieves a `Token` from the provided `tokenString`.
+     * Retrieves a `Token` from the provided `tokenString`. If the string is prefixed with "Bearer",
+     * strip it from the token string.
      *
-     * @param string $tokenString - A string of the `Token`, not prefixed with "Bearer".
+     * @param string $tokenString - A string of the `Token`.
      *
      * @return Token - The parsed `Token` object.
      */
-    public function getToken(string $tokenString): Token {
+    public function tokenFromString(string $tokenString): Token {
+        if ($this->doesTokenStringStartWithBearer($tokenString)) {
+            $tokenString = $this->stripBearer($tokenString);
+        }
         return (new Parser())->parse($tokenString);
     }
 
@@ -83,18 +87,18 @@ class JwtManager {
      * Verifies the `Token` by extracting it from its string state in the `Authorization` header, parses it, and then
      * verifies it against the `Key` provided.
      *
-     * @param string $tokenString - The string representation of the `Token`.
+     * @param string $tokenStringToVerify - The string representation of the `Token`.
      *
      * @return bool - `true` if the token verifies successfully, `false` if the token is invalid or otherwise
      * not verifiable.
      */
-    public function isTokenVerified(string $tokenString): bool {
-        if (substr($tokenString, 0, 6) !== "Bearer") {
+    public function isTokenVerified(string $tokenStringToVerify): bool {
+        if (!$this->doesTokenStringStartWithBearer($tokenStringToVerify)) {
             return false;
         }
 
-        $tokenString = explode(" ", $tokenString)[1];
-        $token = $this->getToken($tokenString);
+        $tokenString = $this->stripBearer($tokenStringToVerify);
+        $token = $this->tokenFromString($tokenString);
 
         return $this->isTokenValid($token) && $token->verify(new Sha256(), new Key($this->key));
     }
@@ -112,5 +116,31 @@ class JwtManager {
         $data->setAudience($this->permitted);
 
         return $token->validate($data);
+    }
+
+    /**
+     * Ensures the token string provided is prefixed with the string "Bearer".
+     * 
+     * @param string $tokenStringToVerify - The string to check.
+     * 
+     * @return bool - `true` if the token does begin with "Bearer", `false` otherwise.
+     */
+    private function doesTokenStringStartWithBearer(string $tokenStringToVerify): bool {
+        return substr($tokenStringToVerify, 0, 6) === "Bearer";
+    }
+
+    /**
+     * Splits the provided `tokenString` into an array separated by the space in the token 
+     * string, and returns the token component only.
+     * 
+     * The function must only be called if the token string conforms to the expected
+     * design.
+     * 
+     * @param string $tokenString - The string to strip.
+     * 
+     * @return string - The stripped token.
+     */
+    private function stripBearer(string $tokenString): string {
+        return explode(" ", $tokenString)[1];
     }
 }
