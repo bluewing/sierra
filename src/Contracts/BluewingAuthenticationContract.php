@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer\Contracts;
+namespace Bluewing\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -15,21 +15,21 @@ use Illuminate\Contracts\Auth\Authenticatable;
  * `JwtManager`'s `buildTokenFor` method expects a model adhering to this interface as its first argument.
  *
  * @see Illuminate\Contracts\Auth\Authenticatable
- * @see App\Models\UserOrganization
+ * @see Bluewing\Models\UserOrganization
  */
 interface BluewingAuthenticationContract extends Authenticatable {
 
     /**
      * Retrieves the `User` associated with this contract's implementation.
      *
-     * @return App\Model\User
+     * @return Bluewing\Model\User
      */
     public function getUser();
 
     /**
      * Retrieves the `Organization` associated with this contract's implementation.
      *
-     * @return App\Models\Organization
+     * @return Bluewing\Models\Organization
      */
     public function getTenant();
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer\Scopes;
+namespace Bluewing\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

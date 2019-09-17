@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer\Requests;
+namespace Bluewing\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

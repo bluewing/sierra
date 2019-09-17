@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer\Guards;
+namespace Bluewing\Guards;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;

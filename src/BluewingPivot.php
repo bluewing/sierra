@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer;
+namespace Bluewing;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 

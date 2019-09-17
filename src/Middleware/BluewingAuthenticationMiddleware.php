@@ -1,8 +1,8 @@
 <?php
 
-namespace Bluewing\SharedServer\Middleware;
+namespace Bluewing\Middleware;
 
-use Bluewing\SharedServer\Jwt\JwtManager;
+use Bluewing\Jwt\JwtManager;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
  * TODO: Eventually replace the trait used in `Authenticate.php` middleware so the middleware can be used as so:
  * `auth:bluewing`.
  *
- * @package App\Base\Middleware
+ * @package Bluewing\Middleware
  */
 class BluewingAuthenticationMiddleware
 {

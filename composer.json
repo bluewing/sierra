@@ -23,7 +23,7 @@
     "autoload": {
         "classmap": [],
         "psr-4": {
-            "Bluewing\\SharedServer\\": "src/"
+            "Bluewing\\": "src/"
         }
     },
     "prefer-stable": true

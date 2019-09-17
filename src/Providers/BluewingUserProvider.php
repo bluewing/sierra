@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer\Providers;
+namespace Bluewing\Providers;
 
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @see Illuminate\Auth\EloquentUserProvider
  * @see Illuminate\Contracts\Auth\UserProvider
- * @see App\Providers\AuthServiceProvider
  */
 class BluewingUserProvider extends EloquentUserProvider implements UserProvider
 {

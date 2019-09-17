@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\SharedServer\Testing;
+namespace Bluewing\Testing;
 
 use Illuminate\Foundation\Testing\TestResponse;
 

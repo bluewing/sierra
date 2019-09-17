@@ -1,19 +1,25 @@
 <?php
 
-namespace Bluewing\SharedServer;
+namespace Bluewing;
 
 trait BluewingAuthentication {
 
     /**
      * Override the default remember token field name from `remember_token` to `rememberToken`,
-     * to match our preferred camelcase style for database fields.
+     * to match our preferred camelCase style for database fields.
      */
     protected $rememberTokenName = 'rememberToken';
 
+    /**
+     *
+     */
     public function getUser() {
         return $this->user;
     }
 
+    /**
+     *
+     */
     public function getTenant() {
         return $this->organization;
     }

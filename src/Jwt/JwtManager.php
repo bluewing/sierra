@@ -1,8 +1,8 @@
 <?php
 
-namespace Bluewing\SharedServer\Jwt;
+namespace Bluewing\Jwt;
 
-use Bluewing\SharedServer\Contracts\BluewingAuthenticationContract;
+use Bluewing\Contracts\BluewingAuthenticationContract;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Key;
@@ -52,18 +52,20 @@ class JwtManager {
 
     /**
      * Constructs a `Token` object using information supplied by the `BluewingAuthenticationContract`
-     * implementor.
+     * implementor. Tokens generated will be valid for fifteen minutes from time of generation.
      *
      * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
-     * @return Token
+     * @return Token - The token for the user.
      */
     private function buildToken(BluewingAuthenticationContract $authenticatable): Token {
-        return (new Builder())->issuedBy('Bluewing LLC')
+        $fifteenMinutes = 60 * 15;
+
+        return (new Builder())->issuedBy('Bluewing')
             ->permittedFor($this->permitted)
             ->issuedAt(time())
-            ->expiresAt(time() + 3600)
+            ->expiresAt(time() + $fifteenMinutes)
             ->withClaim('uid', $authenticatable->getAuthIdentifier())
             ->getToken(new Sha256(), new Key($this->key));
     }
@@ -120,9 +122,9 @@ class JwtManager {
 
     /**
      * Ensures the token string provided is prefixed with the string "Bearer".
-     * 
+     *
      * @param string $tokenStringToVerify - The string to check.
-     * 
+     *
      * @return bool - `true` if the token does begin with "Bearer", `false` otherwise.
      */
     private function doesTokenStringStartWithBearer(string $tokenStringToVerify): bool {
@@ -130,14 +132,14 @@ class JwtManager {
     }
 
     /**
-     * Splits the provided `tokenString` into an array separated by the space in the token 
+     * Splits the provided `tokenString` into an array separated by the space in the token
      * string, and returns the token component only.
-     * 
+     *
      * The function must only be called if the token string conforms to the expected
      * design.
-     * 
+     *
      * @param string $tokenString - The string to strip.
-     * 
+     *
      * @return string - The stripped token.
      */
     private function stripBearer(string $tokenString): string {

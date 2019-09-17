@@ -1,8 +1,8 @@
 <?php
 
-namespace Bluewing\SharedServer;
+namespace Bluewing;
 
-use Bluewing\SharedServer\Requests\LoginRequest;
+use Bluewing\Requests\LoginRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
  *
  * @see Illuminate\Foundation\Auth\AuthenticatesUsers
  *
- * @package App\Base
+ * @package Bluewing
  */
 trait BluewingAuthenticatesUsers {
 
@@ -126,7 +126,7 @@ trait BluewingAuthenticatesUsers {
      *
      * @return mixed The `JwtGuard`
      *
-     * @see App\Base\Guards\JwtGuard
+     * @see Bluewing\Guards\JwtGuard
      */
     protected function guard() {
         return Auth::guard();
