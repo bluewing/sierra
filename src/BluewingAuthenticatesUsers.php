@@ -79,15 +79,14 @@ trait BluewingAuthenticatesUsers {
 
     /**
      * TODO: Fill out completely
+     *
      * @param LoginRequest $request
      *
-     * @return ResponseFactory|Response A `Response` of `204 No Content` with the associated JWT attached as to the
-     * `Authorization` header on the `Response` object.
+     * @return JsonResponse - e A `Response` of 200 OK containing the `UserOrganization`.
      */
     protected function sendLoginResponse(LoginRequest $request) {
         $this->clearLoginAttempts($request);
-        $token = $this->jwtManager->buildTokenFor($this->guard()->user());
-        return response($this->guard()->user(), 200)->header('Authorization', $token);
+        return response()->json($this->guard()->user());
     }
 
     /**

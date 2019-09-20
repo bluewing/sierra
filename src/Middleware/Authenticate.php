@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class BluewingAuthenticationMiddleware
+ * Class Authenticate
  *
  * TODO: Eventually replace the trait used in `Authenticate.php` middleware so the middleware can be used as so:
  * `auth:bluewing`.
  *
  * @package Bluewing\Middleware
  */
-class BluewingAuthenticationMiddleware
+class Authenticate
 {
     public $jwtManager;
 

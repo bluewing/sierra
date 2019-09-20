@@ -15,10 +15,19 @@ class TokenController extends Controller {
     protected $jwtManager;
 
     /**
-     * Constructor for AuthController.
+     *
      */
-    public function __construct(JwtManager $jwtManager) {
+    protected $refreshTokenManager;
+
+    /**
+     * Constructor for TokenController.
+     *
+     * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
+     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManager`.
+     */
+    public function __construct(JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager) {
         $this->jwtManager = $jwtManager;
+        $this->refreshTokenManager = $refreshTokenManager;
     }
 
     /**
@@ -35,8 +44,9 @@ class TokenController extends Controller {
             return abort(401);
         }
 
-        $refreshToken = RefreshToken::where('token', $request->has('refreshToken'))->first();
-        $jwt = $this->jwtManager->buildTokenFor($refreshToken->userOrganization);
+        $refreshToken = $this->refreshTokenManager->findRefreshTokenOrFail($request->input('refreshToken'));
+
+        $refreshToken = $this->refreshTokenManager->buildRefreshTokenFor($refreshToken->userOrganization);
 
         // Extend refresh token to be valid for another 7 days from this point.
         $refreshToken->touch();
@@ -44,6 +54,6 @@ class TokenController extends Controller {
         // Issue our response
         return response()
             ->json(null, 204)
-            ->headers('Authorization', $jwt);
+            ->headers('Authorization', $refreshToken);
     }
 }

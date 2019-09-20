@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\Jwt;
+namespace Bluewing\Auth;
 
 use Bluewing\Contracts\BluewingAuthenticationContract;
 use Lcobucci\JWT\Builder;
@@ -16,21 +16,21 @@ use Lcobucci\JWT\ValidationData;
 class JwtManager {
 
     /**
-     * What scope is this token permitted for?
+     * What scope is this JWT permitted for?
      */
     private $permitted;
 
     /**
-     * The private key that should be used to sign the token.
+     * The private key that should be used to sign the JWT.
      */
     private $key;
 
     /**
      * Constructor for JwtManager.
      *
-     * @param string $permitted - What scope is this token permitted for?
+     * @param string $permitted - What scope is this JWT permitted for?
      *
-     * @param string $key - The private key that should be used to sign the token.
+     * @param string $key - The private key that should be used to sign the JWT.
      */
     public function __construct(string $permitted, string $key) {
         $this->permitted = $permitted;
@@ -38,28 +38,28 @@ class JwtManager {
     }
 
     /**
-     * Builds a token for the entity which implements `BluewingAuthenticationContract`. Usually,
-     * this is a `UserOrganization`.
+     * Builds a JWT or the entity which implements `BluewingAuthenticationContract`.
+     * Usually, this is a `UserOrganization`.
      *
      * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
-     * @return string - The completed token, prefixed with the string 'Bearer'.
+     * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildTokenFor(BluewingAuthenticationContract $authenticatable): string {
-        return 'Bearer ' . $this->buildToken($authenticatable);
+    public function buildJwtFor(BluewingAuthenticationContract $authenticatable): string {
+        return 'Bearer ' . $this->buildJwt($authenticatable);
     }
 
     /**
      * Constructs a `Token` object using information supplied by the `BluewingAuthenticationContract`
-     * implementor. Tokens generated will be valid for fifteen minutes from time of generation.
+     * implementor. JWTs generated will be valid for fifteen minutes from time of generation.
      *
      * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
-     * @return Token - The token for the user.
+     * @return Token - The JWT for the user.
      */
-    private function buildToken(BluewingAuthenticationContract $authenticatable): Token {
+    private function buildJwt(BluewingAuthenticationContract $authenticatable): Token {
         $fifteenMinutes = 60 * 15;
 
         return (new Builder())->issuedBy('Bluewing')
@@ -71,53 +71,53 @@ class JwtManager {
     }
 
     /**
-     * Retrieves a `Token` from the provided `tokenString`. If the string is prefixed with "Bearer",
-     * strip it from the token string.
+     * Retrieves a `Token` from the provided `jwtString`. If the string is prefixed with "Bearer",
+     * strip it from the `jwtString`.
      *
-     * @param string $tokenString - A string of the `Token`.
+     * @param string $jwtString - A string of the `Token`.
      *
      * @return Token - The parsed `Token` object.
      */
-    public function tokenFromString(string $tokenString): Token {
-        if ($this->doesTokenStringStartWithBearer($tokenString)) {
-            $tokenString = $this->stripBearer($tokenString);
+    public function jwtFromString(string $jwtString): Token {
+        if ($this->doesJwtStringStartWithBearer($jwtString)) {
+            $jwtString = $this->stripBearer($jwtString);
         }
-        return (new Parser())->parse($tokenString);
+        return (new Parser())->parse($jwtString);
     }
 
     /**
      * Verifies the `Token` by extracting it from its string state in the `Authorization` header, parses it, and then
      * verifies it against the `Key` provided.
      *
-     * @param string $tokenStringToVerify - The string representation of the `Token`.
+     * @param string $jwtStringToVerify - The string representation of the `Token`.
      *
-     * @return bool - `true` if the token verifies successfully, `false` if the token is invalid or otherwise
+     * @return bool - `true` if the JWT verifies successfully, `false` if the JWT is invalid or otherwise
      * not verifiable.
      */
-    public function isTokenVerified(string $tokenStringToVerify): bool {
-        if (!$this->doesTokenStringStartWithBearer($tokenStringToVerify)) {
+    public function isJwtVerified(string $jwtStringToVerify): bool {
+        if (!$this->doesJwtStringStartWithBearer($jwtStringToVerify)) {
             return false;
         }
 
-        $tokenString = $this->stripBearer($tokenStringToVerify);
-        $token = $this->tokenFromString($tokenString);
+        $jwtString = $this->stripBearer($jwtStringToVerify);
+        $jwt = $this->jwtFromString($jwtString);
 
-        return $this->isTokenValid($token) && $token->verify(new Sha256(), new Key($this->key));
+        return $this->isJwtValid($jwt) && $jwt->verify(new Sha256(), new Key($this->key));
     }
 
     /**
      * Ensures the provided `Token` is valid by comparing it against the `ValidationData`.
      *
-     * @param Token $token - The token to check for validity.
+     * @param Token $jwt - The JWT to check for validity.
      *
-     * @return bool - `true` if the token is valid, `false` if it is not.
+     * @return bool - `true` if the JWT is valid, `false` if it is not.
      */
-    private function isTokenValid(Token $token): bool {
+    private function isJwtValid(Token $jwt): bool {
         $data = new ValidationData();
         $data->setIssuer('Bluewing LLC');
         $data->setAudience($this->permitted);
 
-        return $token->validate($data);
+        return $jwt->validate($data);
     }
 
     /**
@@ -127,7 +127,7 @@ class JwtManager {
      *
      * @return bool - `true` if the token does begin with "Bearer", `false` otherwise.
      */
-    private function doesTokenStringStartWithBearer(string $tokenStringToVerify): bool {
+    private function doesJwtStringStartWithBearer(string $tokenStringToVerify): bool {
         return substr($tokenStringToVerify, 0, 6) === "Bearer";
     }
 
