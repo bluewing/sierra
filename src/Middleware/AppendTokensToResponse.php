@@ -4,6 +4,8 @@ namespace Bluewing\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Factory;
+use Bluewing\Auth\JwtManager;
+use Bluewing\Auth\RefreshTokenManager;
 
 /**
  * "After" middleware that when requested, will append the authenticated user's request with
@@ -50,11 +52,15 @@ class AppendTokensToResponse {
     public function handle($request, Closure $next) {
         $response = $next($request);
 
-        if ($request->headers->has('Authorization')) {
+        if ($request->headers->has('Authorization') || !$this->auth->user()) {
             return $response;
         }
 
-        return $response->header('Authorization', $this->jwtManager->buildJwtFor($this->auth->user()))
-            ->header('X-Refresh-Token', $this->refreshTokenManager->buildRefreshTokenFor($this->auth->user()));
+        $response->withHeaders([
+            'Authorization'     => $this->jwtManager->buildJwtFor($this->auth->user()),
+            'X-Refresh-Token'   => $this->refreshTokenManager->buildRefreshTokenFor($this->auth->user())
+        ]);
+
+        return $response;
     }
 }

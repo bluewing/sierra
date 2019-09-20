@@ -22,7 +22,7 @@ interface BluewingAuthenticationContract extends Authenticatable {
     /**
      * Retrieves the `User` associated with this contract's implementation.
      *
-     * @return Bluewing\Model\User
+     * @return Bluewing\Models\User
      */
     public function getUser();
 

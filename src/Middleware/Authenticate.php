@@ -2,7 +2,7 @@
 
 namespace Bluewing\Middleware;
 
-use Bluewing\Jwt\JwtManager;
+use Bluewing\Auth\JwtManager;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +19,11 @@ class Authenticate
 {
     public $jwtManager;
 
+    /**
+     * Constructor for Authenticate middleware.
+     * 
+     * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
+     */
     public function __construct(JwtManager $jwtManager)
     {
         $this->jwtManager = $jwtManager;

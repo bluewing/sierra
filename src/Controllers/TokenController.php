@@ -2,7 +2,8 @@
 
 namespace Bluewing\Controllers;
 
-use Bluewing\Models;
+use Bluewing\Auth\JwtManager;
+use Bluewing\Auth\RefreshTokenManager;
 
 /**
  *
