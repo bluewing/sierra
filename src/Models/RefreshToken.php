@@ -15,6 +15,11 @@ class RefreshToken extends BluewingModel {
     protected $table = 'RefreshTokens';
 
     /**
+     * @var array
+     */
+    protected $guarded = ['id'];
+
+    /**
      * A `RefreshToken` also belongs to an `Organization`. This allows the parent `Organization` to
      * exert control over the login state of its `User`'s, and the devices they are using.
      *
