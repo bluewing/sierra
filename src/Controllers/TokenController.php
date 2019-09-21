@@ -12,6 +12,8 @@ class TokenController extends Controller {
 
     /**
      * An instance of JwtManager.
+     * 
+     * @var JwtManager
      */
     protected $jwtManager;
 
@@ -34,11 +36,10 @@ class TokenController extends Controller {
     /**
      * GET:/api/token
      *
-     * Retrieves a new Access Token (JWT) by providing a refresh token
-     * in the body of the request.
+     * Retrieves a new Access Token (JWT) by providing a refresh token in the body of the request.
+     * If no `RefreshToken` is provided then the request fails.
      *
-     * @return JsonResponse - 204 No Content, with the new JWT provided
-     * in the header of the response.
+     * @return JsonResponse - 204 No Content, with the new JWT provided in the header of the response.
      */
     public function exchangeRefreshTokenForJwt() {
         if (!$request->has('refreshToken')) {

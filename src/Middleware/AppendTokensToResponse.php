@@ -3,7 +3,7 @@
 namespace Bluewing\Middleware;
 
 use Closure;
-use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Contracts\Auth\Factory as AuthFacadeFactory;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
 
@@ -15,39 +15,45 @@ class AppendTokensToResponse {
 
     /**
      * An instance of the `Auth\Factory` contract that is dependency-injected into the class.
+     * 
+     * @var AuthFacadeFactory
      */
     protected $auth;
 
     /**
      * An instance of `JwtManager`.
+     * 
+     * @var JwtManager
      */
     protected $jwtManager;
 
     /**
      * An instance of `RefreshTokenManager`.
+     * 
+     * @var RefreshTokenManager
      */
     protected $refreshTokenManager;
 
     /**
      * Constructor for `AppendTokensToResponse` middleware.
      *
-     * @param Factory $auth - The dependency-injected instance of `Auth\Factory`.
+     * @param AuthFacadeFactory $auth - The dependency-injected instance of `Auth\Factory`.
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManager`.
      */
-    public function __construct(Factory $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager) {
+    public function __construct(AuthFacadeFactory $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager) {
         $this->auth = $auth;
         $this->jwtManager = $jwtManager;
         $this->refreshTokenManager = $refreshTokenManager;
     }
 
     /**
-     * Handles the response by adding both a JWT and a
+     * Handles the response by adding both a JWT and a Refresh Token to the `Response` headers.
      *
      * @param Request $request -
      * @param Closure $next -
      *
-     * @return
+     * @return `Response` - The `Response` object to be passed to the client.
      */
     public function handle($request, Closure $next) {
         $response = $next($request);
