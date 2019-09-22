@@ -2,10 +2,10 @@
 
 namespace Bluewing\Models;
 
-use Bluewing\BluewingModel;
+use Bluewing\Model;
 use Bluewing\Scopes\HasTenancyScope;
 
-class RefreshToken extends BluewingModel {
+class RefreshToken extends Model {
 
     use HasTenancyScope;
 

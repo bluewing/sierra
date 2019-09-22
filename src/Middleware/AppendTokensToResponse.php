@@ -6,6 +6,9 @@ use Closure;
 use Illuminate\Contracts\Auth\Factory as AuthFacadeFactory;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 /**
  * "After" middleware that when requested, will append the authenticated user's request with
@@ -15,21 +18,21 @@ class AppendTokensToResponse {
 
     /**
      * An instance of the `Auth\Factory` contract that is dependency-injected into the class.
-     * 
+     *
      * @var AuthFacadeFactory
      */
     protected $auth;
 
     /**
      * An instance of `JwtManager`.
-     * 
+     *
      * @var JwtManager
      */
     protected $jwtManager;
 
     /**
-     * An instance of `RefreshTokenManager`.
-     * 
+     * An instance of `RefreshTokenManagerTest`.
+     *
      * @var RefreshTokenManager
      */
     protected $refreshTokenManager;
@@ -39,7 +42,7 @@ class AppendTokensToResponse {
      *
      * @param AuthFacadeFactory $auth - The dependency-injected instance of `Auth\Factory`.
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
-     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManager`.
+     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
     public function __construct(AuthFacadeFactory $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager) {
         $this->auth = $auth;
@@ -50,10 +53,12 @@ class AppendTokensToResponse {
     /**
      * Handles the response by adding both a JWT and a Refresh Token to the `Response` headers.
      *
-     * @param Request $request -
-     * @param Closure $next -
+     * @param Request $request - The `Request` that this middleware will process.
+     * @param Closure $next - Handles executing functionality prior to this middleware.
      *
-     * @return `Response` - The `Response` object to be passed to the client.
+     * @return Response - The `Response` object to be passed to the client.
+     *
+     * @throws Exception
      */
     public function handle($request, Closure $next) {
         $response = $next($request);

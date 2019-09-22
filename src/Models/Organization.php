@@ -2,15 +2,15 @@
 
 namespace Bluewing\Models;
 
-use Bluewing\BluewingModel;
-use Bluewing\BluewingTenant;
-use Bluewing\Contracts\BluewingTenantContract;
+use Bluewing\Model;
+use Bluewing\Tenant;
+use Bluewing\Contracts\TenantContract;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Organization extends BluewingModel implements BluewingTenantContract
+class Organization extends Model implements TenantContract
 {
-    use BluewingTenant;
+    use Tenant;
 
     /**
      * The name of the table in the database.

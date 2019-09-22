@@ -2,7 +2,7 @@
 
 namespace Bluewing\Auth;
 
-use Bluewing\Contracts\BluewingAuthenticationContract;
+use Bluewing\Contracts\AuthenticationContract;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Key;
@@ -28,8 +28,7 @@ class JwtManager {
     /**
      * Constructor for JwtManager.
      *
-     * @param string $permitted - What scope is this JWT permitted for?
-     *
+     * @param string $permitted - What scope is this JWT permitted for.
      * @param string $key - The private key that should be used to sign the JWT.
      */
     public function __construct(string $permitted, string $key) {
@@ -41,12 +40,12 @@ class JwtManager {
      * Builds a JWT or the entity which implements `BluewingAuthenticationContract`.
      * Usually, this is a `UserOrganization`.
      *
-     * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
+     * @param AuthenticationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildJwtFor(BluewingAuthenticationContract $authenticatable): string {
+    public function buildJwtFor(AuthenticationContract $authenticatable): string {
         return 'Bearer ' . $this->buildJwt($authenticatable);
     }
 
@@ -54,12 +53,12 @@ class JwtManager {
      * Constructs a `Token` object using information supplied by the `BluewingAuthenticationContract`
      * implementor. JWTs generated will be valid for fifteen minutes from time of generation.
      *
-     * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
+     * @param AuthenticationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return Token - The JWT for the user.
      */
-    private function buildJwt(BluewingAuthenticationContract $authenticatable): Token {
+    private function buildJwt(AuthenticationContract $authenticatable): Token {
         $fifteenMinutes = 60 * 15;
 
         return (new Builder())->issuedBy('Bluewing')
@@ -114,7 +113,7 @@ class JwtManager {
      */
     private function isJwtValid(Token $jwt): bool {
         $data = new ValidationData();
-        $data->setIssuer('Bluewing LLC');
+        $data->setIssuer('Bluewing');
         $data->setAudience($this->permitted);
 
         return $jwt->validate($data);

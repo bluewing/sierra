@@ -3,15 +3,15 @@
 namespace Bluewing\Models;
 
 use Bluewing\BluewingAuthentication;
-use Bluewing\BluewingPivot;
-use Bluewing\Contracts\BluewingAuthenticationContract;
+use Bluewing\Pivot;
+use Bluewing\Contracts\AuthenticationContract;
 use Bluewing\Scopes\HasTenancyScope;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 
-class UserOrganization extends BluewingPivot implements BluewingAuthenticationContract, AuthorizableContract
+class UserOrganization extends Pivot implements AuthenticationContract, AuthorizableContract
 {
     use HasTenancyScope, BluewingAuthentication, Authorizable;
 

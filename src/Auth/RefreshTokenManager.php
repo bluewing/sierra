@@ -4,7 +4,9 @@ namespace Bluewing\Auth;
 
 use Bluewing\Models\RefreshToken;
 use Bluewing\Services\TokenGenerator;
-use Bluewing\Contracts\BluewingAuthenticationContract;
+use Bluewing\Contracts\AuthenticationContract;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RefreshTokenManager {
 
@@ -16,7 +18,7 @@ class RefreshTokenManager {
     protected $tokenGenerator;
 
     /**
-     * Constructor for `RefreshTokenManager`.
+     * Constructor for `RefreshTokenManagerTest`.
      *
      * @param TokenGenerator $tokenGenerator - A dependency-injected instance of `TokenGenerator`.
      */
@@ -28,14 +30,14 @@ class RefreshTokenManager {
      * Builds a refresh token for the specified `Authenticatable`, and inserts it into the database,
      * returning the `RefreshToken`'s token string.
      *
-     * @param BluewingAuthenticationContract $authenticatable - The entity which implements the
+     * @param AuthenticationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return string - The `RefreshToken` string that can be exchanged for a new JSON web token later.
      *
-     * @throws \Exception - An
+     * @throws Exception
      */
-    public function buildRefreshTokenFor(BluewingAuthenticationContract $authenticatable): string {
+    public function buildRefreshTokenFor(AuthenticationContract $authenticatable): string {
         $refreshToken = RefreshToken::create([
             'organizationId'        => $authenticatable->getTenant()->id,
             'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
@@ -67,6 +69,8 @@ class RefreshTokenManager {
      * @param string $refreshTokenString - The string of the `RefreshToken` that should be deleted.
      *
      * @return void
+     *
+     * @throws Exception - An `Exception` will be thrown if the `RefreshToken` cannot be found.
      */
     public function revokeRefreshToken(string $refreshTokenString): void {
         $this->findRefreshTokenOrFail($refreshTokenString)->delete();

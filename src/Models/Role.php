@@ -2,9 +2,10 @@
 
 namespace Bluewing\Models;
 
-use Bluewing\BluewingModel;
+use Bluewing\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Role extends BluewingModel
+class Role extends Model
 {
     /**
      * The name of the table in the database.

@@ -3,6 +3,7 @@
     "type": "library",
     "description": "Shared library for Bluewing products",
     "license":  "proprietary",
+    "keywords": ["bluewing", "horizon", "showcrew", "library"],
     "authors": [
         {
             "name": "Luke",
@@ -18,7 +19,9 @@
         "illuminate/http": "^5.8",
         "illuminate/support": "^5.8",
         "illuminate/validation": "^5.8",
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "phpunit/phpunit": "^7.5",
+        "mockery/mockery": "^1.2"
     },
     "autoload": {
         "classmap": [],

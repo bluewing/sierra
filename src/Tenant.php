@@ -5,6 +5,6 @@ namespace Bluewing;
 /**
  *
  */
-trait BluewingTenant {
+trait Tenant {
 
 }

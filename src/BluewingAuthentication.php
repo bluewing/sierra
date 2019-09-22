@@ -2,6 +2,9 @@
 
 namespace Bluewing;
 
+use Bluewing\Models\Organization;
+use Bluewing\Models\User;
+
 trait BluewingAuthentication {
 
     /**
@@ -11,14 +14,18 @@ trait BluewingAuthentication {
     protected $rememberTokenName = 'rememberToken';
 
     /**
+     * Implements the `getUser` method defined in the `BluewingAuthenticationContract`.
      *
+     * @return User - The `User` relation.
      */
     public function getUser() {
         return $this->user;
     }
 
     /**
+     * Implements the `getTenant` method defined in the `BluewingAuthenticationContract`.
      *
+     * @return Organization - The `Organization` relation.
      */
     public function getTenant() {
         return $this->organization;
@@ -47,7 +54,7 @@ trait BluewingAuthentication {
      * Retrieve the password associated with the user. Because the `BluewingAuthenticationContract` refers to the
      * `UserOrganization`, this must be retrieved from the `User` relationship.
      *
-     * @return string The `User`'s password.
+     * @return string - The `User`'s password.
      */
     public function getAuthPassword() {
         return $this->getUser()->password;
@@ -56,6 +63,8 @@ trait BluewingAuthentication {
     /**
      * Retrieves the remember token from the `BluewingAuthenticationContract`. Because Bluewing applications utilise
      * stateless JSON Web Tokens for authentication, this method is not needed.
+     *
+     * @return string|void - The remember token, if it exists.
      */
     public function getRememberToken() {
         if (! empty($this->getRememberTokenName())) {
@@ -63,12 +72,22 @@ trait BluewingAuthentication {
         }
     }
 
+    /**
+     * Sets the remember token. This is unused by the Bluewing because we use JWTs and Refresh Tokens.
+     *
+     * @param $value - The remember token to set.
+     *
+     * @return void
+     */
     public function setRememberToken($value) {
         if (! empty($this->getRememberTokenName())) {
             $this->{$this->getRememberTokenName()} = $value;
         }
     }
 
+    /**
+     * @return string
+     */
     public function getRememberTokenName() {
         return $this->rememberTokenName;
     }

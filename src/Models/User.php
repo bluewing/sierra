@@ -3,7 +3,7 @@
 namespace Bluewing\Models;
 
 use Bluewing\BluewingCanResetPassword;
-use Bluewing\BluewingModel;
+use Bluewing\Model;
 use Bluewing\BluewingMustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 
-class User extends BluewingModel implements MustVerifyEmailContract, CanResetPasswordContract
+class User extends Model implements MustVerifyEmailContract, CanResetPasswordContract
 {
     use Notifiable, BluewingMustVerifyEmail, BluewingCanResetPassword;
 

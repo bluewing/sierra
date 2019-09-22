@@ -7,14 +7,14 @@ use Bluewing\Auth\RefreshTokenManager;
 class LogoutController extends Controller {
 
     /**
-     * The instance of `RefreshTokenManager`.
+     * The instance of `RefreshTokenManagerTest`.
      */
     protected $refreshTokenManager;
 
     /**
      * Constructor for LogoutController.
      *
-     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManager`.
+     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
     public function __construct(RefreshTokenManager $refreshTokenManager) {
         $this->refreshTokenManager = $refreshTokenManager;

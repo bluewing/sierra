@@ -17,7 +17,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
  * @see Illuminate\Contracts\Auth\Authenticatable
  * @see Bluewing\Models\UserOrganization
  */
-interface BluewingAuthenticationContract extends Authenticatable {
+interface AuthenticationContract extends Authenticatable {
 
     /**
      * Retrieves the `User` associated with this contract's implementation.
