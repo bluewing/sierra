@@ -34,6 +34,7 @@ class Authenticate
      *
      * @param  Request  $request
      * @param  \Closure  $next
+     * 
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -44,11 +45,11 @@ class Authenticate
 
         $authorizationHeaderString = $request->header('Authorization');
 
-        if (!$this->jwtManager->isTokenVerified($authorizationHeaderString)) {
+        if (!$this->jwtManager->isJwtVerified($authorizationHeaderString)) {
             return response("Token provided is not verifiable", 401);
         }
 
-        $userId = $this->jwtManager->tokenFromString($authorizationHeaderString)->getClaim('uid');
+        $userId = $this->jwtManager->jwtFromString($authorizationHeaderString)->getClaim('uid');
         Auth::setUserId($userId);
 
         return $next($request);
