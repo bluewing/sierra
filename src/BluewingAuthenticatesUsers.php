@@ -21,7 +21,7 @@ use Illuminate\Validation\ValidationException;
  */
 trait BluewingAuthenticatesUsers {
 
-    use RedirectsUsers, ThrottlesLogins;
+    use RedirectsUsers, ThrottlesLogins, SetsLastLoggedInTenancy;
 
     /**
      * Logs a user into the application.
@@ -86,6 +86,7 @@ trait BluewingAuthenticatesUsers {
      */
     protected function sendLoginResponse(LoginRequest $request) {
         $this->clearLoginAttempts($request);
+        $this->setLastLoggedInTenancy($request);
         return response()->json($this->guard()->user());
     }
 
