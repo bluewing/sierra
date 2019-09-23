@@ -4,6 +4,7 @@ namespace Bluewing\Middleware;
 
 use Bluewing\Auth\JwtManager;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,19 +35,19 @@ class Authenticate
      *
      * @param  Request  $request
      * @param  \Closure  $next
-     * 
-     * @return mixed
+     *
+     * @return mmixed
      */
     public function handle($request, Closure $next)
     {
         if (!$request->hasHeader('Authorization')) {
-            return response("No Authorization header provided", 401);
+            return response()->json("No Authorization header provided", 401);
         }
 
         $authorizationHeaderString = $request->header('Authorization');
 
         if (!$this->jwtManager->isJwtVerified($authorizationHeaderString)) {
-            return response("Token provided is not verifiable", 401);
+            return response()->json("Token provided is not verifiable", 401);
         }
 
         $userId = $this->jwtManager->jwtFromString($authorizationHeaderString)->getClaim('uid');
