@@ -2,12 +2,9 @@
 
 namespace Bluewing;
 
-use Bluewing\Models\User;
-use Bluewing\Requests\LoginRequest;
-
 trait SetsLastLoggedInTenancy
 {
-    public function setLastLoggedInTenancy(LoginRequest $request) {
+    public function setLastLoggedInTenancy() {
         $user = $this->guard()->user()->user;
         $user->lastLoggedInOrganizationId = $this->guard()->user()->organization->id;
         $user->save();

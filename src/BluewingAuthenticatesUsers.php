@@ -82,11 +82,11 @@ trait BluewingAuthenticatesUsers {
      *
      * @param LoginRequest $request
      *
-     * @return JsonResponse - e A `Response` of 200 OK containing the `UserOrganization`.
+     * @return JsonResponse - A `Response` of 200 OK containing the `UserOrganization`.
      */
     protected function sendLoginResponse(LoginRequest $request) {
         $this->clearLoginAttempts($request);
-        $this->setLastLoggedInTenancy($request);
+        $this->setLastLoggedInTenancy();
         return response()->json($this->guard()->user());
     }
 
