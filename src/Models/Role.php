@@ -2,10 +2,11 @@
 
 namespace Bluewing\Models;
 
-use Bluewing\Model;
+use Bluewing\Model as BluewingModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use function Bluewing\Helpers\getFullModelNamespace;
 
-class Role extends Model
+class Role extends BluewingModel
 {
     /**
      * The name of the table in the database.
@@ -27,6 +28,6 @@ class Role extends Model
      * @return BelongsTo - The relationship.
      */
     public function userOrganization() {
-        return $this->belongsTo('Bluewing\Models\UserOrganization', 'userOrganizationId');
+        return $this->belongsTo(getFullModelNamespace('UserOrganization'), 'userOrganizationId');
     }
 }

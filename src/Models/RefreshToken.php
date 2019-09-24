@@ -2,10 +2,12 @@
 
 namespace Bluewing\Models;
 
-use Bluewing\Model;
+use Bluewing\Model as BluewingModel;
 use Bluewing\Scopes\HasTenancyScope;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use function Bluewing\Helpers\getFullModelNamespace;
 
-class RefreshToken extends Model {
+class RefreshToken extends BluewingModel {
 
     use HasTenancyScope;
 
@@ -28,7 +30,7 @@ class RefreshToken extends Model {
      * @returns BelongsTo
      */
     public function organization() {
-        return $this->belongsTo('Bluewing\Models\Organization');
+        return $this->belongsTo(getFullModelNamespace('Organization'));
     }
 
     /**
@@ -41,6 +43,6 @@ class RefreshToken extends Model {
      * @returns BelongsTo
      */
     public function userOrganization() {
-        return $this->belongsTo('Bluewing\Models\UserOrganization');
+        return $this->belongsTo(getFullModelNamespace('UserOrganization'));
     }
 }

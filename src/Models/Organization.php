@@ -7,6 +7,7 @@ use Bluewing\Tenant;
 use Bluewing\Contracts\TenantContract;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use function Bluewing\Helpers\getFullModelNamespace;
 
 class Organization extends Model implements TenantContract
 {
@@ -31,7 +32,8 @@ class Organization extends Model implements TenantContract
      * @return BelongsToMany
      */
     public function users() {
-        return $this->belongsToMany('Bluewing\Models\User', 'UserOrganizations', 'organizationId', 'userId');
+        $fullyNamespacedUserModel = getFullModelNamespace('User');
+        return $this->belongsToMany($fullyNamespacedUserModel, 'UserOrganizations', 'organizationId', 'userId');
     }
 
     /**
@@ -42,6 +44,6 @@ class Organization extends Model implements TenantContract
      * @return HasMany
      */
     public function userOrganizations() {
-        return $this->hasMany('Bluewing\Models\UserOrganization', 'organizationId');
+        return $this->hasMany(getFullModelNamespace('UserOrganization'), 'organizationId');
     }
 }

@@ -15,4 +15,10 @@ class BluewingServiceProvider extends ServiceProvider {
             return new JwtManager(config('app.name'), config('app.key'));
         });
     }
+
+    public function boot() {
+        $this->publishes(
+            __DIR__.'../'
+        );
+    }
 }

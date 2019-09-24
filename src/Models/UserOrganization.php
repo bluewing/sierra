@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use function Bluewing\Helpers\getFullModelNamespace;
 
 class UserOrganization extends Pivot implements AuthenticationContract, AuthorizableContract
 {
@@ -34,7 +35,7 @@ class UserOrganization extends Pivot implements AuthenticationContract, Authoriz
      * @return BelongsTo
      */
     public function user() {
-        return $this->belongsTo('Bluewing\Models\User', 'userId');
+        return $this->belongsTo(getFullModelNamespace('User'), 'userId');
     }
 
     /**
@@ -46,7 +47,7 @@ class UserOrganization extends Pivot implements AuthenticationContract, Authoriz
      * @return BelongsTo
      */
     public function organization() {
-        return $this->belongsTo('Bluewing\Models\Organization', 'organizationId');
+        return $this->belongsTo(getFullModelNamespace('Organization'), 'organizationId');
     }
 
     /**
@@ -58,7 +59,7 @@ class UserOrganization extends Pivot implements AuthenticationContract, Authoriz
      * @return HasMany
      */
     public function roles() {
-        return $this->hasMany('Bluewing\Models\Role', 'userOrganizationId');
+        return $this->hasMany(getFullModelNamespace('Role'), 'userOrganizationId');
     }
 
     /**
@@ -70,6 +71,6 @@ class UserOrganization extends Pivot implements AuthenticationContract, Authoriz
      * @return HasMany
      */
     public function refreshTokens() {
-        return $this->hasMany('Bluewing\Models\RefreshToken', 'userOrganizationId');
+        return $this->hasMany(getFullModelNamespace('RefreshToken'), 'userOrganizationId');
     }
 }

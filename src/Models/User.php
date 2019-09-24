@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use function Bluewing\Helpers\getFullModelNamespace;
 
 class User extends Model implements MustVerifyEmailContract, CanResetPasswordContract
 {
@@ -57,7 +58,7 @@ class User extends Model implements MustVerifyEmailContract, CanResetPasswordCon
      * @return BelongsToMany
      */
     public function organizations() {
-        return $this->belongsToMany('Bluewing\Models\Organization', 'UserOrganizations', 'userId', 'organizationId');
+        return $this->belongsToMany(getFullModelNamespace('Organization'), 'UserOrganizations', 'userId', 'organizationId');
     }
 
     /**
@@ -69,7 +70,7 @@ class User extends Model implements MustVerifyEmailContract, CanResetPasswordCon
      * @return HasMany
      */
     public function userOrganizations() {
-        return $this->hasMany('Bluewing\Models\UserOrganization', 'userId');
+        return $this->hasMany(getFullModelNamespace('UserOrganization'), 'userId');
     }
 
     /**
@@ -81,6 +82,6 @@ class User extends Model implements MustVerifyEmailContract, CanResetPasswordCon
      * @return HasOne
      */
     public function lastLoggedInOrganization() {
-        return $this->hasOne('Bluewing\Models\Organization', 'lastLoggedInOrganizationId');
+        return $this->hasOne(getFullModelNamespace('Organization'), 'lastLoggedInOrganizationId');
     }
 }
