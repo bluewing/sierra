@@ -21,4 +21,15 @@ class BluewingServiceProvider extends ServiceProvider {
             return new RefreshTokenManager(new TokenGenerator(), config('bluewing.refreshtokens.model'));
         });
     }
+
+    /**
+     * Perform post-registraition booting of services.
+     *
+     * @return void
+     */
+    public function boot() {
+        $this->publishes([
+            __DIR__ . '/../config.php' => config_path('bluewing.php')
+        ]);
+    }
 }
