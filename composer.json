@@ -24,5 +24,12 @@
             "Bluewing\\": "src/"
         }
     },
-    "prefer-stable": true
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bluewing\\Providers\\BluewingServiceProvider"
+            ]
+        }
+    }
 }

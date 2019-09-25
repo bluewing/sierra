@@ -18,7 +18,12 @@ class RefreshTokenManager {
     protected $tokenGenerator;
 
     /**
-     * Constructor for `RefreshTokenManagerTest`.
+     * An instance of the `RefreshToken` model used to query the database.
+     */
+    protected $refreshTokenModel;
+
+    /**
+     * Constructor for `RefreshTokenManager`.
      *
      * @param TokenGenerator $tokenGenerator - A dependency-injected instance of `TokenGenerator`.
      */
@@ -27,21 +32,21 @@ class RefreshTokenManager {
     }
 
     /**
-     * Builds a refresh token for the specified `Authenticatable`, and inserts it into the database,
+     * Builds a refresh token for the specified `UserOrganizationContract`, and inserts it into the database,
      * returning the `RefreshToken`'s token string.
      *
-     * @param AuthenticationContract $authenticatable - The entity which implements the
-     * authentication functionality.
+     * @param UserOrganizationContract $authenticatable - The entity which implements the
+     * authentication functionality (in our case, `UserOrganization`).
      *
-     * @return string - The `RefreshToken` string that can be exchanged for a new JSON web token later.
+     * @return string - The `RefreshToken` string that can be exchanged for a new JSON web token.
      *
      * @throws Exception
      */
-    public function buildRefreshTokenFor(AuthenticationContract $authenticatable): string {
+    public function buildRefreshTokenFor(UserOrganizationContract $authenticatable): string {
         $refreshToken = RefreshToken::create([
             'organizationId'        => $authenticatable->getTenant()->id,
             'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
-            'token'                 => $this->tokenGenerator->generate(32),
+            'token'                 => $this->tokenGenerator->generate(64),
             'device'                => null
         ]);
 
@@ -49,10 +54,10 @@ class RefreshTokenManager {
     }
 
     /**
-     * Finds the given `RefreshToken` in the database by the provided string. If no matching
-     * token is found, throw a ModelNotFoundException.
+     * Finds the given `RefreshToken` in the database by the provided string, if it exists, touch the
+     * `RefreshToken` to extend its longetivity. If no matching token is found, throw a `ModelNotFoundException`.
      *
-     * @param string $refreshTokenString - The string to find the `RefreshToken` by.
+     * @param string $refreshTokenString - The token string used to find the `RefreshToken`.
      *
      * @return RefreshToken - The `RefreshToken` entity that should've been retrieved.
      *
@@ -60,7 +65,10 @@ class RefreshTokenManager {
      * will be thrown.
      */
     public function findRefreshTokenOrFail(string $refreshTokenString): RefreshToken {
-        return RefreshToken::where('token', $refreshTokenString)->firstOrFail();
+        $refreshToken = RefreshToken::where('token', $refreshTokenString)->firstOrFail();
+        $refreshToken->touch();
+
+        return $refreshToken;
     }
 
     /**
@@ -74,5 +82,17 @@ class RefreshTokenManager {
      */
     public function revokeRefreshToken(string $refreshTokenString): void {
         $this->findRefreshTokenOrFail($refreshTokenString)->delete();
+    }
+
+    /**
+     * Find and delete all `RefreshToken` entries where the last utilised date was a week ago.
+     *
+     * This functionality is utilised by the `DeleteExpiredRefreshTokensJob` class, which is set
+     * to run every hour as a cron task.
+     *
+     * @return void
+     */
+    public function deleteAllExpiredRefreshTokens(): void {
+        RefreshToken::where('updatedAt', '<', Carbon::now()->subWeek())->delete();
     }
 }

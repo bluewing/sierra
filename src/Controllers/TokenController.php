@@ -15,7 +15,7 @@ class TokenController extends Controller {
 
     /**
      * An instance of `JwtManager`.
-     * 
+     *
      * @var JwtManager
      */
     protected $jwtManager;
@@ -43,28 +43,21 @@ class TokenController extends Controller {
      * Retrieves a new Access Token (JWT) by providing a refresh token in the body of the request.
      * If no `RefreshToken` is provided then the request fails.
      *
-     * @param Request $request - The `Request` object associated with this API endpoint.
+     * @param RefreshTokenRequest $request - The `Request` object associated with this API endpoint.
      *
      * @return JsonResponse - 204 No Content, with the new JWT provided in the header of the response.
      *
      * @throws Exception
      */
-    public function exchangeRefreshTokenForJwt(Request $request) {
-        if (!$request->has('refreshToken')) {
-            return abort(401);
-        }
+    public function exchangeRefreshTokenForJwt(RefreshTokenRequest $request) {
 
         $refreshToken = $this->refreshTokenManager->findRefreshTokenOrFail($request->input('refreshToken'));
-        $refreshToken = $this->refreshTokenManager->buildRefreshTokenFor($refreshToken->userOrganization);
-
-        // Extend refresh token to be valid for another 7 days from this point.
-        $refreshToken->touch();
-
-        // TODO: Create JWT here.
+        $jwt = $this->jwtManager->buildJwtFor($refreshToken->userOrganization);
 
         // Issue our response
         return response()
             ->json(null, 204)
-            ->headers('Authorization', $refreshToken);
+            ->headers('Authorization', $jwt)
+            ->headers('X-Refresh-Token', $refreshToken);
     }
 }

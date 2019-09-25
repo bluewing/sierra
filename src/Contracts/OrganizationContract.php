@@ -8,6 +8,6 @@ namespace Bluewing\Contracts;
  *
  * @see `Bluewing\Models\Organization`
  */
-interface TenantContract {
+interface OrganizationContract {
 
 }
