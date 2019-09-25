@@ -2,10 +2,11 @@
 
 namespace Bluewing\Auth;
 
-use Bluewing\Models\RefreshToken;
+use Bluewing\Contracts\UserOrganizationContract;
 use Bluewing\Services\TokenGenerator;
-use Bluewing\Contracts\AuthenticationContract;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RefreshTokenManager {
@@ -19,6 +20,8 @@ class RefreshTokenManager {
 
     /**
      * An instance of the `RefreshToken` model used to query the database.
+     *
+     * @var Model
      */
     protected $refreshTokenModel;
 
@@ -26,9 +29,11 @@ class RefreshTokenManager {
      * Constructor for `RefreshTokenManager`.
      *
      * @param TokenGenerator $tokenGenerator - A dependency-injected instance of `TokenGenerator`.
+     * @param string model - The name of the model to inject.
      */
-    public function __construct(TokenGenerator $tokenGenerator) {
+    public function __construct(TokenGenerator $tokenGenerator, string $model) {
         $this->tokenGenerator = $tokenGenerator;
+        $this->refreshTokenModel = $this->createModel($model);
     }
 
     /**
@@ -43,7 +48,7 @@ class RefreshTokenManager {
      * @throws Exception
      */
     public function buildRefreshTokenFor(UserOrganizationContract $authenticatable): string {
-        $refreshToken = RefreshToken::create([
+        $refreshToken = $this->refreshTokenModel->newQuery()->create([
             'organizationId'        => $authenticatable->getTenant()->id,
             'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
             'token'                 => $this->tokenGenerator->generate(64),
@@ -55,17 +60,21 @@ class RefreshTokenManager {
 
     /**
      * Finds the given `RefreshToken` in the database by the provided string, if it exists, touch the
-     * `RefreshToken` to extend its longetivity. If no matching token is found, throw a `ModelNotFoundException`.
+     * `RefreshToken` to extend its longevity. If no matching token is found, throw a `ModelNotFoundException`.
      *
      * @param string $refreshTokenString - The token string used to find the `RefreshToken`.
      *
-     * @return RefreshToken - The `RefreshToken` entity that should've been retrieved.
+     * @return Model - The `RefreshToken` entity that should've been retrieved.
      *
      * @throws ModelNotFoundException - If the `RefreshToken` cannot be found, this exception
      * will be thrown.
      */
-    public function findRefreshTokenOrFail(string $refreshTokenString): RefreshToken {
-        $refreshToken = RefreshToken::where('token', $refreshTokenString)->firstOrFail();
+    public function findRefreshTokenOrFail(string $refreshTokenString): Model {
+        $refreshToken = $this->refreshTokenModel
+            ->newQuery()
+            ->where('token', $refreshTokenString)
+            ->firstOrFail();
+
         $refreshToken->touch();
 
         return $refreshToken;
@@ -93,6 +102,23 @@ class RefreshTokenManager {
      * @return void
      */
     public function deleteAllExpiredRefreshTokens(): void {
-        RefreshToken::where('updatedAt', '<', Carbon::now()->subWeek())->delete();
+        $this->refreshTokenModel
+            ->newQuery()
+            ->where('updatedAt', '<', Carbon::now()->subWeek())
+            ->delete();
+    }
+
+    /**
+     * Create a new instance of the model.
+     *
+     * @param string $model
+     *
+     * @return Model
+     */
+    private function createModel(string $model)
+    {
+        $class = '\\'.ltrim($model, '\\');
+
+        return new $class;
     }
 }

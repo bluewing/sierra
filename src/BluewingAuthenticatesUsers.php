@@ -91,6 +91,9 @@ trait BluewingAuthenticatesUsers {
 
     /**
      * TODO: Fill out completely.
+     * @param LoginRequest $request
+     *
+     * @return ResponseFactory|Response
      */
     protected function sendFailedLoginResponse(LoginRequest $request) {
         return response(null, 401);
@@ -125,7 +128,7 @@ trait BluewingAuthenticatesUsers {
      *
      * @return mixed The `JwtGuard`
      *
-     * @see Bluewing\Guards\JwtGuard
+     * @see \Bluewing\Guards\JwtGuard
      */
     protected function guard() {
         return Auth::guard();

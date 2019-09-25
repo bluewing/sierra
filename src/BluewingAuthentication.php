@@ -2,8 +2,6 @@
 
 namespace Bluewing;
 
-use Bluewing\Models\Organization;
-use Bluewing\Models\User;
 
 trait BluewingAuthentication {
 
@@ -14,35 +12,35 @@ trait BluewingAuthentication {
     protected $rememberTokenName = 'rememberToken';
 
     /**
-     * Implements the `getUser` method defined in the `BluewingAuthenticationContract`.
+     * Implements the `getUser` method defined in the `UserOrganizationContract`.
      *
-     * @return User - The `User` relation.
+     * @return \Illuminate\Database\Eloquent\Model - The `User` relation.
      */
     public function getUser() {
         return $this->user;
     }
 
     /**
-     * Implements the `getTenant` method defined in the `BluewingAuthenticationContract`.
+     * Implements the `getTenant` method defined in the `UserOrganizationContract`.
      *
-     * @return Organization - The `Organization` relation.
+     * @return \Illuminate\Database\Eloquent\Model - The `Organization` relation.
      */
     public function getTenant() {
         return $this->organization;
     }
 
     /**
-     * Retrieves the name of the field associated with the identifier for the `BluewingAuthenticationContract`
+     * Retrieves the name of the field associated with the identifier for the `UserOrganizationContract`
      * implementing class.
      *
-     * @return string The identifier name of the `BluewingAuthenticationContract`.
+     * @return string - The identifier name of the `UserOrganizationContract`.
      */
     public function getAuthIdentifierName() {
         return $this->getKeyName();
     }
 
     /**
-     * Retrieve the actual identifier associated with the `BluewingAuthenticationContract` implementing object.
+     * Retrieve the actual identifier associated with the `UserOrganizationContract` implementing object.
      *
      * @return object
      */
@@ -51,7 +49,7 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Retrieve the password associated with the user. Because the `BluewingAuthenticationContract` refers to the
+     * Retrieve the password associated with the user. Because the `UserOrganizationContract` refers to the
      * `UserOrganization`, this must be retrieved from the `User` relationship.
      *
      * @return string - The `User`'s password.
@@ -61,7 +59,7 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Retrieves the remember token from the `BluewingAuthenticationContract`. Because Bluewing applications utilise
+     * Retrieves the remember token from the `UserOrganizationContract`. Because Bluewing applications utilise
      * stateless JSON Web Tokens for authentication, this method is not needed.
      *
      * @return string|void - The remember token, if it exists.

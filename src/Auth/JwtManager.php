@@ -3,6 +3,7 @@
 namespace Bluewing\Auth;
 
 use Bluewing\Contracts\AuthenticationContract;
+use Bluewing\Contracts\UserOrganizationContract;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Key;
@@ -40,12 +41,12 @@ class JwtManager {
      * Builds a JWT or the entity which implements `BluewingAuthenticationContract`.
      * Usually, this is a `UserOrganization`.
      *
-     * @param AuthenticationContract $authenticatable - The entity which implements the
+     * @param UserOrganizationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildJwtFor(AuthenticationContract $authenticatable): string {
+    public function buildJwtFor(UserOrganizationContract $authenticatable): string {
         return 'Bearer ' . $this->buildJwt($authenticatable);
     }
 
@@ -53,12 +54,12 @@ class JwtManager {
      * Constructs a `Token` object using information supplied by the `BluewingAuthenticationContract`
      * implementor. JWTs generated will be valid for fifteen minutes from time of generation.
      *
-     * @param AuthenticationContract $authenticatable - The entity which implements the
+     * @param UserOrganizationContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return Token - The JWT for the user.
      */
-    private function buildJwt(AuthenticationContract $authenticatable): Token {
+    private function buildJwt(UserOrganizationContract $authenticatable): Token {
         $fifteenMinutes = 60 * 15;
 
         return (new Builder())->issuedBy('Bluewing')

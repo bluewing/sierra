@@ -25,7 +25,7 @@ class LogoutController extends Controller {
     /**
      * POST:/api/auth/logout
      *
-     * Logs a user out of the applicatin by revoking their `RefreshToken` associated with the
+     * Logs a user out of the application by revoking their `RefreshToken` associated with the
      * current session.
      *
      * @param Request $request - The `Request` object associated with the API endpoint.

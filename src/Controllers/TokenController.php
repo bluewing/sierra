@@ -2,6 +2,7 @@
 
 namespace Bluewing\Controllers;
 
+use Bluewing\Requests\RefreshTokenRequest;
 use Exception;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;

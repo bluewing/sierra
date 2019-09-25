@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\Auth;
 class TenancyScope implements Scope {
 
     /**
+     * @param Builder $builder
+     * @param Model $model
      *
+     * @return Builder
      */
     public function apply(Builder $builder, Model $model) {
         if (Auth::check()) {
