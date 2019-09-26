@@ -3,7 +3,9 @@
 namespace Bluewing\Providers;
 
 use Bluewing\Auth\RefreshTokenManager;
+use Bluewing\Guards\JwtGuard;
 use Bluewing\Services\TokenGenerator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Bluewing\Auth\JwtManager;
 
@@ -23,7 +25,7 @@ class BluewingServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Perform post-registraition booting of services.
+     * Perform post-registration booting of services.
      *
      * @return void
      */
@@ -31,5 +33,13 @@ class BluewingServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__ . '/../config.php' => config_path('bluewing.php')
         ]);
+        
+        Auth::provider('bluewing', function($app, array $config) {
+            return new BluewingUserProvider($app['hash'], $config['model']);
+        });
+
+        Auth::extend('jwt', function ($app, $name, array $config) {
+            return new JwtGuard(Auth::createUserProvider($config['provider']), $app->make('request'));
+        });
     }
 }
