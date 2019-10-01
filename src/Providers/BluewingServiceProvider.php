@@ -33,7 +33,7 @@ class BluewingServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__ . '/../config.php' => config_path('bluewing.php')
         ]);
-        
+
         Auth::provider('bluewing', function($app, array $config) {
             return new BluewingUserProvider($app['hash'], $config['model']);
         });

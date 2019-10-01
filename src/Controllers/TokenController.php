@@ -7,7 +7,6 @@ use Exception;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  *
@@ -39,7 +38,7 @@ class TokenController extends Controller {
     }
 
     /**
-     * GET:/api/token
+     * POST:/api/token
      *
      * Retrieves a new Access Token (JWT) by providing a refresh token in the body of the request.
      * If no `RefreshToken` is provided then the request fails.
@@ -58,7 +57,7 @@ class TokenController extends Controller {
         // Issue our response
         return response()
             ->json(null, 204)
-            ->headers('Authorization', $jwt)
-            ->headers('X-Refresh-Token', $refreshToken);
+            ->header('Authorization', $jwt)
+            ->header('X-Refresh-Token', $refreshToken->token);
     }
 }
