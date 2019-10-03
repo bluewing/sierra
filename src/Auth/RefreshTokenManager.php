@@ -75,6 +75,7 @@ class RefreshTokenManager {
             ->where('token', $refreshTokenString)
             ->firstOrFail();
 
+        $refreshToken->increment('uses');
         $refreshToken->touch();
 
         return $refreshToken;
