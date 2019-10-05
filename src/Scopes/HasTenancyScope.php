@@ -3,6 +3,7 @@
 namespace Bluewing\Scopes;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Scope;
 
 /**
  * A trait which provides the functionality of the `TenancyScope` scope to traited models.
@@ -12,7 +13,8 @@ trait HasTenancyScope {
     /**
      * @return void
      */
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
         static::addGlobalScope(new TenancyScope);
     }
@@ -24,8 +26,12 @@ trait HasTenancyScope {
      *
      * @return BelongsTo
      */
-    public function organization() {
-        return $this->belongsTo('App\Models\Organization', 'organizationId');
+    public function organization()
+    {
+        return $this->belongsTo(
+            config('bluewing.tenancies.organization.model'),
+            config('bluewing.tenancies.organization.identifier')
+        );
     }
 
     /**
@@ -36,4 +42,11 @@ trait HasTenancyScope {
      * @return mixed
      */
     public abstract function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null);
+
+    /**
+     * @param Scope $scope
+     *
+     * @return mixed
+     */
+    public static abstract function addGlobalScope(Scope $scope);
 }

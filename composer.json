@@ -16,19 +16,27 @@
         "lcobucci/jwt": "^3.3",
         "phpunit/phpunit": "^7.5",
         "mockery/mockery": "^1.2",
-        "laravel/framework": "^5.8"
+        "laravel/framework": "^5.8",
+        "stripe/stripe-php": "^7.3",
+        "ext-json": "*"
     },
     "autoload": {
         "classmap": [],
         "psr-4": {
             "Bluewing\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "prefer-stable": true,
     "extra": {
         "laravel": {
             "providers": [
-                "Bluewing\\Providers\\BluewingServiceProvider"
+                "Bluewing\\Providers\\BluewingServiceProvider",
+                "Bluewing\\Providers\\JsonWebTokenServiceProvider",
+                "Bluewing\\Providers\\RefreshTokenServiceProvider",
+                "Bluewing\\Providers\\StripeServiceProvider"
             ]
         }
     }

@@ -3,26 +3,29 @@
 namespace Bluewing\Billing;
 
 use Stripe\Customer;
+use Stripe\Exception\ApiErrorException;
 
 trait IsBillable
 {
 
     /**
      * Creates a customer record via Stripe's API for the billable model, then saves the
-     * returned customer ID onot the billable model's `paymentProviderCustomerId` property.
+     * returned customer ID onto the billable model's `paymentProviderCustomerId` property.
      *
      * @see https://stripe.com/docs/api/customers/create
      *
      * @return Customer - The created customer object.
+     *
+     * @throws ApiErrorException
      */
-    public function createCustomer()
+    public function createCustomer(): Customer
     {
         $customer = Customer::create([
             'name'  => $this->name,
             'email' => $this->email
         ]);
 
-        $this->paymentProviderCustomerId = $customer['id'];
+        $this->paymentProviderCustomerReference = $customer['id'];
         $this->save();
 
         return $customer;
@@ -35,10 +38,12 @@ trait IsBillable
      * @see https://stripe.com/docs/api/customers/update
      *
      * @return Customer - The updated customer object.
+     *
+     * @throws ApiErrorException
      */
-    public function syncCustomer()
+    public function syncCustomer(): Customer
     {
-        return Customer::update($this->paymentProviderCustomerId, [
+        return Customer::update($this->paymentProviderCustomerReference, [
             'name'  => $this->name,
             'email' => $this->email
         ]);
@@ -47,9 +52,11 @@ trait IsBillable
     /**
      * Adds a payment method for the `Organization` from the provided token parameter.
      *
-     * @see
+     * @param string $token
      *
-     * @return
+     * @return IsBillable
+     *
+     * @throws ApiErrorException
      */
     public function addPaymentMethod(string $token)
     {

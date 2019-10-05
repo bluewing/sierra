@@ -9,14 +9,16 @@ trait BluewingCanResetPassword
     /**
      *
      */
-    public function getEmailForPasswordReset() {
+    public function getEmailForPasswordReset()
+    {
         return $this->user->email;
     }
 
     /**
      *
      */
-    public function sendPasswordResetNotification($token) {
+    public function sendPasswordResetNotification($token)
+    {
         $this->notify(new ResetPasswordNotification($token));
     }
 }

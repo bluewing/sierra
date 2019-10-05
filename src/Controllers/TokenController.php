@@ -22,6 +22,7 @@ class TokenController extends Controller {
 
     /**
      * An instance of `RefreshTokenManager`.
+     *
      * @var RefreshTokenManager
      */
     protected $refreshTokenManager;
@@ -32,13 +33,16 @@ class TokenController extends Controller {
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
-    public function __construct(JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager) {
+    public function __construct(JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager)
+    {
         $this->jwtManager = $jwtManager;
         $this->refreshTokenManager = $refreshTokenManager;
     }
 
     /**
-     * POST:/api/token
+     * @bluewing-http-method    POST
+     * @bluewing-url            /api/token
+     * @bluewing-auth           Authentication
      *
      * Retrieves a new Access Token (JWT) by providing a refresh token in the body of the request.
      * If no `RefreshToken` is provided then the request fails.
@@ -49,8 +53,8 @@ class TokenController extends Controller {
      *
      * @throws Exception
      */
-    public function exchangeRefreshTokenForJwt(RefreshTokenRequest $request) {
-
+    public function exchangeRefreshTokenForJwt(RefreshTokenRequest $request)
+    {
         $refreshToken = $this->refreshTokenManager->findRefreshTokenOrFail($request->input('refreshToken'));
         $jwt = $this->jwtManager->buildJwtFor($refreshToken->userOrganization);
 

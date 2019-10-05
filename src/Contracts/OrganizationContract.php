@@ -10,4 +10,10 @@ namespace Bluewing\Contracts;
  */
 interface OrganizationContract {
 
+    /**
+     * @return mixed
+     */
+    public function getCustomerIdentifier(): string;
+
+    public function setCustomerIdentifier();
 }

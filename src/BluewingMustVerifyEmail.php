@@ -9,14 +9,16 @@ trait BluewingMustVerifyEmail {
     /**
      *
      */
-    public function hasVerifiedEmail() {
+    public function hasVerifiedEmail()
+    {
         return !is_null($this->emailVerifiedAt);
     }
 
     /**
      *
      */
-    public function markEmailAsVerified() {
+    public function markEmailAsVerified()
+    {
         return $this->forceFill([
             'emailVerifiedAt' => $this->freshTimestamp(),
         ])->save();
@@ -25,7 +27,8 @@ trait BluewingMustVerifyEmail {
     /**
      *
      */
-    public function sendEmailVerificationNotification() {
+    public function sendEmailVerificationNotification()
+    {
         $this->notify(new VerifyEmail);
     }
 }

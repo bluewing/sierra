@@ -1,5 +1,6 @@
 <?php
 
+use Bluewing\Model;
 use Bluewing\Services\TokenGenerator;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\RefreshTokenManager;
@@ -7,16 +8,26 @@ use Bluewing\Auth\RefreshTokenManager;
 class RefreshTokenManagerTest extends TestCase
 {
     /**
+     * Helper function to mock the creation of a `RefreshToken` model.
+     * @return Model
+     */
+    protected function mockRefreshTokenModel(): Model {
+        $mockedRefreshTokenModel = Mockery::mock(Model::class);
+        return $mockedRefreshTokenModel;
+    }
+
+    /**
      * Test that the class can be instantiated.
      *
      * @return void
      */
-    public function test_can_be_created() {
+    public function test_can_be_created()
+    {
         $tokenGenerator = new TokenGenerator();
 
         $this->assertInstanceOf(
             RefreshTokenManager::class,
-            new RefreshTokenManager($tokenGenerator)
+            new RefreshTokenManager($tokenGenerator, $this->mockRefreshTokenModel())
         );
     }
 
@@ -26,7 +37,8 @@ class RefreshTokenManagerTest extends TestCase
      *
      * @return void
      */
-    public function test_creates_refresh_token() {
+    public function test_creates_refresh_token()
+    {
 
     }
 
@@ -35,7 +47,8 @@ class RefreshTokenManagerTest extends TestCase
      *
      * @return void
      */
-    public function test_finds_refresh_token_by_string() {
+    public function test_finds_refresh_token_by_string()
+    {
 
     }
 
@@ -45,7 +58,8 @@ class RefreshTokenManagerTest extends TestCase
      *
      * @return void
      */
-    public function test_fails_if_refresh_token_cannot_be_found() {
+    public function test_fails_if_refresh_token_cannot_be_found()
+    {
 
     }
 
@@ -54,7 +68,8 @@ class RefreshTokenManagerTest extends TestCase
      *
      * @return void
      */
-    public function test_revokes_refresh_token() {
+    public function test_revokes_refresh_token()
+    {
 
     }
 }

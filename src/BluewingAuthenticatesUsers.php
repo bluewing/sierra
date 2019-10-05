@@ -49,7 +49,8 @@ trait BluewingAuthenticatesUsers {
      *
      * @see Illuminate\Foundation\Auth\AuthenticatesUsers::login()
      */
-    public function login(LoginRequest $request) {
+    public function login(LoginRequest $request)
+    {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
@@ -73,7 +74,8 @@ trait BluewingAuthenticatesUsers {
      *
      * @see AuthenticatesUsers::attemptLogin()
      */
-    protected function attemptLogin(LoginRequest $request) {
+    protected function attemptLogin(LoginRequest $request)
+    {
         return $this->guard()->validate($this->credentials($request));
     }
 
@@ -84,7 +86,8 @@ trait BluewingAuthenticatesUsers {
      *
      * @return JsonResponse - A `Response` of 200 OK containing the `UserOrganization`.
      */
-    protected function sendLoginResponse(LoginRequest $request) {
+    protected function sendLoginResponse(LoginRequest $request)
+    {
         $this->clearLoginAttempts($request);
         return response()->json($this->guard()->user());
     }
@@ -95,7 +98,8 @@ trait BluewingAuthenticatesUsers {
      *
      * @return ResponseFactory|Response
      */
-    protected function sendFailedLoginResponse(LoginRequest $request) {
+    protected function sendFailedLoginResponse(LoginRequest $request)
+    {
         return response(null, 401);
     }
 
@@ -106,7 +110,8 @@ trait BluewingAuthenticatesUsers {
      *
      * @return array An array representing the three properties needed to validate the `User`.
      */
-    protected function credentials(LoginRequest $request) {
+    protected function credentials(LoginRequest $request)
+    {
         return $request->only($this->username(), 'password');
     }
 
@@ -130,7 +135,8 @@ trait BluewingAuthenticatesUsers {
      *
      * @see \Bluewing\Guards\JwtGuard
      */
-    protected function guard() {
+    protected function guard()
+    {
         return Auth::guard();
     }
 }

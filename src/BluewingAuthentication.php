@@ -16,7 +16,8 @@ trait BluewingAuthentication {
      *
      * @return \Illuminate\Database\Eloquent\Model - The `User` relation.
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
@@ -25,7 +26,8 @@ trait BluewingAuthentication {
      *
      * @return \Illuminate\Database\Eloquent\Model - The `Organization` relation.
      */
-    public function getTenant() {
+    public function getTenant()
+    {
         return $this->organization;
     }
 
@@ -35,7 +37,8 @@ trait BluewingAuthentication {
      *
      * @return string - The identifier name of the `UserOrganizationContract`.
      */
-    public function getAuthIdentifierName() {
+    public function getAuthIdentifierName()
+    {
         return $this->getKeyName();
     }
 
@@ -44,7 +47,8 @@ trait BluewingAuthentication {
      *
      * @return object
      */
-    public function getAuthIdentifier() {
+    public function getAuthIdentifier()
+    {
         return $this->{$this->getAuthIdentifierName()};
     }
 
@@ -54,7 +58,8 @@ trait BluewingAuthentication {
      *
      * @return string - The `User`'s password.
      */
-    public function getAuthPassword() {
+    public function getAuthPassword()
+    {
         return $this->getUser()->password;
     }
 
@@ -64,7 +69,8 @@ trait BluewingAuthentication {
      *
      * @return string|void - The remember token, if it exists.
      */
-    public function getRememberToken() {
+    public function getRememberToken()
+    {
         if (! empty($this->getRememberTokenName())) {
             return (string) $this->{$this->getRememberTokenName()};
         }
@@ -77,7 +83,8 @@ trait BluewingAuthentication {
      *
      * @return void
      */
-    public function setRememberToken($value) {
+    public function setRememberToken($value)
+    {
         if (! empty($this->getRememberTokenName())) {
             $this->{$this->getRememberTokenName()} = $value;
         }
@@ -86,7 +93,8 @@ trait BluewingAuthentication {
     /**
      * @return string
      */
-    public function getRememberTokenName() {
+    public function getRememberTokenName()
+    {
         return $this->rememberTokenName;
     }
 }

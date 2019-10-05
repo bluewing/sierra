@@ -44,7 +44,8 @@ class AppendTokensToResponse {
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
-    public function __construct(AuthFacadeFactory $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager) {
+    public function __construct(AuthFacadeFactory $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager)
+    {
         $this->auth = $auth;
         $this->jwtManager = $jwtManager;
         $this->refreshTokenManager = $refreshTokenManager;
@@ -60,7 +61,8 @@ class AppendTokensToResponse {
      *
      * @throws Exception
      */
-    public function handle($request, Closure $next) {
+    public function handle($request, Closure $next)
+    {
         $response = $next($request);
 
         if ($request->headers->has('Authorization') || !$this->auth->user()) {

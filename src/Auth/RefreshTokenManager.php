@@ -29,11 +29,12 @@ class RefreshTokenManager {
      * Constructor for `RefreshTokenManager`.
      *
      * @param TokenGenerator $tokenGenerator - A dependency-injected instance of `TokenGenerator`.
-     * @param string model - The name of the model to inject.
+     * @param Model $model - An instance of the `RefreshToken` model.
      */
-    public function __construct(TokenGenerator $tokenGenerator, string $model) {
+    public function __construct(TokenGenerator $tokenGenerator, Model $model)
+    {
         $this->tokenGenerator = $tokenGenerator;
-        $this->refreshTokenModel = $this->createModel($model);
+        $this->refreshTokenModel = $model;
     }
 
     /**
@@ -47,7 +48,8 @@ class RefreshTokenManager {
      *
      * @throws Exception
      */
-    public function buildRefreshTokenFor(UserOrganizationContract $authenticatable): string {
+    public function buildRefreshTokenFor(UserOrganizationContract $authenticatable): string
+    {
         $refreshToken = $this->refreshTokenModel->newQuery()->create([
             'organizationId'        => $authenticatable->getTenant()->id,
             'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
@@ -69,7 +71,8 @@ class RefreshTokenManager {
      * @throws ModelNotFoundException - If the `RefreshToken` cannot be found, this exception
      * will be thrown.
      */
-    public function findRefreshTokenOrFail(string $refreshTokenString): Model {
+    public function findRefreshTokenOrFail(string $refreshTokenString): Model
+    {
         $refreshToken = $this->refreshTokenModel
             ->newQuery()
             ->where('token', $refreshTokenString)
@@ -90,7 +93,8 @@ class RefreshTokenManager {
      *
      * @throws Exception - An `Exception` will be thrown if the `RefreshToken` cannot be found.
      */
-    public function revokeRefreshToken(string $refreshTokenString): void {
+    public function revokeRefreshToken(string $refreshTokenString): void
+    {
         $this->findRefreshTokenOrFail($refreshTokenString)->delete();
     }
 
@@ -102,24 +106,11 @@ class RefreshTokenManager {
      *
      * @return void
      */
-    public function deleteAllExpiredRefreshTokens(): void {
+    public function deleteAllExpiredRefreshTokens(): void
+    {
         $this->refreshTokenModel
             ->newQuery()
             ->where('updatedAt', '<', Carbon::now()->subWeek())
             ->delete();
-    }
-
-    /**
-     * Create a new instance of the model.
-     *
-     * @param string $model
-     *
-     * @return Model
-     */
-    private function createModel(string $model)
-    {
-        $class = '\\'.ltrim($model, '\\');
-
-        return new $class;
     }
 }

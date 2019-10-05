@@ -14,7 +14,8 @@ trait SetsLastLoggedInTenancy
      * It needn't be called when the `User` logs in, because they'll be logged into the
      * last `Organization` anyway.
      */
-    public function setLastLoggedInTenancy() {
+    public function setLastLoggedInTenancy()
+    {
         $user = $this->guard()->user()->user;
         $user->lastLoggedInOrganization->save($this->guard()->user()->organization);
     }

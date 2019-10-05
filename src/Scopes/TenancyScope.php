@@ -21,7 +21,8 @@ class TenancyScope implements Scope {
      *
      * @return Builder
      */
-    public function apply(Builder $builder, Model $model) {
+    public function apply(Builder $builder, Model $model)
+    {
         if (Auth::check()) {
             return $builder->where('organizationId', Auth::user()->organizationId);
         }

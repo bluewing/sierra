@@ -4,6 +4,7 @@ namespace Bluewing\Controllers;
 
 use Bluewing\Auth\RefreshTokenManager;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class LogoutController extends Controller {
@@ -18,12 +19,15 @@ class LogoutController extends Controller {
      *
      * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
-    public function __construct(RefreshTokenManager $refreshTokenManager) {
+    public function __construct(RefreshTokenManager $refreshTokenManager)
+    {
         $this->refreshTokenManager = $refreshTokenManager;
     }
 
     /**
-     * POST:/api/auth/logout
+     * @bluewing-http-method    POST
+     * @bluewing-url            /api/auth/logout
+     * @bluewing-auth           Authenticated
      *
      * Logs a user out of the application by revoking their `RefreshToken` associated with the
      * current session.
@@ -34,7 +38,8 @@ class LogoutController extends Controller {
      *
      * @throws Exception
      */
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $this->refreshTokenManager->revokeRefreshToken($request->input('refreshToken'));
         return response()->json(null, 204);
     }

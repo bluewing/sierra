@@ -2,7 +2,6 @@
 
 namespace Bluewing\Auth;
 
-use Bluewing\Contracts\AuthenticationContract;
 use Bluewing\Contracts\UserOrganizationContract;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -32,7 +31,8 @@ class JwtManager {
      * @param string $permitted - What scope is this JWT permitted for.
      * @param string $key - The private key that should be used to sign the JWT.
      */
-    public function __construct(string $permitted, string $key) {
+    public function __construct(string $permitted, string $key)
+    {
         $this->permitted = $permitted;
         $this->key = $key;
     }
@@ -46,7 +46,8 @@ class JwtManager {
      *
      * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildJwtFor(UserOrganizationContract $authenticatable): string {
+    public function buildJwtFor(UserOrganizationContract $authenticatable): string
+    {
         return 'Bearer ' . $this->buildJwt($authenticatable);
     }
 
@@ -59,7 +60,8 @@ class JwtManager {
      *
      * @return Token - The JWT for the user.
      */
-    private function buildJwt(UserOrganizationContract $authenticatable): Token {
+    private function buildJwt(UserOrganizationContract $authenticatable): Token
+    {
         $fifteenMinutes = 60 * 15;
 
         return (new Builder())->issuedBy('Bluewing')
@@ -78,7 +80,8 @@ class JwtManager {
      *
      * @return Token - The parsed `Token` object.
      */
-    public function jwtFromString(string $jwtString): Token {
+    public function jwtFromString(string $jwtString): Token
+    {
         if ($this->doesJwtStringStartWithBearer($jwtString)) {
             $jwtString = $this->stripBearer($jwtString);
         }
@@ -94,13 +97,13 @@ class JwtManager {
      * @return bool - `true` if the JWT verifies successfully, `false` if the JWT is invalid or otherwise
      * not verifiable.
      */
-    public function isJwtVerified(string $jwtStringToVerify): bool {
+    public function isJwtVerified(string $jwtStringToVerify): bool
+    {
         if (!$this->doesJwtStringStartWithBearer($jwtStringToVerify)) {
             return false;
         }
 
-        $jwtString = $this->stripBearer($jwtStringToVerify);
-        $jwt = $this->jwtFromString($jwtString);
+        $jwt = $this->jwtFromString($jwtStringToVerify);
 
         return $this->isJwtValid($jwt) && $jwt->verify(new Sha256(), new Key($this->key));
     }
@@ -112,7 +115,8 @@ class JwtManager {
      *
      * @return bool - `true` if the JWT is valid, `false` if it is not.
      */
-    private function isJwtValid(Token $jwt): bool {
+    private function isJwtValid(Token $jwt): bool
+    {
         $data = new ValidationData();
         $data->setIssuer('Bluewing');
         $data->setAudience($this->permitted);
@@ -127,7 +131,8 @@ class JwtManager {
      *
      * @return bool - `true` if the token does begin with "Bearer", `false` otherwise.
      */
-    private function doesJwtStringStartWithBearer(string $tokenStringToVerify): bool {
+    private function doesJwtStringStartWithBearer(string $tokenStringToVerify): bool
+    {
         return substr($tokenStringToVerify, 0, 6) === "Bearer";
     }
 
@@ -142,7 +147,8 @@ class JwtManager {
      *
      * @return string - The stripped token.
      */
-    private function stripBearer(string $tokenString): string {
+    private function stripBearer(string $tokenString): string
+    {
         return explode(" ", $tokenString)[1];
     }
 }
