@@ -53,7 +53,7 @@ class RefreshTokenManager {
         $refreshToken = $this->refreshTokenModel->newQuery()->create([
             'organizationId'        => $authenticatable->getTenant()->id,
             'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
-            'token'                 => $this->tokenGenerator->generate(64),
+            'token'                 => $this->tokenGenerator->generate(64, 'refresh'),
             'device'                => null
         ]);
 

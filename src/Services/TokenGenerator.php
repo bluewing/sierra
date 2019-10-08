@@ -19,7 +19,7 @@ class TokenGenerator {
      *
      * @throws Exception - If the random_bytes could not be generated.
      */
-    public function generate(int $ofLength, string $prefix = null, bool $trimToLength = false): string
+    public function generate(int $ofLength, string $prefix = null, bool $trimToLength = true): string
     {
         if ($prefix !== null && $trimToLength) {
             $ofLength -= strlen($prefix) + 1;
