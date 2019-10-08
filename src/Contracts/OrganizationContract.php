@@ -13,7 +13,10 @@ interface OrganizationContract {
     /**
      * @return mixed
      */
-    public function getCustomerIdentifier(): string;
+    public function getIdentifier(): string;
 
-    public function setCustomerIdentifier();
+    /**
+     * @return mixed
+     */
+    public function setIdentifier();
 }

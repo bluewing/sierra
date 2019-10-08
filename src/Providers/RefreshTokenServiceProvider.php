@@ -16,7 +16,10 @@ class RefreshTokenServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('Bluewing\Auth\RefreshTokenManager', function($app) {
-            return new RefreshTokenManager(new TokenGenerator(), config('bluewing.refreshtokens.model'));
+            return new RefreshTokenManager(
+                new TokenGenerator(),
+                createModel(config('bluewing.refreshtokens.model'))
+            );
         });
     }
 
