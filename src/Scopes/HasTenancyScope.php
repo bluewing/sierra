@@ -20,11 +20,12 @@ trait HasTenancyScope {
     }
 
     /**
-     * Any model which has a scope of a tenancy
+     * Any model which has a scope of a tenancy has a corresponding relationship to an `Organization`
+     * which can be defined in this trait.
      *
-     * @laravel-relation `HasTenancyScope` belongsTo `Organization`
+     * @laravel-relation `HasTenancyScope` belongsTo `Organization`.
      *
-     * @return BelongsTo
+     * @return BelongsTo - The relationship this model has an to `Organization`
      */
     public function organization()
     {
