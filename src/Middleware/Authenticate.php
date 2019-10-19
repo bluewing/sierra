@@ -44,15 +44,24 @@ class Authenticate
             return response()->json("No Authorization header provided", 401);
         }
 
-        $authorizationHeaderString = $request->header('Authorization');
-
-        if (!$this->jwtManager->isJwtVerified($authorizationHeaderString)) {
+        if (!$this->isAuthorizationHeaderVerifiable($request)) {
             return response()->json("Token provided is not verifiable", 401);
         }
 
-        $userId = $this->jwtManager->jwtFromString($authorizationHeaderString)->getClaim('uid');
+        $userId = $this->jwtManager->jwtFromString($request->header('Authorization'))->getClaim('uid');
         Auth::setUserId($userId);
 
         return $next($request);
+    }
+
+    /**
+     * Helper function to ensure an Authorization header verifies.
+     *
+     * @param $request
+     *
+     * @return bool - `true` if the Authorization header verifies successfully.
+     */
+    private function isAuthorizationHeaderVerifiable($request) {
+        return $this->jwtManager->isJwtVerified($request->header('Authorization'));
     }
 }

@@ -52,7 +52,9 @@ class AppendTokensToResponse {
     }
 
     /**
-     * Handles the response by adding both a JWT and a Refresh Token to the `Response` headers.
+     * Handles the response by adding both a JWT and a Refresh Token to the `Response` headers. This is utilised
+     * where the incoming user is going from an unauthenticated state to an authenticated one, like during login
+     * or email verification.
      *
      * @param Request $request - The `Request` that this middleware will process.
      * @param Closure $next - Handles executing functionality prior to this middleware.
@@ -65,7 +67,7 @@ class AppendTokensToResponse {
     {
         $response = $next($request);
 
-        if ($request->headers->has('Authorization') || !$this->auth->user()) {
+        if ($request->hasHeader('Authorization') || !$this->auth->user()) {
             return $response;
         }
 
