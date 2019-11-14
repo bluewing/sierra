@@ -72,37 +72,34 @@ class ApiEndpointGenerator {
      */
     protected function buildKeyForRoute(Route $route): string
     {
+        // Return the route name, if it's defined.
+        if (!is_null($route->getName())) {
+            return $route->getName();
+        }
+
         // Explode into segments
         $routeSegments = explode('/', $route->uri());
 
         // Filter out blank & non-suffix route parameters
         $filteredRouteSegments = array_values(array_filter($routeSegments, function($segment, $index) use($routeSegments) {
             if ($index === count($routeSegments) - 1) return true;
-            return $segment != null && preg_match('/{.*}/', $segment) === 0;
-
+            return $this->isSegmentARouteParameter($segment);
         }, ARRAY_FILTER_USE_BOTH));
 
         // The final string
         $apiEndpointKey = '';
 
         // Iterate over every filtered route segment
-        for ($i = 0; $i < count($filteredRouteSegments); $i++) {
-
+        foreach($filteredRouteSegments as $index => $routeSegment) {
             // If we have the final route segment
-            if ($i === count($filteredRouteSegments) - 1) {
-                $apiEndpointKey .= $this->mapMethodToKeySuffix($route->methods()[0], $filteredRouteSegments[$i]);
-
-                // If we have the first route segment
-            } else if ($i === 0) {
-                $apiEndpointKey = $filteredRouteSegments[$i];
-
-                // Any other route segment
+            if ($index === count($filteredRouteSegments) - 1) {
+                $apiEndpointKey .= $this->mapMethodToKeySuffix($route->methods()[0], $routeSegment);
             } else {
-                $apiEndpointKey .= '.' . $filteredRouteSegments[$i];
+                $apiEndpointKey .= '.' . $routeSegment;
             }
         }
 
-        return $apiEndpointKey;
+        return trim($apiEndpointKey, '.');
     }
 
     /**
@@ -150,5 +147,17 @@ class ApiEndpointGenerator {
         }
 
         return '.' . $appendedSuffix;
+    }
+
+    /**
+     * Helper function to determine if the provided segment is a route parameter.
+     *
+     * @param string $segment - The segment to check.
+     *
+     * @return `true` if the segment is a route parameter, `false` otherwise.
+     */
+    protected function isSegmentARouteParameter(string $segment): bool
+    {
+        return !is_null($segment) && preg_match('/{.*}/', $segment) === 0;
     }
 }
