@@ -13,9 +13,8 @@ trait HasTenancyScope {
     /**
      * @return void
      */
-    protected static function boot()
+    protected static function bootWithTenancy()
     {
-        parent::boot();
         static::addGlobalScope(new TenancyScope);
     }
 
