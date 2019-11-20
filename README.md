@@ -41,8 +41,8 @@ cd ./bluewing-shared-server
 
 Some todos:
 
-* Migrate shared models such as `ApiEndpoint` and `RefreshToken` into package.
-* Migrate shared migrations into package (`ApiEndpoints`, `RefreshTokens`, `PreferenceTemplates`).
+* Migrate shared models such as `ApiEndpoint`, `RefreshToken`, `Preference`, & `PreferenceTemplate` into package.
+* Migrate shared migrations into package (`ApiEndpoints`, `RefreshTokens`, `Preferences`, PreferenceTemplates`).
 * Migrate shared controllers into package.
 * Migrate shared seeders into package.
 * All Service Providers should be imported into child package on `php artisan vendor:publish`.

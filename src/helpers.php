@@ -1,5 +1,7 @@
 <?php
 
+use Bluewing\Eloquent\Model;
+
 if (! function_exists('createModel')) {
 
     /**
@@ -7,9 +9,10 @@ if (! function_exists('createModel')) {
      *
      * @param string $model
      *
-     * @return mixed - An instance of the model.
+     * @return Model - An instance of the model.
      */
-    function createModel(string $model) {
+    function createModel(string $model): Model
+    {
         $class = '\\'.ltrim($model, '\\');
 
         return new $class;
