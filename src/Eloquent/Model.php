@@ -3,6 +3,7 @@
 namespace Bluewing\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Support\Str;
 
 
 abstract class Model extends EloquentModel
