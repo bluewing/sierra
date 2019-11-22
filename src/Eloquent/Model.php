@@ -46,8 +46,10 @@ abstract class Model extends EloquentModel
      * Boot function to ensure that models that utilize this trait use v4 UUIDs instead of incrementing integers as
      * primary keys.
      */
-    protected static function bootUsingUuids()
+    protected static function boot()
     {
+        static::bootTraits();
+
         static::creating(function($model) {
             if (!$model->getKey()) {
                 $model->{$model->getKeyName()} = Str::uuid()->toString();
