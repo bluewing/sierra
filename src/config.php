@@ -15,7 +15,7 @@ return [
         'organization' => [
             'model'         => null,
             'identifier'    => null,
-        ],
+        ]
     ],
 
     /*
@@ -28,16 +28,18 @@ return [
      |
      */
 
-    'refreshtokens' => [
+    'refreshTokens' => [
         'model'                 => null
     ],
 
     /*
      |--------------------------------------------------------------------------
-     | Refresh Tokens
+     | Preferences
      |--------------------------------------------------------------------------
      |
-     | These parameters determine the name of the
+     | These parameters determine the name of the model that should be used for
+     | preferences and their corresponding default values across the system.
+     | This informs the configuration used by `PreferencesBuilder`.
      |
      */
 
@@ -52,8 +54,7 @@ return [
      | Payments
      |--------------------------------------------------------------------------
      |
-     | This parameter determines what application model should be used for the
-     | `RefreshToken` entity for the `RefreshTokenManager`.
+     | Payments related configuration.
      |
      */
 

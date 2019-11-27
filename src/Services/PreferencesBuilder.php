@@ -4,6 +4,7 @@ namespace Bluewing\Services;
 
 use Bluewing\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class PreferencesBuilder {
 
@@ -22,6 +23,7 @@ class PreferencesBuilder {
 
         $preferences = $preferenceTemplateModel->all()->map(function($item, $key) use($organization, $now) {
             return [
+                'id'                    => Str::uuid()->toString(),
                 'organizationId'        => $organization->id,
                 'preferenceTemplateId'  => $item->id,
                 'value'                 => $item->defaultValue,
