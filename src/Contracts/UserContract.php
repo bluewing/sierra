@@ -1,25 +1,25 @@
 <?php
 
+
 namespace Bluewing\Contracts;
+
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * An empty interface representing the contract that `Organization` adheres to. This may be used in the
- * future to provide tenancy-related functionality.
- *
- * @see `Bluewing\Models\Organization`
- */
-interface OrganizationContract
+interface UserContract
 {
     /**
+     * Retrieves the `UserOrganization`'s associated with this contract's implementation.
+     *
      * @return HasMany
      */
     public function userOrganizations(): HasMany;
 
     /**
+     * Retrieves the `Organization`'s associated with this contract's implementation.
+     *
      * @return BelongsToMany
      */
-    public function users(): BelongsToMany;
+    public function organizations(): BelongsToMany;
 }

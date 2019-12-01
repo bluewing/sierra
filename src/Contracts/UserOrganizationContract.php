@@ -3,6 +3,8 @@
 namespace Bluewing\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * `UserOrganizationContract` represents the interface that a `UserOrganization` model
@@ -15,21 +17,27 @@ use Illuminate\Contracts\Auth\Authenticatable;
  * `JwtManager`'s `buildTokenFor` method expects a model adhering to this interface as its first argument.
  *
  * @see \Illuminate\Contracts\Auth\Authenticatable
- * @see \Bluewing\Models\UserOrganization
  */
 interface UserOrganizationContract extends Authenticatable {
 
     /**
      * Retrieves the `User` associated with this contract's implementation.
      *
-     * @return \Bluewing\Models\User
+     * @return BelongsTo
      */
-    public function getUser();
+    public function user(): BelongsTo;
 
     /**
      * Retrieves the `Organization` associated with this contract's implementation.
      *
-     * @return \Bluewing\Models\Organization
+     * @return BelongsTo
      */
-    public function getTenant();
+    public function organization(): BelongsTo;
+
+    /**
+     * Retrieves the `Role`'s associated with this contract's implementation.
+     *
+     * @return HasMany
+     */
+    public function roles(): HasMany;
 }
