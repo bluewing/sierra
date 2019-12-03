@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Scope;
 
 /**
  * A trait which provides the functionality of the `TenancyScope` scope to traited models.
+ *
+ * @package Bluewing\Scopes
  */
 trait HasTenancyScope {
 

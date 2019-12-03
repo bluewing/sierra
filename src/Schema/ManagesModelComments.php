@@ -15,7 +15,7 @@ use ReflectionException;
 trait ManagesModelComments
 {
     /**
-     * Adds the @property PhpDoc comments from the Model class to the database column definition.
+     * Adds the property PhpDoc comments from the Model class to the database column definition.
      *
      * @param string $class - The class that should be instantiated to reflect
      * and retrieve PHPDocumentation from to extract property comments.
