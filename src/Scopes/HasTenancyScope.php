@@ -46,7 +46,7 @@ trait HasTenancyScope {
      *
      * @return BelongsTo
      */
-    public abstract function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null): BelongsTo;
+    public abstract function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null);
 
     /**
      * @param Scope $scope
