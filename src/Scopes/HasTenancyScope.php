@@ -28,7 +28,7 @@ trait HasTenancyScope {
      *
      * @return BelongsTo - The relationship this model has an to `Organization`
      */
-    public function organization()
+    public function organization(): BelongsTo
     {
         return $this->belongsTo(
             config('bluewing.tenancies.organization.model'),
@@ -37,13 +37,16 @@ trait HasTenancyScope {
     }
 
     /**
+     * Abstract definition for `belongsTo`, utilized by Eloquent models.
+     *
      * @param $related
      * @param null $foreignKey
      * @param null $ownerKey
      * @param null $relation
-     * @return mixed
+     *
+     * @return BelongsTo
      */
-    public abstract function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null);
+    public abstract function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null): BelongsTo;
 
     /**
      * @param Scope $scope
