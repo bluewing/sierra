@@ -16,14 +16,14 @@ class RefreshTokenManager {
      *
      * @var TokenGenerator
      */
-    protected $tokenGenerator;
+    protected TokenGenerator $tokenGenerator;
 
     /**
      * An instance of the `RefreshToken` model used to query the database.
      *
      * @var Model
      */
-    protected $refreshTokenModel;
+    protected Model $refreshTokenModel;
 
     /**
      * Constructor for `RefreshTokenManager`.
@@ -51,7 +51,7 @@ class RefreshTokenManager {
     public function buildRefreshTokenFor(UserOrganizationContract $authenticatable): string
     {
         $refreshToken = $this->refreshTokenModel->newQuery()->create([
-            'organizationId'        => $authenticatable->getTenant()->id,
+            'organizationId'        => $authenticatable->user->id,
             'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
             'token'                 => $this->tokenGenerator->generate(64, 'refresh'),
             'device'                => null

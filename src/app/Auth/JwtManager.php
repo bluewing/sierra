@@ -18,12 +18,12 @@ class JwtManager {
     /**
      * What scope is this JWT permitted for?
      */
-    private $permitted;
+    private string $permitted;
 
     /**
      * The private key that should be used to sign the JWT.
      */
-    private $key;
+    private string $key;
 
     /**
      * Constructor for JwtManager.

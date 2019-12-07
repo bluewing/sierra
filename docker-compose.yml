@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  bluewing:
+    image: bluewing/bluewing
+    container_name: bluewing-php
+    env_file: .env
+    working_dir: /var/www
+    expose:
+      - "9000"
+    volumes:
+      - ./src:/var/www

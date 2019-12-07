@@ -1,7 +1,7 @@
 <?php
 
-use Bluewing\Model;
 use Bluewing\Services\TokenGenerator;
+use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\RefreshTokenManager;
 
@@ -9,11 +9,11 @@ class RefreshTokenManagerTest extends TestCase
 {
     /**
      * Helper function to mock the creation of a `RefreshToken` model.
+     *
      * @return Model
      */
     protected function mockRefreshTokenModel(): Model {
-        $mockedRefreshTokenModel = Mockery::mock(Model::class);
-        return $mockedRefreshTokenModel;
+        return Mockery::mock('Illuminate\Database\Eloquent\Model');
     }
 
     /**

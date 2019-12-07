@@ -65,26 +65,7 @@ class TokenGeneratorTest extends TestCase
     }
 
     /**
-     * If a token prefix is specified, the length of the token will be the desired length, plus the length of the
-     * prefix, plus a separator character.
-     *
-     * @return void
-     *
-     * @throws Exception
-     */
-    public function test_token_length_with_prefix_is_length_of_prefix_plus_length_of_token(): void
-    {
-        $tokenGenerator = new TokenGenerator();
-        $tokenLength = 64;
-        $tokenPrefix = "tok";
-
-        $token = $tokenGenerator->generate($tokenLength, $tokenPrefix);
-
-        $this->assertEquals(strlen($token), $tokenLength + strlen($tokenPrefix) + 1);
-    }
-
-    /**
-     * If the token should be trimmed if it has a prefix, ensure the length is consistent with expectations;
+     * Tokens should be trimmed to length if a prefix is provided. ensure the length is consistent with expectations.
      *
      * @return void
      *
@@ -99,5 +80,24 @@ class TokenGeneratorTest extends TestCase
         $token = $tokenGenerator->generate($tokenLength, $tokenPrefix, true);
 
         $this->assertEquals(strlen($token), $tokenLength);
+    }
+
+    /**
+     * If a token prefix is specified, and `trimToLength1 is false, the length of the token will be the provided token
+     * length, plus the length of the prefix.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function test_token_length_with_prefix_is_length_of_prefix_plus_length_of_token(): void
+    {
+        $tokenGenerator = new TokenGenerator();
+        $tokenLength = 64;
+        $tokenPrefix = "tok";
+
+        $token = $tokenGenerator->generate($tokenLength, $tokenPrefix, false);
+
+        $this->assertEquals(strlen($token), $tokenLength + strlen($tokenPrefix) + 1);
     }
 }
