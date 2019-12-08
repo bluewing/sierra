@@ -4,7 +4,6 @@ namespace Bluewing\Middleware;
 
 use Bluewing\Auth\JwtManager;
 use Closure;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class Authenticate
 {
-    public $jwtManager;
+    public JwtManager $jwtManager;
 
     /**
      * Constructor for Authenticate middleware.
@@ -36,7 +35,7 @@ class Authenticate
      * @param  Request  $request
      * @param  \Closure  $next
      *
-     * @return mmixed
+     * @return mixed
      */
     public function handle($request, Closure $next)
     {
