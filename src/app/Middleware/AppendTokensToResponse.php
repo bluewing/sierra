@@ -3,6 +3,7 @@
 namespace Bluewing\Middleware;
 
 use Closure;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Factory as AuthFacadeFactory;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
@@ -19,32 +20,32 @@ class AppendTokensToResponse {
     /**
      * An instance of the `Auth\Factory` contract that is dependency-injected into the class.
      *
-     * @var AuthFacadeFactory
+     * @var AuthManager
      */
-    protected $auth;
+    protected AuthManager $auth;
 
     /**
      * An instance of `JwtManager`.
      *
      * @var JwtManager
      */
-    protected $jwtManager;
+    protected JwtManager $jwtManager;
 
     /**
      * An instance of `RefreshTokenManagerTest`.
      *
      * @var RefreshTokenManager
      */
-    protected $refreshTokenManager;
+    protected RefreshTokenManager $refreshTokenManager;
 
     /**
      * Constructor for `AppendTokensToResponse` middleware.
      *
-     * @param AuthFacadeFactory $auth - The dependency-injected instance of `Auth\Factory`.
+     * @param AuthManager $auth - The dependency-injected instance of `AuthManager`.
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
-    public function __construct(AuthFacadeFactory $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager)
+    public function __construct(AuthManager $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager)
     {
         $this->auth = $auth;
         $this->jwtManager = $jwtManager;

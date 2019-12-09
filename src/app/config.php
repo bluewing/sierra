@@ -12,9 +12,15 @@ return [
      */
 
     'tenancies' => [
-        'organization' => [
+        'organization'      => [
             'model'         => null,
             'identifier'    => null,
+        ],
+        'userOrganization'  => [
+            'model'         => null
+        ],
+        'user'              => [
+            'model'         => null
         ]
     ],
 
@@ -29,7 +35,7 @@ return [
      */
 
     'refreshTokens' => [
-        'model'                 => null
+        'model' => null
     ],
 
     /*
