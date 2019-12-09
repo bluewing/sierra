@@ -3,13 +3,12 @@
 use Bluewing\Contracts\UserOrganizationContract;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\JwtManager;
-use Bluewing\Contracts\AuthenticationContract;
 
 final class JwtManagerTest extends TestCase
 {
 
     /**
-     * Helper function that uses `Mockery` to fake an instance of `AuthenticationContract`.
+     * Helper fJunction that uses `Mockery` to fake an instance of `AuthenticationContract`.
      *
      * @return UserOrganizationContract - An instance conforming to the `AuthenticationContract` that has a
      * method called `getAuthIdentifier` returning 1.
@@ -34,6 +33,8 @@ final class JwtManagerTest extends TestCase
     /**
      * Test that the class can be created.
      *
+     * @group jwt
+     *
      * @return void
      */
     public function test_can_be_created_with_valid_key_and_permission(): void
@@ -47,6 +48,8 @@ final class JwtManagerTest extends TestCase
     /**
      * Test that the JWT created begins with the prefix "Bearer".
      *
+     * @group jwt
+     *
      * @return void
      */
     public function test_jwt_begins_with_bearer(): void
@@ -57,6 +60,8 @@ final class JwtManagerTest extends TestCase
 
     /**
      * Test the JWT is correctly issued by "Bluewing".
+     *
+     * @group jwt
      *
      * @return void
      */
@@ -73,6 +78,8 @@ final class JwtManagerTest extends TestCase
     /**
      * JWTs, when issued, are valid for 15 minutes from the current time only.
      *
+     * @group jwt
+     *
      * @return void
      */
     public function test_jwt_is_valid_for_15_minutes(): void
@@ -86,6 +93,8 @@ final class JwtManagerTest extends TestCase
 
     /**
      * Check the token audience is correctly set to the permitted string that was passed in.
+     *
+     * @group jwt
      *
      * @return void
      */
@@ -102,6 +111,8 @@ final class JwtManagerTest extends TestCase
     /**
      * Check that the `uid` attribute of the token is properly set.
      *
+     * @group jwt
+     *
      * @return void
      */
     public function test_jwt_has_uid_set_correctly(): void
@@ -117,6 +128,8 @@ final class JwtManagerTest extends TestCase
     /**
      * Ensure that the JWT actually verifies properly if created.
      *
+     * @group jwt
+     *
      * @return void
      */
     public function test_jwt_verifies(): void
@@ -129,6 +142,8 @@ final class JwtManagerTest extends TestCase
 
     /**
      * Test that the JWT is not verified if the properties of the token are tampered with.
+     *
+     * @group jwt
      *
      * @return void
      */
@@ -156,10 +171,15 @@ final class JwtManagerTest extends TestCase
     /**
      * If the token expires, ensure that the JWT does not verify.
      *
+     * @group jwt
+     * @group timeSensitive
+     *
      * @return void
      */
     public function test_expired_jwt_cannot_be_verified(): void
     {
         // TODO: Expire token somehow here?
+        // TODO: Further thought: make JwtManager accept a `Clock` or `Carbon` object, and mock that in a test.
+        // see https://www.integer-net.com/testing-date-time-with-clock-objects/
     }
 }

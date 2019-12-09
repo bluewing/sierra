@@ -8,7 +8,7 @@ use Bluewing\Rules\ValidEnumerationValueRule;
 use Bluewing\Enumerations\OrganizationPreference;
 use PHPUnit\Framework\TestCase;
 
-class ValidEnumerationValueRuleTest extends TestCase
+final class ValidEnumerationValueRuleTest extends TestCase
 {
     /**
      * @var ValidEnumerationValueRule

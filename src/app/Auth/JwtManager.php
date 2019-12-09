@@ -3,6 +3,7 @@
 namespace Bluewing\Auth;
 
 use Bluewing\Contracts\UserOrganizationContract;
+use Illuminate\Support\Carbon;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Key;
@@ -26,15 +27,22 @@ class JwtManager {
     private string $key;
 
     /**
+     * @var Carbon 
+     */
+    private Carbon $carbon;
+
+    /**
      * Constructor for JwtManager.
      *
      * @param string $permitted - What scope is this JWT permitted for.
      * @param string $key - The private key that should be used to sign the JWT.
+     * @param Carbon $carbon - An instance of the `Carbon` DateTime API.
      */
-    public function __construct(string $permitted, string $key)
+    public function __construct(string $permitted, string $key, Carbon $carbon)
     {
         $this->permitted = $permitted;
         $this->key = $key;
+        $this->carbon = $carbon;
     }
 
     /**
