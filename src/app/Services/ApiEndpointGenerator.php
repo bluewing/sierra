@@ -10,7 +10,7 @@ class ApiEndpointGenerator {
     /**
      * @var Router
      */
-    protected $router;
+    protected Router $router;
 
     /**
      * ApiEndpointGenerator constructor.

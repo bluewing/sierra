@@ -23,26 +23,21 @@ class JwtManager {
 
     /**
      * The private key that should be used to sign the JWT.
+     *
+     * @var string
      */
     private string $key;
-
-    /**
-     * @var Carbon 
-     */
-    private Carbon $carbon;
 
     /**
      * Constructor for JwtManager.
      *
      * @param string $permitted - What scope is this JWT permitted for.
      * @param string $key - The private key that should be used to sign the JWT.
-     * @param Carbon $carbon - An instance of the `Carbon` DateTime API.
      */
-    public function __construct(string $permitted, string $key, Carbon $carbon)
+    public function __construct(string $permitted, string $key)
     {
         $this->permitted = $permitted;
         $this->key = $key;
-        $this->carbon = $carbon;
     }
 
     /**
@@ -70,12 +65,12 @@ class JwtManager {
      */
     private function buildJwt(UserOrganizationContract $authenticatable): Token
     {
-        $fifteenMinutes = 60 * 15;
+        $now = Carbon::now();
 
         return (new Builder())->issuedBy('Bluewing')
             ->permittedFor($this->permitted)
-            ->issuedAt(time())
-            ->expiresAt(time() + $fifteenMinutes)
+            ->issuedAt($now)
+            ->expiresAt($now->addMinutes(15))
             ->withClaim('uid', $authenticatable->getAuthIdentifier())
             ->getToken(new Sha256(), new Key($this->key));
     }

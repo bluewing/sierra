@@ -29,7 +29,7 @@ class RefreshTokenManager {
      * Constructor for `RefreshTokenManager`.
      *
      * @param TokenGenerator $tokenGenerator - A dependency-injected instance of `TokenGenerator`.
-     * @param Model $model - An instance of the `RefreshToken` model.
+     * @param Model $model - A dependency-injected instance of the `RefreshToken` model.
      */
     public function __construct(TokenGenerator $tokenGenerator, Model $model)
     {
