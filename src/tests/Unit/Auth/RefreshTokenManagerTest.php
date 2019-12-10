@@ -4,18 +4,23 @@ namespace Tests\Unit\Auth;
 
 use Bluewing\Services\TokenGenerator;
 use Illuminate\Database\Eloquent\Model;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\RefreshTokenManager;
 
 class RefreshTokenManagerTest extends TestCase
 {
     /**
-     * Helper function to mock the creation of a `RefreshToken` model.
-     *
-     * @return Model
+     * @var Mockery\MockInterface
      */
-    protected function mockRefreshTokenModel(): Model {
-        return Mockery::mock('Illuminate\Database\Eloquent\Model');
+    protected $refreshTokenModel;
+
+    /**
+     * Mocks a `RefreshToken` model.
+     */
+    protected function setUp(): void
+    {
+        $this->refreshTokenModel = Mockery::mock('Illuminate\Database\Eloquent\Model');;
     }
 
     /**
@@ -29,7 +34,7 @@ class RefreshTokenManagerTest extends TestCase
 
         $this->assertInstanceOf(
             RefreshTokenManager::class,
-            new RefreshTokenManager($tokenGenerator, $this->mockRefreshTokenModel())
+            new RefreshTokenManager($tokenGenerator, $this->refreshTokenModel)
         );
     }
 

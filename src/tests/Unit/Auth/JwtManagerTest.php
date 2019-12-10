@@ -3,6 +3,9 @@
 namespace Tests\Unit\Auth;
 
 use Bluewing\Contracts\UserOrganizationContract;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\JwtManager;
 
@@ -46,6 +49,8 @@ final class JwtManagerTest extends TestCase
 
     /**
      * Helper function that uses `Mockery` to fake an instance of `UserOrganizationContract`.
+     *
+     * @param string $uid - The ID of the `UserOrganizationContract`.
      *
      * @return UserOrganizationContract - An instance conforming to the `UserOrganizationContract` that has a
      * method called `getAuthIdentifier` returning the UUID.

@@ -69,8 +69,8 @@ class JwtManager {
 
         return (new Builder())->issuedBy('Bluewing')
             ->permittedFor($this->permitted)
-            ->issuedAt($now)
-            ->expiresAt($now->addMinutes(15))
+            ->issuedAt($now->timestamp)
+            ->expiresAt($now->addMinutes(15)->timestamp)
             ->withClaim('uid', $authenticatable->getAuthIdentifier())
             ->getToken(new Sha256(), new Key($this->key));
     }
