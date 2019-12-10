@@ -32,7 +32,7 @@ class UserOrganizationIsNewRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $userOrganizationModel = createModel(config('tenancies.userOrganization.model'));
+        $userOrganizationModel = createModel(config('bluewing.tenancies.userOrganization.model'));
 
         $result = $userOrganizationModel->newQuery()
             ->where('organizationId', $this->auth->user()->organizationId)
