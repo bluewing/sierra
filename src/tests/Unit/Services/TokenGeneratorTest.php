@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit\Services;
+
 use Bluewing\Services\TokenGenerator;
 use PHPUnit\Framework\TestCase;
 

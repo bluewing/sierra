@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit\Auth;
+
 use Bluewing\Services\TokenGenerator;
 use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\TestCase;

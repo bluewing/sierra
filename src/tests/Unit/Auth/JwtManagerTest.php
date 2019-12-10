@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit\Auth;
+
 use Bluewing\Contracts\UserOrganizationContract;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\JwtManager;

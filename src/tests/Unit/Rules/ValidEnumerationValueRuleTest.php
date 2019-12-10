@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Unit;
-
+namespace Tests\Unit\Rules;
 
 use Bluewing\Rules\ValidEnumerationValueRule;
 use Bluewing\Enumerations\OrganizationPreference;
@@ -17,6 +15,8 @@ final class ValidEnumerationValueRuleTest extends TestCase
 
     /**
      * Configures the test cases by instantiating the validation rule.
+     *
+     * @return void
      */
     protected function setUp(): void
     {
@@ -36,6 +36,7 @@ final class ValidEnumerationValueRuleTest extends TestCase
 
     /**
      * Ensures that the validation rule will return `false` if the provided value does not exist in the enumeration.
+     * The provided value of 10 does not exist in the `OrganizationPreference` enumeration.
      *
      * @return void
      */
