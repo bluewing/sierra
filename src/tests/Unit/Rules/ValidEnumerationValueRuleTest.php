@@ -44,4 +44,14 @@ final class ValidEnumerationValueRuleTest extends TestCase
     {
         $this->assertFalse($this->rule->passes('test', 10));
     }
+
+    /**
+     * If a string of an integer value is provided, ensure it is converted to an integer.
+     *
+     * @return void
+     */
+    public function test_casts_string_to_integer()
+    {
+        $this->assertTrue($this->rule->passes('test', '1'));
+    }
 }

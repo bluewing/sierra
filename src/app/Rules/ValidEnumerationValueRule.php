@@ -39,7 +39,7 @@ class ValidEnumerationValueRule implements Rule
     public function passes($attribute, $value)
     {
         try {
-            new $this->enumerationClass($value);
+            new $this->enumerationClass(intval($value));
             return true;
         } catch (UnexpectedValueException $e) {
             return false;
@@ -53,6 +53,6 @@ class ValidEnumerationValueRule implements Rule
      */
     public function message()
     {
-        return 'The value {} is not valid for the {} property.';
+        return 'The value :value is not valid for the property :attribute.';
     }
 }
