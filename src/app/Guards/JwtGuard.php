@@ -2,6 +2,7 @@
 
 namespace Bluewing\Guards;
 
+use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -10,18 +11,30 @@ use Illuminate\Http\Request;
 /**
  * JwtGuard provides the implementation for JSON Web Token authentication of users. Laravel definition is:
  * "Guards define how users are authenticated for each request". The default `Guard` used by Angular is `SessionGuard`,
- * this has been swapped out for `JwtGuard` with the configuration in the `default` key in `config/auth.php
+ * this has been swapped out for `JwtGuard` with the configuration in the `default` key in `config/auth.php.
  *
- * TODO: Implement events
+ * The `GuardHelper`'s trait has been used, as many of the methods used by one guard are used by another.
+ *
+ * TODO: Implement events. What did this mean?
  *
  * @see Illuminate\Auth\SessionGuard
  */
 class JwtGuard implements Guard
 {
-    protected $request;
-    protected $provider;
-    protected $user;
-    protected $id;
+    use GuardHelpers;
+
+    /**
+     * The `Request` object associated with the execution lifecycle.
+     *
+     * @var Request
+     */
+    protected Request $request;
+
+    /**
+     * The ID of the `UserOrganization`. This custom property can be set if the
+     * @var string
+     */
+    protected string $id;
 
     /**
      * Constructor for `JwtGuard`.
@@ -33,26 +46,6 @@ class JwtGuard implements Guard
     {
         $this->provider = $provider;
         $this->request = $request;
-    }
-
-    /**
-     * Determine if the current user is authenticated.
-     *
-     * @return bool Whether the current user is authenticated.
-     */
-    public function check()
-    {
-        return !is_null($this->id);
-    }
-
-    /**
-     * Determine if the current user is a guest.
-     *
-     * @return bool Whether the current user is a guest.
-     */
-    public function guest()
-    {
-        return !$this->check();
     }
 
     /**
@@ -69,16 +62,8 @@ class JwtGuard implements Guard
         if (!is_null($this->id)) {
             return $this->provider->retrieveById($this->id);
         }
-    }
 
-    /**
-     * Get the ID for the currently authenticated user.
-     *
-     * @return int|string|null
-     */
-    public function id()
-    {
-        return $this->user()->getAuthIdentifier();
+        return null;
     }
 
     /**
@@ -97,17 +82,6 @@ class JwtGuard implements Guard
         }
 
         return false;
-    }
-
-    /**
-     * Set the current user.
-     *
-     * @param Authenticatable $user
-     * @return void
-     */
-    public function setUser(Authenticatable $user)
-    {
-        $this->user = $user;
     }
 
     /**
