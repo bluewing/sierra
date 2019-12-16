@@ -4,6 +4,7 @@ namespace Bluewing\Middleware;
 
 use Bluewing\Auth\JwtManager;
 use Closure;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,12 +24,19 @@ class Authenticate
     public JwtManager $jwtManager;
 
     /**
+     * @var AuthManager
+     */
+    public AuthManager $auth;
+
+    /**
      * Constructor for Authenticate middleware.
-     * 
+     *
+     * @param AuthManager $auth - The dependency-injected instance of `AuthManager`.
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      */
-    public function __construct(JwtManager $jwtManager)
+    public function __construct(AuthManager $auth, JwtManager $jwtManager)
     {
+        $this->auth = $auth;
         $this->jwtManager = $jwtManager;
     }
 
@@ -42,6 +50,10 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
+        if ($this->auth->guard()->check()) {
+            return $next($request);
+        }
+
         if (!$request->hasHeader('Authorization')) {
             return response()->json("No Authorization header provided", 401);
         }
@@ -51,7 +63,7 @@ class Authenticate
         }
 
         $userId = $this->jwtManager->jwtFromString($request->header('Authorization'))->getClaim('uid');
-        Auth::setUserId($userId);
+        $this->auth->guard()->setUserId($userId);
 
         return $next($request);
     }
@@ -59,11 +71,11 @@ class Authenticate
     /**
      * Helper function to ensure an Authorization header verifies.
      *
-     * @param $request
+     * @param Request $request
      *
      * @return bool - `true` if the Authorization header verifies successfully.
      */
-    private function isAuthorizationHeaderVerifiable($request) {
+    private function isAuthorizationHeaderVerifiable(Request $request) {
         return $this->jwtManager->isJwtVerified($request->header('Authorization'));
     }
 }
