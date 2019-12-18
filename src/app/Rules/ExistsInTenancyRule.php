@@ -47,7 +47,7 @@ class ExistsInTenancyRule implements Rule
             ->where($this->databaseColumn, $value)
             ->first();
 
-        return !is_null($result);
+        return is_null($result);
     }
 
     /**
