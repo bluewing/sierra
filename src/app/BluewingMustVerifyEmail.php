@@ -8,17 +8,14 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 /**
  * Trait BluewingMustVerifyEmail
  *
+ * @property string email - This property exists on all models that this trait traits.
+ * @property Carbon emailVerifiedAt - This property exists on all models that this trait traits.
+ *
  * @package Bluewing
  *
  * @see Illuminate\Auth\MustVerifyEmail
  */
 trait BluewingMustVerifyEmail {
-
-    /**
-     * The date and time the email was verified.
-     * @var Carbon
-     */
-    public Carbon $emailVerifiedAt;
 
     /**
      * Determine if the user has verified their email address.
