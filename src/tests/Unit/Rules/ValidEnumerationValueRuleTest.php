@@ -27,6 +27,8 @@ final class ValidEnumerationValueRuleTest extends TestCase
     /**
      * Ensures that the validation rule will return `true` if the provided value exists in the enumeration.
      *
+     * @group rules
+     *
      * @return void
      */
     public function test_passes_with_valid_value()
@@ -38,6 +40,8 @@ final class ValidEnumerationValueRuleTest extends TestCase
      * Ensures that the validation rule will return `false` if the provided value does not exist in the enumeration.
      * The provided value of 10 does not exist in the `OrganizationPreference` enumeration.
      *
+     * @group rules
+     *
      * @return void
      */
     public function test_fails_if_value_out_of_enumeration_range()
@@ -47,6 +51,8 @@ final class ValidEnumerationValueRuleTest extends TestCase
 
     /**
      * If a string of an integer value is provided, ensure it is converted to an integer.
+     *
+     * @group rules
      *
      * @return void
      */

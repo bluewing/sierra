@@ -2,25 +2,17 @@
 
 namespace Bluewing\Rules;
 
-use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class UserOrganizationIsNewRule implements Rule
 {
 
     /**
-     * @var AuthManager
-     */
-    protected AuthManager $auth;
-
-    /**
      * UserOrganizationIsNewRule constructor.
-     *
-     * @param AuthManager $auth
      */
-    public function __construct(AuthManager $auth)
+    public function __construct()
     {
-        $this->auth = $auth;
     }
 
     /**
@@ -35,7 +27,7 @@ class UserOrganizationIsNewRule implements Rule
         $userOrganizationModel = createModel(config('bluewing.tenancies.userOrganization.model'));
 
         $result = $userOrganizationModel->newQuery()
-            ->where('organizationId', $this->auth->user()->organizationId)
+            ->where('organizationId', Auth::user()->organizationId)
             ->whereHasEmail($value)
             ->first();
 
