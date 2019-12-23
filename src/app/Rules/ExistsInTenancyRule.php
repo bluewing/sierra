@@ -17,15 +17,16 @@ class ExistsInTenancyRule implements Rule
     /**
      * The name of the column in the table to execute a search against.
      */
-    protected string $databaseColumn;
+    protected ?string $databaseColumn;
 
     /**
      * Constructor for ExistsInTenancyRule.
      *
      * @param string $databaseTable - The string representing the database table that should be queried.
-     * @param string $databaseColumn - The string representing the database column that should be queried.
+     * @param string|null $databaseColumn - The string representing the database column that should be queried. If not
+     * provided, defaults to `id`.
      */
-    public function __construct($databaseTable, $databaseColumn)
+    public function __construct(string $databaseTable, ?string $databaseColumn = 'id')
     {
         $this->databaseTable = $databaseTable;
         $this->databaseColumn = $databaseColumn;
