@@ -9,8 +9,6 @@ use Illuminate\Support\Str;
 
 abstract class Model extends EloquentModel
 {
-    use HasExpandableScope;
-
     /**
      * The name of the "created at" column.
      *
