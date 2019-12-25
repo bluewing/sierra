@@ -15,15 +15,18 @@ class TenancyScope implements Scope {
      * models in a Bluewing application, and is specifically traited by `HasTenancyScope`, which is included in
      * `Model` and `Pivot`.
      *
-     * @param Builder $builder
-     * @param Model $model
+     * @param Builder $builder - An instance of the eloquent query `Builder` class.
+     * @param Model $model - The `Model` the scope is being applied to.
      *
-     * @return Builder
+     * @return Builder - Pass back the instance of the `Builder`, with the scope applied.
      */
     public function apply(Builder $builder, Model $model)
     {
         if (Auth::check()) {
-            return $builder->where('organizationId', Auth::user()->organizationId);
+            return $builder->where(
+                $model->getTable() . '.organizationId',
+                Auth::user()->organizationId
+            );
         }
         return $builder;
     }
