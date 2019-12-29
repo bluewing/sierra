@@ -96,7 +96,7 @@ class RefreshTokenManager {
     }
 
     /**
-     * Given a refresh token string, revokes the `RefreshToken` entry in the database.
+     * Given a refresh token string, revokes the `RefreshToken` entry in the database, if it exists.
      *
      * @param string $refreshTokenString - The string of the `RefreshToken` that should be deleted.
      *
@@ -106,7 +106,11 @@ class RefreshTokenManager {
      */
     public function revokeRefreshToken(string $refreshTokenString): void
     {
-        $this->findRefreshToken($refreshTokenString)->delete();
+        $refreshToken = $this->findRefreshToken($refreshTokenString);
+
+        if ($refreshToken) {
+            $refreshToken->delete();
+        }
     }
 
     /**
