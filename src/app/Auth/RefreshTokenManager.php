@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class RefreshTokenManager {
 
@@ -61,6 +62,18 @@ class RefreshTokenManager {
     }
 
     /**
+     * @param string $refreshTokenString - The token string used to find the `RefreshToken`.
+     *
+     * @return Model|null - The `RefreshToken`, if it exists.
+     */
+    public function findRefreshToken(string $refreshTokenString): ?Model
+    {
+        return $this->refreshTokenModel->newQuery()
+            ->where('token', $refreshTokenString)
+            ->first();
+    }
+
+    /**
      * Finds the given `RefreshToken` in the database by the provided string, if it exists, touch the
      * `RefreshToken` to extend its longevity. If no matching token is found, throw a `ModelNotFoundException`.
      *
@@ -68,15 +81,13 @@ class RefreshTokenManager {
      *
      * @return Model - The `RefreshToken` entity that should've been retrieved.
      *
-     * @throws ModelNotFoundException - If the `RefreshToken` cannot be found, this exception
-     * will be thrown.
+     * @throws Throwable - If the `RefreshToken` cannot be found, `ModelNotFoundException` will be thrown.
      */
-    public function findRefreshTokenOrFail(string $refreshTokenString): Model
+    public function findRefreshTokenForUse(string $refreshTokenString): Model
     {
-        $refreshToken = $this->refreshTokenModel
-            ->newQuery()
-            ->where('token', $refreshTokenString)
-            ->firstOrFail();
+        $refreshToken = $this->findRefreshToken($refreshTokenString);
+
+        throw_if(is_null($refreshToken), ModelNotFoundException::class);
 
         $refreshToken->increment('uses');
         $refreshToken->touch();
@@ -91,11 +102,11 @@ class RefreshTokenManager {
      *
      * @return void
      *
-     * @throws Exception - An `Exception` will be thrown if the `RefreshToken` cannot be found.
+     * @throws Exception
      */
     public function revokeRefreshToken(string $refreshTokenString): void
     {
-        $this->findRefreshTokenOrFail($refreshTokenString)->delete();
+        $this->findRefreshToken($refreshTokenString)->delete();
     }
 
     /**

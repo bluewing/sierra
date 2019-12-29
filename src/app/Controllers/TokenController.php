@@ -6,7 +6,9 @@ use Bluewing\Requests\RefreshTokenRequest;
 use Exception;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 /**
  *
@@ -18,14 +20,14 @@ class TokenController extends Controller {
      *
      * @var JwtManager
      */
-    protected $jwtManager;
+    protected JwtManager $jwtManager;
 
     /**
      * An instance of `RefreshTokenManager`.
      *
      * @var RefreshTokenManager
      */
-    protected $refreshTokenManager;
+    protected RefreshTokenManager $refreshTokenManager;
 
     /**
      * Constructor for TokenController.
@@ -51,11 +53,12 @@ class TokenController extends Controller {
      *
      * @return JsonResponse - 204 No Content, with the new JWT provided in the header of the response.
      *
-     * @throws Exception
+     * @throws Throwable
      */
     public function exchangeRefreshTokenForJwt(RefreshTokenRequest $request)
     {
-        $refreshToken = $this->refreshTokenManager->findRefreshTokenOrFail($request->input('refreshToken'));
+        $refreshToken = $this->refreshTokenManager->findRefreshTokenForUse($request->input('refreshToken'));
+
         $jwt = $this->jwtManager->buildJwtFor($refreshToken->userOrganization);
 
         // Issue our response
