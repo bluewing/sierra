@@ -8,14 +8,14 @@ use Bluewing\Middleware\AppendTokensToResponse;
 /**
  * Handles application login routing and any associated tangential functionality.
  */
-class LoginController extends Controller {
-
+class LoginController extends Controller
+{
     use BluewingAuthenticatesUsers;
 
     /**
      * Constructor for `LoginController`.
-     * 
-     * Ensures that JWT and refresh tokens are appropriately appended to the headers 
+     *
+     * Ensures that JWT and refresh tokens are appropriately appended to the headers
      * of each response.
      */
     public function __construct()

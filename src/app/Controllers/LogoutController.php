@@ -7,12 +7,12 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LogoutController extends Controller {
-
+class LogoutController extends Controller
+{
     /**
      * The instance of `RefreshTokenManagerTest`.
      */
-    protected $refreshTokenManager;
+    protected RefreshTokenManager $refreshTokenManager;
 
     /**
      * Constructor for LogoutController.

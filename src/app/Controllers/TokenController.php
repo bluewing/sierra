@@ -3,18 +3,16 @@
 namespace Bluewing\Controllers;
 
 use Bluewing\Requests\RefreshTokenRequest;
-use Exception;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
 /**
  *
  */
-class TokenController extends Controller {
-
+class TokenController extends Controller
+{
     /**
      * An instance of `JwtManager`.
      *

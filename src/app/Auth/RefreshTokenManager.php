@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 
-class RefreshTokenManager {
-
+class RefreshTokenManager
+{
     /**
      * An instance of `TokenGenerator`.
      *

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class ExistsInTenancyRule implements Rule
 {
-
     /**
      * The name of the table in the database to execute a search for.
      */
