@@ -39,7 +39,7 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
 
         // Retrieve all possible `UserOrganization`'s.
         $userOrganizations = $this->newModelQuery()
-            ->with(['user', 'organization'])
+            ->with(['user', 'organization', 'roles'])
             ->whereHas('user', function($q) use($credentials) {
                 return $q->where('email', $credentials['email']);
             })->get();
