@@ -21,12 +21,33 @@ class TenancyScope implements Scope {
      */
     public function apply(Builder $builder, Model $model)
     {
-        if (auth()->check()) {
-            return $builder->where(
-                $model->getTable() . '.organizationId',
-                auth()->user()->organizationId
-            );
+        if (!auth()->check()) {
+            return $builder;
         }
-        return $builder;
+
+        return $builder->where($this->tenancyColumn($model), $this->tenancyValue());
+    }
+
+    /**
+     * Helper method to get the column name that tenancy is filtered by, appended to the name of the model table that
+     * is being retrieved.
+     *
+     * @param $model
+     *
+     * @return string -
+     */
+    private function tenancyColumn(Model $model): string
+    {
+        $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
+        return $model->getTable() . $organizationIdentifier;
+    }
+
+    /**
+     * @return string -
+     */
+    private function tenancyValue(): string
+    {
+        $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
+        return auth()->user()->{$organizationIdentifier};
     }
 }
