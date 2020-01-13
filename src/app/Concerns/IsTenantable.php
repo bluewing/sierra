@@ -1,8 +1,9 @@
 <?php
 
-namespace Bluewing\Scopes;
+namespace Bluewing\Concerns;
 
 use Bluewing\Eloquent\Model;
+use Bluewing\Scopes\TenancyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Scope;
 

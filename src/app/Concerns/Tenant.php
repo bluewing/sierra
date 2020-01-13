@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing;
+namespace Bluewing\Concerns;
 
 /**
  *

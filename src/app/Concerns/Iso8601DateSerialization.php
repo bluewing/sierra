@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Bluewing;
+namespace Bluewing\Concerns;
 
 
 use Carbon\Carbon;

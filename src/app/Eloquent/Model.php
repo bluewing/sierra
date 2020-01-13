@@ -2,7 +2,7 @@
 
 namespace Bluewing\Eloquent;
 
-use Bluewing\Iso8601DateSerialization;
+use Bluewing\Concerns\Iso8601DateSerialization;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Str;
 
