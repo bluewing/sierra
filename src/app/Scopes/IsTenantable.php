@@ -26,7 +26,9 @@ trait IsTenantable {
         static::addGlobalScope(new TenancyScope);
 
         static::creating(function(Model $model) use ($organizationIdentifier) {
-            $model->{$organizationIdentifier} = auth()->user()->{$organizationIdentifier};
+            if (!isset($model->{$organizationIdentifier})) {
+                $model->{$organizationIdentifier} = auth()->user()->{$organizationIdentifier};
+            }
         });
     }
 
