@@ -13,6 +13,10 @@ use Illuminate\Auth\Notifications\VerifyEmail;
  *
  * @package Bluewing
  *
+ * @method forceFill(array $properties);
+ * @method freshTimestamp();
+ * @method notify();
+ *
  * @see Illuminate\Auth\MustVerifyEmail
  */
 trait BluewingMustVerifyEmail {
