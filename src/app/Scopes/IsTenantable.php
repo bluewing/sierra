@@ -2,6 +2,7 @@
 
 namespace Bluewing\Scopes;
 
+use Bluewing\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Scope;
 
@@ -10,14 +11,23 @@ use Illuminate\Database\Eloquent\Scope;
  *
  * @package Bluewing\Scopes
  */
-trait HasTenancyScope {
+trait IsTenantable {
 
     /**
+     * When the `HasTenancyScope` trait is booted, ensure any queries have the `TenancyScope` global scope
+     * applied, and any created model is given the appropriate organization identifier.
+     *
      * @return void
      */
     protected static function bootHasTenancyScope()
     {
+        $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
+
         static::addGlobalScope(new TenancyScope);
+
+        static::creating(function(Model $model) use ($organizationIdentifier) {
+            $model->{$organizationIdentifier} = auth()->user()->{$organizationIdentifier};
+        });
     }
 
     /**

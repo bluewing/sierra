@@ -5,7 +5,6 @@ namespace Bluewing\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Support\Facades\Auth;
 
 class TenancyScope implements Scope {
 
@@ -22,10 +21,10 @@ class TenancyScope implements Scope {
      */
     public function apply(Builder $builder, Model $model)
     {
-        if (Auth::check()) {
+        if (auth()->check()) {
             return $builder->where(
                 $model->getTable() . '.organizationId',
-                Auth::user()->organizationId
+                auth()->user()->organizationId
             );
         }
         return $builder;
