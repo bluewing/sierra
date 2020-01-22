@@ -12,7 +12,7 @@ use ReflectionException;
 /**
  * A trait which provides the functionality of the `expands` scope to traited models.
  *
- * @package Bluewing\Scopes
+ * @package Bluewing\Concerns
  */
 trait AllowsExpansion
 {
@@ -22,7 +22,9 @@ trait AllowsExpansion
      * true, add the appropriate global scope to retrieve the
      *
      * @return void
-     * @throws ReflectionException
+     *
+     * @throws ReflectionException - A `ReflectionException` will be thrown if the traited class does not implement
+     * the `HasExpandableRelations` interface.
      */
     protected static function bootAllowsExpansion()
     {

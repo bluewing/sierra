@@ -32,9 +32,9 @@ class TenancyScope implements Scope {
      * Helper method to get the column name that tenancy is filtered by, appended to the name of the model table that
      * is being retrieved.
      *
-     * @param $model
+     * @param Model $model - The model associated with the
      *
-     * @return string -
+     * @return string - The column name that should be used to identify a tenancy.
      */
     private function tenancyColumn(Model $model): string
     {
@@ -43,7 +43,9 @@ class TenancyScope implements Scope {
     }
 
     /**
-     * @return string -
+     * Helper method to get the value that the tenancy is filtered by.
+     *
+     * @return string - The GUID for the `Organization` for the current tenancy.
      */
     private function tenancyValue(): string
     {
