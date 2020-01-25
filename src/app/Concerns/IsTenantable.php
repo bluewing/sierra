@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\Scope;
 trait IsTenantable {
 
     /**
-     * When the `HasTenancyScope` trait is booted, ensure any queries have the `TenancyScope` global scope
+     * When the `IsTenantable` trait is booted, ensure any queries have the `TenancyScope` global scope
      * applied, and any created model is given the appropriate organization identifier.
      *
      * @return void
      */
-    protected static function bootHasTenancyScope()
+    protected static function bootIsTenantable()
     {
         $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
 
