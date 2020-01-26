@@ -32,14 +32,13 @@ class TenancyScope implements Scope {
      * Helper method to get the column name that tenancy is filtered by, appended to the name of the model table that
      * is being retrieved.
      *
-     * @param Model $model - The model associated with the
+     * @param Model $model - The model associated with the column.
      *
      * @return string - The column name that should be used to identify a tenancy.
      */
     private function tenancyColumn(Model $model): string
     {
-        $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
-        return $model->getTable() . $organizationIdentifier;
+        return $model->getTable() . '.' . config('bluewing.tenancies.organization.identifier');
     }
 
     /**
@@ -49,7 +48,6 @@ class TenancyScope implements Scope {
      */
     private function tenancyValue(): string
     {
-        $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
-        return auth()->user()->{$organizationIdentifier};
+        return auth()->user()->{config('bluewing.tenancies.organization.identifier')};
     }
 }
