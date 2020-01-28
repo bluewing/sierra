@@ -23,9 +23,7 @@ class ExpandableScope implements Scope
         $relationsToGet = Arr::wrap(request()->query('expand'));
         $invalidRelations = array_diff($relationsToGet, $model->relationsWhitelist());
 
-        if (!empty($invalidRelations)) {
-            abort(422);
-        }
+        if (!empty($invalidRelations)) abort(422);
 
         return $builder->with($relationsToGet);
     }

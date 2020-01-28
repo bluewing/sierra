@@ -21,9 +21,7 @@ class TenancyScope implements Scope {
      */
     public function apply(Builder $builder, Model $model)
     {
-        if (!auth()->check()) {
-            return $builder;
-        }
+        if (!auth()->check()) return $builder;
 
         return $builder->where($this->tenancyColumn($model), $this->tenancyValue());
     }

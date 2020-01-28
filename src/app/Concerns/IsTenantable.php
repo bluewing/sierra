@@ -2,6 +2,7 @@
 
 namespace Bluewing\Concerns;
 
+use Closure;
 use Bluewing\Eloquent\Model;
 use Bluewing\Scopes\TenancyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,13 +23,11 @@ trait IsTenantable {
      */
     protected static function bootIsTenantable()
     {
-        $organizationIdentifier = config('bluewing.tenancies.organization.identifier');
-
         static::addGlobalScope(new TenancyScope);
 
-        static::creating(function(Model $model) use ($organizationIdentifier) {
-            if (!isset($model->{$organizationIdentifier})) {
-                $model->{$organizationIdentifier} = auth()->user()->{$organizationIdentifier};
+        static::creating(function(Model $model) {
+            if ($this->canSetOrganizationIdentifier($model)) {
+                $model->{$this->organizationIdentifierKey()} = auth()->user()->{$this->organizationIdentifierKey()};
             }
         });
     }
@@ -39,14 +38,38 @@ trait IsTenantable {
      *
      * @laravel-relation `HasTenancyScope` belongsTo `Organization`.
      *
-     * @return BelongsTo - The relationship this model has an to `Organization`
+     * @return BelongsTo - The relationship this model has an to `Organization`.
      */
     public function organization(): BelongsTo
     {
         return $this->belongsTo(
             config('bluewing.tenancies.organization.model'),
-            config('bluewing.tenancies.organization.identifier')
+            $this->organizationIdentifierKey()
         );
+    }
+
+    /**
+     * The `Organization` identifier can only be set on a model where it has not already been set,
+     * and where the user is authenticated.
+     *
+     * @param Model $model - The tenantable `Model` that is being created.
+     *
+     * @return bool - `true` if the ID of the `Organization` can be set on the model, `false` otherwise.
+     */
+    private function canSetOrganizationIdentifier(Model $model): bool
+    {
+        return !isset($model->{$this->organizationIdentifierKey()})
+            && auth()->check();
+    }
+
+    /**
+     * Helper function to retrieve the identifier for the `Organization`, stored in the application configuration.
+     *
+     * @return string - The `Organization` identifier key.
+     */
+    private function organizationIdentifierKey(): string
+    {
+        return config('bluewing.tenancies.organization.identifier');
     }
 
     /**
@@ -62,9 +85,20 @@ trait IsTenantable {
     public abstract function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null);
 
     /**
+     * Abstract definition for `addGlobalScope`, utilized by Eloquent models.
+     *
      * @param Scope $scope
      *
      * @return mixed
      */
     public static abstract function addGlobalScope(Scope $scope);
+
+    /**
+     * Abstract definition for `creating`, utilized by Eloquent models.
+     *
+     * @param Closure $fn
+     *
+     * @return mixed
+     */
+    public static abstract function creating(Closure $fn);
 }

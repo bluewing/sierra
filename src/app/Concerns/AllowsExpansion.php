@@ -23,19 +23,14 @@ trait AllowsExpansion
      *
      * @return void
      *
-     * @throws ReflectionException - A `ReflectionException` will be thrown if the traited class does not implement
-     * the `HasExpandableRelations` interface.
+     * @throws ReflectionException - A `ReflectionException` will be thrown if the traited class cannot be reflected.
      */
     protected static function bootAllowsExpansion()
     {
-        if (!request()->has('expand')) {
-            return;
-        }
+        if (!request()->has('expand')) return;
 
         $reflect = new ReflectionClass(static::class);
-        if (!$reflect->implementsInterface(HasExpandableRelations::class)) {
-            return;
-        }
+        if (!$reflect->implementsInterface(HasExpandableRelations::class)) return;
 
         static::addGlobalScope(new ExpandableScope);
     }

@@ -2,14 +2,13 @@
 
 namespace Bluewing\Eloquent;
 
-use Bluewing\Concerns\Iso8601DateSerialization;
+use Bluewing\Concerns\SerializesDatesToIso8601;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Str;
 
-
 abstract class Model extends EloquentModel
 {
-    use Iso8601DateSerialization;
+    use SerializesDatesToIso8601;
 
     /**
      * The name of the "created at" column.
@@ -40,7 +39,7 @@ abstract class Model extends EloquentModel
     public $incrementing = false;
 
     /**
-     * The key type is now a string.
+     * The key type, being GUID, is a string.
      *
      * @var string
      */
@@ -54,7 +53,7 @@ abstract class Model extends EloquentModel
     {
         static::bootTraits();
 
-        static::creating(function($model) {
+        static::creating(function(EloquentModel $model) {
             if (!$model->getKey()) {
                 $model->{$model->getKeyName()} = Str::uuid()->toString();
             }
