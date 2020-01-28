@@ -4,7 +4,7 @@ namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class UserHasVerifiedEmailRule implements Rule
+class UserHasVerifiedEmail implements Rule
 {
     /**
      * Validation rule that should return `true` if the `User` at the associated `UserOrganization` ID has a verified

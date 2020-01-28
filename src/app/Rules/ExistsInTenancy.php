@@ -6,32 +6,34 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class MissingInTenancyRule implements Rule
+class ExistsInTenancy implements Rule
 {
-
     /**
-     * The rule to base our decision off.
-     *
-     * @var ExistsInTenancyRule
+     * The name of the table in the database to execute a search for.
      */
-    protected ExistsInTenancyRule $rule;
+    protected string $databaseTable;
 
     /**
-     * Constructor for DoesNotExistInTenancyRule. This rule provides the opposite functionality of `ExistsInTenancyRule`,
-     * so it is acceptable to instantiate an instance of that rule and return the opposite result.
+     * The name of the column in the table to execute a search against.
+     */
+    protected ?string $databaseColumn;
+
+    /**
+     * Constructor for ExistsInTenancyRule.
      *
      * @param string $databaseTable - The string representing the database table that should be queried.
      * @param string|null $databaseColumn - The string representing the database column that should be queried. If not
-     * provided, defaults to 'id'.
+     * provided, defaults to `id`.
      */
     public function __construct(string $databaseTable, ?string $databaseColumn = 'id')
     {
-        $this->rule = new ExistsInTenancyRule($databaseTable, $databaseColumn);
+        $this->databaseTable = $databaseTable;
+        $this->databaseColumn = $databaseColumn;
     }
 
     /**
      * Executes a tenancy-aware query to retrieve an item with the prescribed value at the
-     * database table and column as provided. Should return `true` if the value is missing in the tenancy, `false`
+     * database table and column as provided. Should return `true` if the database value exists in the tenancy, `false`
      * otherwise.
      *
      * @param $attribute
@@ -41,7 +43,12 @@ class MissingInTenancyRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return !$this->rule->passes($attribute, $value);
+        $result = DB::table($this->databaseTable)
+            ->where('organizationId', auth()->user()->organizationId)
+            ->where($this->databaseColumn, $value)
+            ->first();
+
+        return !is_null($result);
     }
 
     /**
@@ -51,6 +58,6 @@ class MissingInTenancyRule implements Rule
      */
     public function message()
     {
-        return ':attribute with a value of :value already exists in your organization.';
+        return ':attribute with a value of :value does not exist in your organization.';
     }
 }

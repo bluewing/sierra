@@ -5,7 +5,7 @@ namespace Bluewing\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
-class HasMatchingPasswordRule implements Rule
+class HasMatchingPassword implements Rule
 {
     /**
      * @var string

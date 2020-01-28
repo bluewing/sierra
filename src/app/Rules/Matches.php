@@ -4,7 +4,7 @@ namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class MatchesRule implements Rule
+class Matches implements Rule
 {
     /**
      * The string that should be matched.

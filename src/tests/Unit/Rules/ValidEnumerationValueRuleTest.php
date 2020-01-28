@@ -2,16 +2,16 @@
 
 namespace Tests\Unit\Rules;
 
-use Bluewing\Rules\ValidEnumerationValueRule;
+use Bluewing\Rules\ValidEnumerationValue;
 use Bluewing\Enumerations\OrganizationPreference;
 use PHPUnit\Framework\TestCase;
 
 final class ValidEnumerationValueRuleTest extends TestCase
 {
     /**
-     * @var ValidEnumerationValueRule
+     * @var ValidEnumerationValue
      */
-    protected ValidEnumerationValueRule $rule;
+    protected ValidEnumerationValue $rule;
 
     /**
      * Configures the test cases by instantiating the validation rule.
@@ -21,7 +21,7 @@ final class ValidEnumerationValueRuleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->rule = new ValidEnumerationValueRule(OrganizationPreference::class);
+        $this->rule = new ValidEnumerationValue(OrganizationPreference::class);
     }
 
     /**

@@ -5,7 +5,7 @@ namespace Bluewing\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use UnexpectedValueException;
 
-class ValidEnumerationValueRule implements Rule
+class ValidEnumerationValue implements Rule
 {
     /**
      * @var string
