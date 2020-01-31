@@ -59,4 +59,17 @@ abstract class Model extends EloquentModel
             }
         });
     }
+
+    /**
+     * Override the routing binding resolution to explicitly capture any expandable objects requested, by binding to
+     * the local `expands` scope.
+     *
+     * @param  mixed  $value - The key value to retrieve.
+     *
+     * @return EloquentModel|null
+     */
+    public function resolveRouteBinding($value)
+    {
+        return $this->expands()->where($this->getRouteKeyName(), $value)->first();
+    }
 }

@@ -4,8 +4,8 @@
 namespace Bluewing\Concerns;
 
 use Bluewing\Contracts\HasExpandableRelations;
-use Bluewing\Scopes\ExpandableScope;
-use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use ReflectionClass;
 use ReflectionException;
 
@@ -16,29 +16,32 @@ use ReflectionException;
  */
 trait AllowsExpansion
 {
-
     /**
      * When a model that `AllowsExpansion` is booted, check to see if the request includes an `expand` parameter, if
-     * true, add the appropriate global scope to retrieve the
+     * true, add the appropriate query to retrieve the requested relations.
      *
-     * @return void
+     * @param Builder $query - The `Builder` associated with the query.
+     *
+     * @return Builder - The modified `Builder` containing the relations to retrieve.
      *
      * @throws ReflectionException - A `ReflectionException` will be thrown if the traited class cannot be reflected.
      */
-    protected static function bootAllowsExpansion()
+    public function scopeExpands(Builder $query): Builder
     {
-        if (!request()->has('expand')) return;
+        if (!request()->has('expand')) return $query;
 
-        $reflect = new ReflectionClass(static::class);
-        if (!$reflect->implementsInterface(HasExpandableRelations::class)) return;
+        $reflect = new ReflectionClass($query->getModel());
+        if (!$reflect->implementsInterface(HasExpandableRelations::class)){
+            return $query;
+        }
 
-        static::addGlobalScope(new ExpandableScope);
+        $relationsToGet = Arr::wrap(request()->query('expand'));
+        $invalidRelations = array_diff($relationsToGet, $query->getModel()->relationsWhitelist());
+
+        if (!empty($invalidRelations)) {
+            abort(422, 'Invalid model relation requested.');
+        }
+
+        return $query->with($relationsToGet);
     }
-
-    /**
-     * @param Scope $scope
-     *
-     * @return mixed
-     */
-    public static abstract function addGlobalScope(Scope $scope);
 }
