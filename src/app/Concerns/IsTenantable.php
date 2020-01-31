@@ -26,8 +26,8 @@ trait IsTenantable {
         static::addGlobalScope(new TenancyScope);
 
         static::creating(function(Model $model) {
-            if ($this->canSetOrganizationIdentifier($model)) {
-                $model->{$this->organizationIdentifierKey()} = auth()->user()->{$this->organizationIdentifierKey()};
+            if ($model->canSetOrganizationIdentifier()) {
+                $model->{$model->organizationIdentifierKey()} = auth()->user()->{$model->organizationIdentifierKey()};
             }
         });
     }
@@ -52,13 +52,11 @@ trait IsTenantable {
      * The `Organization` identifier can only be set on a model where it has not already been set,
      * and where the user is authenticated.
      *
-     * @param Model $model - The tenantable `Model` that is being created.
-     *
      * @return bool - `true` if the ID of the `Organization` can be set on the model, `false` otherwise.
      */
-    private function canSetOrganizationIdentifier(Model $model): bool
+    private function canSetOrganizationIdentifier(): bool
     {
-        return !isset($model->{$this->organizationIdentifierKey()})
+        return !isset($this->{$this->organizationIdentifierKey()})
             && auth()->check();
     }
 
