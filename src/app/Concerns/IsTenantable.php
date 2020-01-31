@@ -2,11 +2,13 @@
 
 namespace Bluewing\Concerns;
 
-use Closure;
-use Bluewing\Eloquent\Model;
-use Bluewing\Scopes\TenancyScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Scope;
+use Bluewing\Contracts\TenantableContract;
+use Bluewing\Scopes\TenancyScope;
+use Closure;
+
+
 
 /**
  * A trait which provides the functionality of the `TenancyScope` scope to traited models.
@@ -25,7 +27,7 @@ trait IsTenantable {
     {
         static::addGlobalScope(new TenancyScope);
 
-        static::creating(function(Model $model) {
+        static::creating(function(TenantableContract $model) {
             if ($model->canSetOrganizationIdentifier()) {
                 $model->{$model->organizationIdentifierKey()} = auth()->user()->{$model->organizationIdentifierKey()};
             }
@@ -54,7 +56,7 @@ trait IsTenantable {
      *
      * @return bool - `true` if the ID of the `Organization` can be set on the model, `false` otherwise.
      */
-    private function canSetOrganizationIdentifier(): bool
+    public function canSetOrganizationIdentifier(): bool
     {
         return !isset($this->{$this->organizationIdentifierKey()})
             && auth()->check();
@@ -65,7 +67,7 @@ trait IsTenantable {
      *
      * @return string - The `Organization` identifier key.
      */
-    private function organizationIdentifierKey(): string
+    public function organizationIdentifierKey(): string
     {
         return config('bluewing.tenancies.organization.identifier');
     }
