@@ -35,12 +35,10 @@ trait AllowsExpansion
             return $query;
         }
 
-        $relationsToGet = Arr::wrap(request()->query('expand'));
-        $invalidRelations = array_diff($relationsToGet, $query->getModel()->relationsWhitelist());
-
-        if (!empty($invalidRelations)) {
-            abort(422, 'Invalid model relation requested.');
-        }
+        $relationsToGet = array_intersect(
+            $query->getModel()->relationsWhitelist(),
+            Arr::wrap(request()->query('expand'))
+        );
 
         return $query->with($relationsToGet);
     }
