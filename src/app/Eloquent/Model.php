@@ -62,7 +62,7 @@ abstract class Model extends EloquentModel
 
     /**
      * Override the routing binding resolution to explicitly capture any expandable objects requested, by binding to
-     * the local `expands` scope.
+     * the local `expands` scope defined in `AllowsExpansion` trait.
      *
      * @param  mixed  $value - The key value to retrieve.
      *
