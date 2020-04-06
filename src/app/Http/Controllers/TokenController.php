@@ -1,8 +1,8 @@
 <?php
 
-namespace Bluewing\Controllers;
+namespace Bluewing\Http\Controllers;
 
-use Bluewing\Requests\RefreshTokenRequest;
+use Bluewing\Http\Requests\RefreshTokenRequest;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
 use Illuminate\Http\JsonResponse;

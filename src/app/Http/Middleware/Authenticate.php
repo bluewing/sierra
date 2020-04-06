@@ -1,12 +1,11 @@
 <?php
 
-namespace Bluewing\Middleware;
+namespace Bluewing\Http\Middleware;
 
 use Bluewing\Auth\JwtManager;
 use Closure;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Authenticate

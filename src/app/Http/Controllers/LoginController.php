@@ -1,9 +1,9 @@
 <?php
 
-namespace Bluewing\Controllers;
+namespace Bluewing\Http\Controllers;
 
 use Bluewing\BluewingAuthenticatesUsers;
-use Bluewing\Middleware\AppendTokensToResponse;
+use Bluewing\Http\Middleware\AppendTokensToResponse;
 
 /**
  * Handles application login routing and any associated tangential functionality.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\Controllers;
+namespace Bluewing\Http\Controllers;
 
 use Bluewing\Auth\RefreshTokenManager;
 use Exception;

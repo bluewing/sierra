@@ -1,10 +1,9 @@
 <?php
 
-namespace Bluewing\Middleware;
+namespace Bluewing\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Contracts\Auth\Factory as AuthFacadeFactory;
 use Bluewing\Auth\JwtManager;
 use Bluewing\Auth\RefreshTokenManager;
 use Exception;
