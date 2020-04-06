@@ -13,7 +13,7 @@ Bluewing shared server contains the necessary base functionality to enable the u
 To install Bluewing Shared Server in a project, run:
 
 ```bash
-composer required bluewing-shared-server
+composer require bluewing-shared-server
 ```
 
 To install Bluewing Shared Server from Git:

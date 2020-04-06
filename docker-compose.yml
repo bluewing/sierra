@@ -9,4 +9,4 @@ services:
     expose:
       - "9000"
     volumes:
-      - ./:/var/www
+      - ./src:/var/www
