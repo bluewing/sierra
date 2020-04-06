@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * `UserOrganizationContract` represents the interface that a `UserOrganization` model
- * adheres to. It extends `Illuminate\Contracts\Auth\Authenticatable`, which includes definitions
- * for retrieving auth identifiers and passwords.
+ * `MemberContract` represents the interface that a `Member` model adheres to. It extends
+ * `Illuminate\Contracts\Auth\Authenticatable`, which includes definitions for retrieving auth identifiers and
+ * passwords.
  *
- * `UserOrganizationContract` further extends this to provide methods to retrieve the associated
- * `User` and `Organization` related to the implementation of this interface.
+ * `MemberContract` further extends this to provide methods to retrieve the associated `User` and `Organization`
+ * related to the implementation of this interface.
  *
  * `JwtManager`'s `buildTokenFor` method expects a model adhering to this interface as its first argument.
  *
  * @see \Illuminate\Contracts\Auth\Authenticatable
  */
-interface UserOrganizationContract extends Authenticatable {
+interface MemberContract extends Authenticatable {
 
     /**
      * Retrieves the `User` associated with this contract's implementation.

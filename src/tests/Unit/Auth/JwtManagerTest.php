@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Auth;
 
-use Bluewing\Contracts\UserOrganizationContract;
+use Bluewing\Contracts\MemberContract;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mockery;
@@ -19,11 +19,11 @@ final class JwtManagerTest extends TestCase
     protected JwtManager $jwtManager;
 
     /**
-     * A mocked instance of a `UserOrganizationContract`.
+     * A mocked instance of a `MemberContract`.
      *
-     * @var UserOrganizationContract
+     * @var MemberContract
      */
-    protected UserOrganizationContract $authContract;
+    protected MemberContract $authContract;
 
     /**
      * The user ID for the JSON Web Token.
@@ -48,16 +48,16 @@ final class JwtManagerTest extends TestCase
     }
 
     /**
-     * Helper function that uses `Mockery` to fake an instance of `UserOrganizationContract`.
+     * Helper function that uses `Mockery` to fake an instance of `MemberContract`.
      *
-     * @param string $uid - The ID of the `UserOrganizationContract`.
+     * @param string $uid - The ID of the `MemberContract`.
      *
-     * @return UserOrganizationContract - An instance conforming to the `UserOrganizationContract` that has a
-     * method called `getAuthIdentifier` returning the UUID.
+     * @return MemberContract - An instance conforming to the `MemberContract` that has a method called
+     * `getAuthIdentifier` returning the UUID.
      */
-    protected function mockAuthContract(string $uid): UserOrganizationContract
+    protected function mockAuthContract(string $uid): MemberContract
     {
-        $authContract = Mockery::mock(UserOrganizationContract::class);
+        $authContract = Mockery::mock(MemberContract::class);
         $authContract->allows()->getAuthIdentifier()->andReturns($uid);
         return $authContract;
     }
@@ -138,19 +138,19 @@ final class JwtManagerTest extends TestCase
     }
 
     /**
-     * Check that the `uid` attribute of the token is properly set.
+     * Check that the `mid` attribute of the token is properly set.
      *
      * @group jwt
      *
      * @return void
      */
-    public function test_jwt_has_uid_set_correctly(): void
+    public function test_jwt_has_mid_set_correctly(): void
     {
         $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
         $token      = $this->jwtManager->jwtFromString($jwt);
 
-        $this->assertTrue($token->hasClaim('uid'));
-        $this->assertEquals($this->uid, $token->getClaim('uid'));
+        $this->assertTrue($token->hasClaim('mid'));
+        $this->assertEquals($this->uid, $token->getClaim('mid'));
     }
 
     /**

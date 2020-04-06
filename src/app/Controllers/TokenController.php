@@ -40,9 +40,8 @@ class TokenController extends Controller
     }
 
     /**
-     * @bluewing-http-method    POST
-     * @bluewing-url            /api/token
-     * @bluewing-auth           Authentication
+     * @http-method    POST
+     * @url            /api/token
      *
      * Retrieves a new Access Token (JWT) by providing a refresh token in the body of the request.
      * If no `RefreshToken` is provided then the request fails.
@@ -57,7 +56,7 @@ class TokenController extends Controller
     {
         $refreshToken = $this->refreshTokenManager->findRefreshTokenForUse($request->input('refreshToken'));
 
-        $jwt = $this->jwtManager->buildJwtFor($refreshToken->userOrganization);
+        $jwt = $this->jwtManager->buildJwtFor($refreshToken->member);
 
         // Issue our response
         return response()

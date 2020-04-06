@@ -16,7 +16,7 @@ interface OrganizationContract
     /**
      * @return HasMany
      */
-    public function userOrganizations(): HasMany;
+    public function members(): HasMany;
 
     /**
      * @return BelongsToMany

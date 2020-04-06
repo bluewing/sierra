@@ -85,7 +85,7 @@ trait BluewingAuthenticatesUsers {
      *
      * @param LoginRequest $request
      *
-     * @return JsonResponse - A `Response` of 200 OK containing the `UserOrganization`.
+     * @return JsonResponse - A `Response` of 200 OK containing the `Member`.
      */
     protected function sendLoginResponse(LoginRequest $request)
     {

@@ -3,18 +3,9 @@
 namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 
-class UserOrganizationIsNew implements Rule
+class MemberIsNew implements Rule
 {
-
-    /**
-     * UserOrganizationIsNewRule constructor.
-     */
-    public function __construct()
-    {
-    }
-
     /**
      * Determine if the validation rule passes.
      *
@@ -24,9 +15,9 @@ class UserOrganizationIsNew implements Rule
      */
     public function passes($attribute, $value)
     {
-        $userOrganizationModel = createModel(config('bluewing.tenancies.userOrganization.model'));
+        $memberModel = createModel(config('bluewing.tenancies.member.model'));
 
-        $result = $userOrganizationModel->newQuery()
+        $result = $memberModel->newQuery()
             ->where('organizationId', auth()->user()->organizationId)
             ->whereHasEmail($value)
             ->first();

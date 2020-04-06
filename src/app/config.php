@@ -11,15 +11,15 @@ return [
      |
      */
 
-    'tenancies' => [
+    'tenancies'         => [
         'organization'      => [
             'model'         => null,
             'identifier'    => null,
         ],
-        'userOrganization'  => [
+        'member'        => [
             'model'         => null
         ],
-        'user'              => [
+        'user'          => [
             'model'         => null
         ]
     ],

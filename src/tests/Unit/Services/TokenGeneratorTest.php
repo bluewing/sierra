@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services;
 
 use Bluewing\Services\TokenGenerator;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class TokenGeneratorTest extends TestCase

@@ -17,10 +17,10 @@ class UserHasVerifiedEmail implements Rule
      */
     public function passes($attribute, $value)
     {
-        $userOrganizationModel = createModel(config('bluewing.tenancies.userOrganization.model'));
+        $memberModel = createModel(config('bluewing.tenancies.member.model'));
 
         return !is_null(
-            $userOrganizationModel->newQuery()->with('user')->findOrFail($value)->user->emailVerifiedAt
+            $memberModel->newQuery()->with('user')->findOrFail($value)->user->emailVerifiedAt
         );
     }
 

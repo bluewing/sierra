@@ -2,7 +2,7 @@
 
 namespace Bluewing\Auth;
 
-use Bluewing\Contracts\UserOrganizationContract;
+use Bluewing\Contracts\MemberContract;
 use Bluewing\Services\TokenGenerator;
 use Carbon\Carbon;
 use Exception;
@@ -39,32 +39,34 @@ class RefreshTokenManager
     }
 
     /**
-     * Builds a refresh token for the specified `UserOrganizationContract`, and inserts it into the database,
+     * Builds a refresh token for the specified `MemberContract`, and inserts it into the database,
      * returning the `RefreshToken`'s token string.
      *
-     * @param UserOrganizationContract $authenticatable - The entity which implements the
-     * authentication functionality (in our case, `UserOrganization`).
+     * @param MemberContract $authenticatable - The entity which implements the
+     * authentication functionality (in our case, `Member`).
      *
      * @return string - The `RefreshToken` string that can be exchanged for a new JSON web token.
      *
      * @throws Exception
      */
-    public function buildRefreshTokenFor(UserOrganizationContract $authenticatable): string
+    public function buildRefreshTokenFor(MemberContract $authenticatable): string
     {
         $refreshToken = $this->refreshTokenModel->newQuery()->create([
-            'organizationId'        => $authenticatable->user->id,
-            'userOrganizationId'    => $authenticatable->getAuthIdentifier(),
-            'token'                 => $this->tokenGenerator->generate(64, 'refresh'),
-            'device'                => null
+            'organizationId'    => $authenticatable->user->id,
+            'memberId'          => $authenticatable->getAuthIdentifier(),
+            'token'             => $this->tokenGenerator->generate(64, 'refresh'),
+            'device'            => null
         ]);
 
         return $refreshToken->token;
     }
 
     /**
+     * Finds a given refresh token in the database by the provided refresh token string.
+     *
      * @param string $refreshTokenString - The token string used to find the `RefreshToken`.
      *
-     * @return Model|null - The `RefreshToken`, if it exists.
+     * @return Model|null - The `RefreshToken`, if it exists. If it does not exist, returns `null`.
      */
     public function findRefreshToken(string $refreshTokenString): ?Model
     {

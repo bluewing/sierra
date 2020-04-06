@@ -29,6 +29,11 @@ class Authenticate
     public AuthManager $auth;
 
     /**
+     * @var string
+     */
+    public string $jwtMemberKey = 'mid';
+
+    /**
      * Constructor for Authenticate middleware.
      *
      * @param AuthManager $auth - The dependency-injected instance of `AuthManager`.
@@ -62,7 +67,10 @@ class Authenticate
             return response()->json("Token provided is not verifiable", 401);
         }
 
-        $userId = $this->jwtManager->jwtFromString($request->header('Authorization'))->getClaim('uid');
+        $userId = $this->jwtManager
+                    ->jwtFromString($request->header('Authorization'))
+                    ->getClaim($this->jwtMemberKey);
+
         $this->auth->guard()->setUserId($userId);
 
         return $next($request);

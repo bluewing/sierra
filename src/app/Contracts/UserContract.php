@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 interface UserContract
 {
     /**
-     * Retrieves the `UserOrganization`'s associated with this contract's implementation.
+     * Retrieves the `Member`'s associated with this contract's implementation.
      *
      * @return HasMany
      */
-    public function userOrganizations(): HasMany;
+    public function members(): HasMany;
 
     /**
      * Retrieves the `Organization`'s associated with this contract's implementation.

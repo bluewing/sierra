@@ -12,7 +12,7 @@ trait BluewingAuthentication {
     protected $rememberTokenName = 'rememberToken';
 
     /**
-     * Implements the `getUser` method defined in the `UserOrganizationContract`.
+     * Implements the `getUser` method defined in the `MemberContract`.
      *
      * @return \Illuminate\Database\Eloquent\Model - The `User` relation.
      */
@@ -22,7 +22,7 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Implements the `getTenant` method defined in the `UserOrganizationContract`.
+     * Implements the `getTenant` method defined in the `MemberContract`.
      *
      * @return \Illuminate\Database\Eloquent\Model - The `Organization` relation.
      */
@@ -32,10 +32,10 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Retrieves the name of the field associated with the identifier for the `UserOrganizationContract`
+     * Retrieves the name of the field associated with the identifier for the `MemberContract`
      * implementing class.
      *
-     * @return string - The identifier name of the `UserOrganizationContract`.
+     * @return string - The identifier name of the `MemberContract`.
      */
     public function getAuthIdentifierName()
     {
@@ -43,7 +43,7 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Retrieve the actual identifier associated with the `UserOrganizationContract` implementing object.
+     * Retrieve the actual identifier associated with the `MemberContract` implementing object.
      *
      * @return object
      */
@@ -53,8 +53,8 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Retrieve the password associated with the user. Because the `UserOrganizationContract` refers to the
-     * `UserOrganization`, this must be retrieved from the `User` relationship.
+     * Retrieve the password associated with the user. Because the `MemberContract` refers to the `Member`, this must
+     * be retrieved from the `User` relationship.
      *
      * @return string - The `User`'s password.
      */
@@ -64,7 +64,7 @@ trait BluewingAuthentication {
     }
 
     /**
-     * Retrieves the remember token from the `UserOrganizationContract`. Because Bluewing applications utilise
+     * Retrieves the remember token from the `MemberContract`. Because Bluewing applications utilise
      * stateless JSON Web Tokens for authentication, this method is not needed.
      *
      * @return string|void - The remember token, if it exists.

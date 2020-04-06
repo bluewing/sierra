@@ -2,7 +2,7 @@
 
 namespace Bluewing\Auth;
 
-use Bluewing\Contracts\UserOrganizationContract;
+use Bluewing\Contracts\MemberContract;
 use Illuminate\Support\Carbon;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -41,29 +41,28 @@ class JwtManager {
     }
 
     /**
-     * Builds a JWT or the entity which implements `BluewingAuthenticationContract`.
-     * Usually, this is a `UserOrganization`.
+     * Builds a JWT or the entity which implements `MemberContract`. Usually, this is a `Member`.
      *
-     * @param UserOrganizationContract $authenticatable - The entity which implements the
+     * @param MemberContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildJwtFor(UserOrganizationContract $authenticatable): string
+    public function buildJwtFor(MemberContract $authenticatable): string
     {
         return 'Bearer ' . $this->buildJwt($authenticatable);
     }
 
     /**
-     * Constructs a `Token` object using information supplied by the `BluewingAuthenticationContract`
+     * Constructs a `Token` object using information supplied by the `MemberContract`
      * implementor. JWTs generated will be valid for fifteen minutes from time of generation.
      *
-     * @param UserOrganizationContract $authenticatable - The entity which implements the
+     * @param MemberContract $authenticatable - The entity which implements the
      * authentication functionality.
      *
      * @return Token - The JWT for the user.
      */
-    private function buildJwt(UserOrganizationContract $authenticatable): Token
+    private function buildJwt(MemberContract $authenticatable): Token
     {
         $now = Carbon::now();
 
@@ -71,7 +70,7 @@ class JwtManager {
             ->permittedFor($this->permitted)
             ->issuedAt($now->timestamp)
             ->expiresAt($now->addMinutes(15)->timestamp)
-            ->withClaim('uid', $authenticatable->getAuthIdentifier())
+            ->withClaim('mid', $authenticatable->getAuthIdentifier())
             ->getToken(new Sha256(), new Key($this->key));
     }
 

@@ -31,8 +31,8 @@ class JwtGuard implements Guard
     protected Request $request;
 
     /**
-     * The ID of the `UserOrganization`. This custom property can be set by the `setUserId` method, if we have a need
-     * to set the `UserOrganization` ID without retrieving the model from the database.
+     * The ID of the `Member`. This custom property can be set by the `setUserId` method, if we have a need
+     * to set the `Member` ID without retrieving the model from the database.
      *
      * @var string|null
      */
@@ -88,8 +88,8 @@ class JwtGuard implements Guard
     }
 
     /**
-     * Custom function to JwtGuard that allows for the setting of a `UserOrganization` as the authenticated instance
-     * without retrieving the `UserOrganization` from the database.
+     * Custom function to JwtGuard that allows for the setting of a `Member` as the authenticated instance without
+     * retrieving the `Member` from the database.
      *
      * @param string $id - The ID of the `UserOrganization`.
      */
