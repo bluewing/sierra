@@ -46,7 +46,7 @@ class RefreshTokenManagerTest extends TestCase
      */
     public function test_creates_refresh_token()
     {
-
+        $this->markTestIncomplete();
     }
 
     /**
@@ -56,7 +56,7 @@ class RefreshTokenManagerTest extends TestCase
      */
     public function test_finds_refresh_token_by_string()
     {
-
+        $this->markTestIncomplete();
     }
 
     /**
@@ -67,7 +67,7 @@ class RefreshTokenManagerTest extends TestCase
      */
     public function test_fails_if_refresh_token_cannot_be_found()
     {
-
+        $this->markTestIncomplete();
     }
 
     /**
@@ -77,6 +77,6 @@ class RefreshTokenManagerTest extends TestCase
      */
     public function test_revokes_refresh_token()
     {
-
+        $this->markTestIncomplete();
     }
 }
