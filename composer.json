@@ -26,15 +26,15 @@
     "autoload": {
         "classmap": [],
         "psr-4": {
-            "Bluewing\\": "app/"
+            "Bluewing\\": "src/app/"
         },
         "files": [
-            "app/helpers.php"
+            "src/app/helpers.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "src/tests/"
         }
     },
     "prefer-stable": true,
