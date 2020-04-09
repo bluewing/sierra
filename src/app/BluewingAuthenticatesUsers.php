@@ -2,7 +2,7 @@
 
 namespace Bluewing;
 
-use Bluewing\Requests\LoginRequest;
+use Bluewing\Http\Requests\LoginRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
