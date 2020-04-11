@@ -29,12 +29,12 @@ class ApiEndpointGenerator {
      */
     public function getApiEndpoints(): array
     {
-        // Returns a route collection
+        // Returns a route collection interface
         $routeCollection = $this->router->getRoutes();
 
         $results = [];
 
-        foreach ($routeCollection as $route) {
+        foreach ($routeCollection->getRoutes() as $route) {
             $results[] = $this->getRouteInformation($route);
         }
 
@@ -154,7 +154,7 @@ class ApiEndpointGenerator {
      *
      * @param string $segment - The segment to check.
      *
-     * @return `true` if the segment is a route parameter, `false` otherwise.
+     * @return bool - `true` if the segment is a route parameter, `false` otherwise.
      */
     protected function isSegmentARouteParameter(string $segment): bool
     {

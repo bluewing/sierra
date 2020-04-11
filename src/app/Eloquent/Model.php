@@ -2,14 +2,12 @@
 
 namespace Bluewing\Eloquent;
 
-use Bluewing\Concerns\SerializesDatesToIso8601;
+use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Str;
 
 abstract class Model extends EloquentModel
 {
-    use SerializesDatesToIso8601;
-
     /**
      * The name of the "created at" column.
      *
@@ -64,11 +62,14 @@ abstract class Model extends EloquentModel
      * Override the routing binding resolution to explicitly capture any expandable objects requested, by binding to
      * the local `expands` scope defined in `AllowsExpansion` trait.
      *
+     * @see UrlRoutable
+     *
      * @param  mixed  $value - The key value to retrieve.
+     * @param  string|null  $field - The field to retrieve the model by.
      *
      * @return EloquentModel|null
      */
-    public function resolveRouteBinding($value)
+    public function resolveRouteBinding($value, $field = null)
     {
         return $this->expands()->where($this->getRouteKeyName(), $value)->first();
     }
