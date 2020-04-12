@@ -7,7 +7,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Bluewing\Auth\Services\RefreshTokenManager;
 
-class RefreshTokenManagerTest extends TestCase
+final class RefreshTokenManagerTest extends TestCase
 {
     /**
      * @var Mockery\MockInterface

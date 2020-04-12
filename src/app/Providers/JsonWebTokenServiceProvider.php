@@ -14,7 +14,7 @@ class JsonWebTokenServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Bluewing\Auth\JwtManager', function($app) {
+        $this->app->bind(JwtManager::class, function($app) {
             return new JwtManager(config('app.name'), config('app.key'));
         });
     }
