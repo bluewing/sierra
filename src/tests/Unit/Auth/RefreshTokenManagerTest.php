@@ -3,10 +3,9 @@
 namespace Tests\Unit\Auth;
 
 use Bluewing\Services\TokenGenerator;
-use Illuminate\Database\Eloquent\Model;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Bluewing\Auth\RefreshTokenManager;
+use Bluewing\Auth\Services\RefreshTokenManager;
 
 class RefreshTokenManagerTest extends TestCase
 {
@@ -20,7 +19,7 @@ class RefreshTokenManagerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->refreshTokenModel = Mockery::mock('Illuminate\Database\Eloquent\Model');;
+        $this->refreshTokenModel = Mockery::mock('Illuminate\Database\Eloquent\Model');
     }
 
     /**

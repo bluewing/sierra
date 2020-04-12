@@ -3,8 +3,8 @@
 namespace Bluewing\Http\Controllers;
 
 use Bluewing\Http\Requests\RefreshTokenRequest;
-use Bluewing\Auth\JwtManager;
-use Bluewing\Auth\RefreshTokenManager;
+use Bluewing\Auth\Services\JwtManager;
+use Bluewing\Auth\Services\RefreshTokenManager;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 

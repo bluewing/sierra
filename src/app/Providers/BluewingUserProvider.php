@@ -3,6 +3,7 @@
 namespace Bluewing\Providers;
 
 use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -43,7 +44,7 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
             ->whereHas('user', fn($q) => $q->where('email', $credentials['email']))
             ->get();
 
-        // The email address is invalid, or the User no longer has any Member`'s they can log into.
+        // The email address is invalid, or the `User` no longer has any `Member`'s they can log into.
         if ($members->count() === 0) {
             return null;
         }
@@ -71,7 +72,7 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
      *
      * @param mixed $identifier - The identifier used to identify an `Authenticatable`.
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return Authenticatable|null
      */
     public function retrieveById($identifier)
     {
@@ -93,7 +94,7 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
      * @param mixed $identifier
      * @param string $token
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|void|null
+     * @return Authenticatable|void|null
      */
     public function retrieveByToken($identifier, $token) {
 

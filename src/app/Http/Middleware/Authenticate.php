@@ -2,7 +2,7 @@
 
 namespace Bluewing\Http\Middleware;
 
-use Bluewing\Auth\JwtManager;
+use Bluewing\Auth\Services\JwtManager;
 use Closure;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;

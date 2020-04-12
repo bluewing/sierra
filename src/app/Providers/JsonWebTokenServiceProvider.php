@@ -2,7 +2,7 @@
 
 namespace Bluewing\Providers;
 
-use Bluewing\Auth\JwtManager;
+use Bluewing\Auth\Services\JwtManager;
 use Bluewing\Guards\JwtGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;

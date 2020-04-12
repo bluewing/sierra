@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing;
+namespace Bluewing\Auth\Concerns;
 
 use Illuminate\Contracts\Auth\Guard;
 

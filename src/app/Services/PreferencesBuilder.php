@@ -43,7 +43,7 @@ class PreferencesBuilder {
      *
      * @return mixed - The parsed value in the correct data type.
      */
-    public function parse(Model $preference): mixed {
+    public function parse(Model $preference) {
         switch ($preference->preferenceTemplate->type) {
             case 'boolean':
                 return boolval($preference->value);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing\Auth;
+namespace Bluewing\Auth\Services;
 
 use Bluewing\Contracts\MemberContract;
 use Illuminate\Support\Carbon;

@@ -2,7 +2,7 @@
 
 namespace Bluewing\Http\Controllers;
 
-use Bluewing\BluewingAuthenticatesUsers;
+use Bluewing\Auth\Concerns\AuthenticatesUsers;
 use Bluewing\Http\Middleware\AppendTokensToResponse;
 
 /**
@@ -10,7 +10,7 @@ use Bluewing\Http\Middleware\AppendTokensToResponse;
  */
 class LoginController extends Controller
 {
-    use BluewingAuthenticatesUsers;
+    use AuthenticatesUsers;
 
     /**
      * Constructor for `LoginController`.

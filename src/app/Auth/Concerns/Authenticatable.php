@@ -1,35 +1,20 @@
 <?php
 
-namespace Bluewing;
+namespace Bluewing\Auth\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 
-trait BluewingAuthentication {
+/**
+ * Trait BluewingAuthentication
+ * @package Bluewing
+ */
+trait Authenticatable {
 
     /**
      * Override the default remember token field name from `remember_token` to `rememberToken`,
      * to match our preferred camelCase style for database fields.
      */
-    protected $rememberTokenName = 'rememberToken';
-
-    /**
-     * Implements the `getUser` method defined in the `MemberContract`.
-     *
-     * @return \Illuminate\Database\Eloquent\Model - The `User` relation.
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * Implements the `getTenant` method defined in the `MemberContract`.
-     *
-     * @return \Illuminate\Database\Eloquent\Model - The `Organization` relation.
-     */
-    public function getTenant()
-    {
-        return $this->organization;
-    }
+    protected string $rememberTokenName = 'rememberToken';
 
     /**
      * Retrieves the name of the field associated with the identifier for the `MemberContract`

@@ -4,8 +4,8 @@ namespace Bluewing\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthManager;
-use Bluewing\Auth\JwtManager;
-use Bluewing\Auth\RefreshTokenManager;
+use Bluewing\Auth\Services\JwtManager;
+use Bluewing\Auth\Services\RefreshTokenManager;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

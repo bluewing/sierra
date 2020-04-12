@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing;
+namespace Bluewing\Auth\Concerns;
 
 use Bluewing\Http\Requests\LoginRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -20,7 +20,7 @@ use Illuminate\Validation\ValidationException;
  *
  * @package Bluewing
  */
-trait BluewingAuthenticatesUsers {
+trait AuthenticatesUsers {
 
     use RedirectsUsers, ThrottlesLogins;
 
@@ -38,9 +38,8 @@ trait BluewingAuthenticatesUsers {
      * If the login attempt was not successful, a `TODO: determine correct status code` response will be returned,
      * and the login attempt counter will be incremented.
      *
-     * @bluewing-http-method POST
-     * @bluewing-url /user/login
-     * @bluewing-auth Guest
+     * @http-method POST
+     * @url         /user/login
      *
      * @param LoginRequest $request - The `Request` associated with the login attempt.
      *
@@ -132,7 +131,7 @@ trait BluewingAuthenticatesUsers {
      * `JwtGuard` in the `config/auth.php` file, `Auth::guard()` returns an instance of it without needing
      * to specify a parameter ('jwt').
      *
-     * @return mixed The `JwtGuard`
+     * @return mixed The `JwtGuard`.
      *
      * @see \Bluewing\Guards\JwtGuard
      */

@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Bluewing\Auth\JwtManager;
+use Bluewing\Auth\Services\JwtManager;
 
 final class JwtManagerTest extends TestCase
 {

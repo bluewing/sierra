@@ -2,7 +2,7 @@
 
 namespace Bluewing\Http\Controllers;
 
-use Bluewing\Auth\RefreshTokenManager;
+use Bluewing\Auth\Services\RefreshTokenManager;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

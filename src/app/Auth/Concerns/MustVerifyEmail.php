@@ -1,6 +1,6 @@
 <?php
 
-namespace Bluewing;
+namespace Bluewing\Auth\Concerns;
 
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -19,7 +19,7 @@ use Illuminate\Auth\Notifications\VerifyEmail;
  *
  * @see Illuminate\Auth\MustVerifyEmail
  */
-trait BluewingMustVerifyEmail {
+trait MustVerifyEmail {
 
     /**
      * Determine if the user has verified their email address.
@@ -28,7 +28,7 @@ trait BluewingMustVerifyEmail {
      */
     public function hasVerifiedEmail()
     {
-        return !is_null($this->emailVerifiedAt);
+        return ! is_null($this->emailVerifiedAt);
     }
 
     /**

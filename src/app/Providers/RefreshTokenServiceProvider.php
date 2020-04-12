@@ -4,7 +4,7 @@
 namespace Bluewing\Providers;
 
 
-use Bluewing\Auth\RefreshTokenManager;
+use Bluewing\Auth\Services\RefreshTokenManager;
 use Bluewing\Services\TokenGenerator;
 use Illuminate\Support\ServiceProvider;
 

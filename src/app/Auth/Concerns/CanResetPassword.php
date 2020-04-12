@@ -1,13 +1,15 @@
 <?php
 
-namespace Bluewing;
+namespace Bluewing\Auth\Concerns;
 
 use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 
-trait BluewingCanResetPassword
+trait CanResetPassword
 {
     /**
+     * Get the e-mail address where password reset links are sent.
      *
+     * @return string
      */
     public function getEmailForPasswordReset()
     {
@@ -15,7 +17,10 @@ trait BluewingCanResetPassword
     }
 
     /**
+     * Send the password reset notification.
      *
+     * @param  string  $token
+     * @return void
      */
     public function sendPasswordResetNotification($token)
     {
