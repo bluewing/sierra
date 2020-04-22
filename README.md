@@ -1,6 +1,6 @@
-# Bluewing Shared Server
+# Sierra
 
-Bluewing shared server contains the necessary base functionality to enable the underpinnings of Bluewing applications.
+Sierra contains the necessary base functionality to enable the underpinnings of Bluewing applications.
 
 ## User Instructions 
 
@@ -10,17 +10,17 @@ Bluewing shared server contains the necessary base functionality to enable the u
 
 ### Installation
 
-To install Bluewing Shared Server in a project, run:
+To install Sierra in a project, run:
 
 ```bash
-composer require bluewing-shared-server
+composer require bluewing/sierra
 ```
 
-To install Bluewing Shared Server from Git:
+To install Sierra from Git:
 
 ```bash
-git clone <url>
-cd ./bluewing-shared-server
+git clone https://github.com/bluewing/sierra
+cd ./sierra
 ```
 
 ### Building
