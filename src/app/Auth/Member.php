@@ -15,10 +15,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Bluewing\Auth\Concerns\CanResetPassword as BluewingCanResetPassword;
 use Bluewing\Auth\Concerns\MustVerifyEmail as BluewingMustVerifyEmail;
 
-class Member extends BluewingPivot implements
-    AuthenticatableContract,
-    AuthorizableContract,
-    CanResetPasswordContract
+class Member extends BluewingPivot implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use BluewingAuthenticatable, Authorizable, BluewingCanResetPassword, BluewingMustVerifyEmail;
 }

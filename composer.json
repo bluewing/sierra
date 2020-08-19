@@ -45,7 +45,8 @@
                 "Bluewing\\Providers\\BluewingServiceProvider",
                 "Bluewing\\Providers\\JsonWebTokenServiceProvider",
                 "Bluewing\\Providers\\RefreshTokenServiceProvider",
-                "Bluewing\\Providers\\StripeServiceProvider"
+                "Bluewing\\Providers\\StripeServiceProvider",
+                "Bluewing\\Auth\\Passwords\\BluewingPasswordResetServiceProvider"
             ]
         }
     }
