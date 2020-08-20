@@ -2,14 +2,13 @@
 
 namespace Bluewing\Auth\Concerns;
 
-use Carbon\Carbon;
+use Bluewing\Eloquent\Model;
 use Illuminate\Auth\Notifications\VerifyEmail;
 
 /**
  * Trait BluewingMustVerifyEmail
  *
- * @property string email - This property exists on all models that this trait traits.
- * @property Carbon emailVerifiedAt - This property exists on all models that this trait traits.
+ * @property Model user - The `User` model that is related to the model that traits the `MustVerifyEmail` functionality.
  *
  * @package Bluewing
  *
@@ -28,7 +27,7 @@ trait MustVerifyEmail {
      */
     public function hasVerifiedEmail()
     {
-        return ! is_null($this->emailVerifiedAt);
+        return ! is_null($this->user->emailVerifiedAt);
     }
 
     /**
@@ -38,7 +37,7 @@ trait MustVerifyEmail {
      */
     public function markEmailAsVerified()
     {
-        return $this->forceFill([
+        return $this->user->forceFill([
             'emailVerifiedAt' => $this->freshTimestamp(),
         ])->save();
     }
@@ -60,6 +59,6 @@ trait MustVerifyEmail {
      */
     public function getEmailForVerification()
     {
-        return $this->email;
+        return $this->user->email;
     }
 }
