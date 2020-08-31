@@ -5,9 +5,7 @@ namespace Bluewing\Contracts;
 interface HasExpandableRelations
 {
     /**
-     * An array of strings containing the acceptable relations that may be returned from queries involving this model.
-     *
-     * @return array
+     * Fetches the associated `Relations` class for the current Eloquent model.
      */
-    public function relationsWhitelist(): array;
+    public function expandableRelations();
 }

@@ -69,5 +69,18 @@ return [
         'invoiceModel'          => null,
         'secretKey'             => null,
         'publishableKey'        => null,
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Relations
+     |--------------------------------------------------------------------------
+     |
+     | Specifies the namespace from which relation policies can be retrieved to
+     | map models from.
+     |
+     */
+    'relations' => [
+        'namespace'             => null
     ]
 ];

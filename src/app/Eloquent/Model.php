@@ -23,6 +23,13 @@ abstract class Model extends EloquentModel
     const UPDATED_AT = 'updatedAt';
 
     /**
+     * The name of the "deleted at" column.
+     *
+     * @var string
+     */
+    const DELETED_AT = 'deletedAt';
+
+    /**
      * Don't use snake_case.
      *
      * @var bool
@@ -56,21 +63,5 @@ abstract class Model extends EloquentModel
                 $model->{$model->getKeyName()} = Str::uuid()->toString();
             }
         });
-    }
-
-    /**
-     * Override the routing binding resolution to explicitly capture any expandable objects requested, by binding to
-     * the local `expands` scope defined in `AllowsExpansion` trait.
-     *
-     * @see UrlRoutable
-     *
-     * @param  mixed  $value - The key value to retrieve.
-     * @param  string|null  $field - The field to retrieve the model by.
-     *
-     * @return EloquentModel|null
-     */
-    public function resolveRouteBinding($value, $field = null)
-    {
-        return $this->expands()->where($this->getRouteKeyName(), $value)->first();
     }
 }
