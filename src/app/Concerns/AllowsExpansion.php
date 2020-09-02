@@ -93,7 +93,7 @@ trait AllowsExpansion
                 continue;
             }
 
-            if (method_exists($model, $expansionString)) {
+            if (method_exists($model->expandableRelations(), $expansionString)) {
                 list('model' => $nextClass, 'isAuthorized' => $authorizationFn) = $model->expandableRelations()
                     ->{$expansionString}();
 
