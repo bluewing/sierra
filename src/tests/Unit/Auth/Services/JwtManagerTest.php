@@ -4,6 +4,7 @@ namespace Tests\Unit\Auth;
 
 use Bluewing\Contracts\MemberContract;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -207,12 +208,12 @@ final class JwtManagerTest extends TestCase
      */
     public function test_expired_jwt_cannot_be_verified(): void
     {
-        $thirtyMinutesAgo = Carbon::now()->subMinutes(30);
-        Carbon::setTestNow($thirtyMinutesAgo);
+        $thirtyMinutesAgo = CarbonImmutable::now()->subMinutes(30);
+        CarbonImmutable::setTestNow($thirtyMinutesAgo);
 
         $jwt = $this->jwtManager->buildJwtFor($this->authContract);
 
-        Carbon::setTestNow(); // clear the mock.
+        CarbonImmutable::setTestNow(); // clear the mock.
         $this->assertFalse($this->jwtManager->isJwtVerified($jwt));
     }
 }

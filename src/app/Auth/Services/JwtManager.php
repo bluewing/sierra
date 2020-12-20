@@ -3,6 +3,7 @@
 namespace Bluewing\Auth\Services;
 
 use Bluewing\Contracts\MemberContract;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -64,12 +65,12 @@ class JwtManager {
      */
     private function buildJwt(MemberContract $authenticatable): Token
     {
-        $now = Carbon::now();
+        $now = CarbonImmutable::now();
 
         return (new Builder())->issuedBy('Bluewing')
             ->permittedFor($this->permitted)
-            ->issuedAt($now->timestamp)
-            ->expiresAt($now->addMinutes(15)->timestamp)
+            ->issuedAt($now)
+            ->expiresAt($now->addMinutes(15))
             ->withClaim('mid', $authenticatable->getAuthIdentifier())
             ->getToken(new Sha256(), new Key($this->key));
     }

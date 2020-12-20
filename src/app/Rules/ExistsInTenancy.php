@@ -3,7 +3,6 @@
 namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class ExistsInTenancy implements Rule
@@ -48,15 +47,8 @@ class ExistsInTenancy implements Rule
 
         if (is_array($value)) {
             return $tenancyQuery->whereIn($this->databaseColumn, $value)->count() === count($value);
-
-        } else {
-            try {
-                $tenancyQuery->where($this->databaseColumn, $value)->firstOrFail();
-                return true;
-            } catch (ModelNotFoundException $exception) {
-                return false;
-            }
         }
+        return !is_null($tenancyQuery->where($this->databaseColumn, $value)->first());
     }
 
     /**

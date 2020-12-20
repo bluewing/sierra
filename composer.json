@@ -3,26 +3,26 @@
     "type": "library",
     "description": "Shared library for Bluewing products",
     "license":  "proprietary",
-    "keywords": ["bluewing", "horizon", "showcrew", "library"],
+    "keywords": ["bluewing", "library"],
     "authors": [
         {
             "name": "Luke",
-            "email": "lukedavia@icloud.com"
+            "email": "hello@bluewing.co.nz"
         }
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.4",
-        "lcobucci/jwt": "^3.3",
-        "laravel/framework": "^7.5",
-        "stripe/stripe-php": "^7.3",
+        "php": "^8.0",
         "ext-json": "*",
-        "myclabs/php-enum": "^1.7",
-        "laravel/ui": "^2.0"
+        "lcobucci/jwt": "~3.4.2",
+        "laravel/framework": "~7.30.0",
+        "laravel/ui": "~2.5.0",
+        "myclabs/php-enum": "~1.7.7",
+        "stripe/stripe-php": "~7.67.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
-        "mockery/mockery": "^1.2"
+        "phpunit/phpunit": "~9.5.0",
+        "mockery/mockery": "~1.4.2"
     },
     "autoload": {
         "classmap": [],
