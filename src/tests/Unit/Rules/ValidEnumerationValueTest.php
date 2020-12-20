@@ -6,7 +6,7 @@ use Bluewing\Rules\ValidEnumerationValue;
 use Bluewing\Enumerations\OrganizationPreference;
 use PHPUnit\Framework\TestCase;
 
-final class ValidEnumerationValueRuleTest extends TestCase
+final class ValidEnumerationValueTest extends TestCase
 {
     /**
      * @var ValidEnumerationValue

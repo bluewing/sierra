@@ -29,12 +29,12 @@ class ValidEnumerationValue implements Rule
      * Determine if the validation rule passes by attempting to instantiate the enumeration class
      * with the provided value. If an exception is thrown, the value does not exist on the enumeration.
      *
-     * @see https://github.com/myclabs/php-enum/blob/master/src/Enum.php#L41-L52
+     * @see https://github.com/myclabs/php-enum/blob/master/src/Enum.php#L41-L52.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param $attribute - The attribute that is being checked.
+     * @param $value - The value that is being validated.
      *
-     * @return bool
+     * @return bool - `true` if the validation rule passed successfully, `false` otherwise.
      */
     public function passes($attribute, $value)
     {

@@ -3,7 +3,7 @@
 namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class ExistsInTenancy implements Rule
@@ -19,7 +19,7 @@ class ExistsInTenancy implements Rule
     protected ?string $databaseColumn;
 
     /**
-     * Constructor for ExistsInTenancyRule.
+     * Constructor for `ExistsInTenancy`.
      *
      * @param string $databaseTable - The string representing the database table that should be queried.
      * @param string|null $databaseColumn - The string representing the database column that should be queried. If not
@@ -32,23 +32,31 @@ class ExistsInTenancy implements Rule
     }
 
     /**
-     * Executes a tenancy-aware query to retrieve an item with the prescribed value at the
-     * database table and column as provided. Should return `true` if the database value exists in the tenancy, `false`
-     * otherwise.
+     * Executes a tenancy-aware query to retrieve an item with the prescribed value at the database table and column as
+     * provided. Should return `true` if the database value exists in the tenancy, `false` otherwise. If the value
+     * provided is an array, a `whereIn` query will be executed to more efficiently validate multiple values
+     * simultaneously.
      *
-     * @param $attribute
-     * @param $value
+     * @param $attribute - The attribute name that is being checked.
+     * @param $value - The value to check against.
      *
      * @return boolean - `true` if the validation rule passed successfully, `false` otherwise.
      */
     public function passes($attribute, $value)
     {
-        $result = DB::table($this->databaseTable)
-            ->where('organizationId', auth()->user()->organizationId)
-            ->where($this->databaseColumn, $value)
-            ->first();
+        $tenancyQuery = DB::table($this->databaseTable)->where('organizationId', auth()->user()->organizationId);
 
-        return !is_null($result);
+        if (is_array($value)) {
+            return $tenancyQuery->whereIn($this->databaseColumn, $value)->count() === count($value);
+
+        } else {
+            try {
+                $tenancyQuery->where($this->databaseColumn, $value)->firstOrFail();
+                return true;
+            } catch (ModelNotFoundException $exception) {
+                return false;
+            }
+        }
     }
 
     /**

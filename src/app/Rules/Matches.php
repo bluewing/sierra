@@ -3,37 +3,59 @@
 namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use InvalidArgumentException;
 
 class Matches implements Rule
 {
     /**
-     * The string that should be matched.
+     * An array of possible values that the attribute must have.
      *
-     * @var string
+     * @var array
      */
-    protected string $match;
+    protected array $possibleValues;
+
+    /**
+     * An optional condition that can be evaluated, if it's provided.
+     */
+    protected $condition;
 
     /**
      * Create a new rule instance.
      *
-     * @param string $match
+     * @param array $possibleValues - The possible values that the attribute can be.
      */
-    public function __construct(string $match)
+    public function __construct(array $possibleValues)
     {
-        $this->match = $match;
+        if (!is_array($possibleValues)) {
+            throw new InvalidArgumentException('possible values must be an array');
+        }
+
+        $this->possibleValues = $possibleValues;
     }
 
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param $attribute - The attribute that is being checked.
+     * @param $value - The value that is being validated.
      *
-     * @return bool
+     * @return bool - `true` if the validation rule passed successfully, `false` otherwise.
      */
     public function passes($attribute, $value)
     {
-        return $this->match === $value;
+        return in_array($value, $this->possibleValues);
+
+    }
+
+    /**
+     * @param callable $condition - An optional condition to be evaluated.
+     *
+     * @return $this - This instance of the `Matches` rule.
+     */
+    public function iff(callable $condition): Matches
+    {
+        $this->condition = $condition;
+        return $this;
     }
 
     /**
@@ -43,6 +65,6 @@ class Matches implements Rule
      */
     public function message()
     {
-        return ':value does not match the expected value.';
+        return ':attribute needs to equal ' . $this->possibleValues[0];
     }
 }
