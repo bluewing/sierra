@@ -6,6 +6,7 @@ use Bluewing\Auth\Services\JwtManager;
 use Closure;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
+use Lcobucci\JWT\Token\RegisteredClaims;
 
 /**
  * Class Authenticate
@@ -26,11 +27,6 @@ class Authenticate
      * @var AuthManager
      */
     public AuthManager $auth;
-
-    /**
-     * @var string
-     */
-    public string $jwtMemberKey = 'mid';
 
     /**
      * Constructor for Authenticate middleware.
@@ -62,27 +58,15 @@ class Authenticate
             return response()->json("No Authorization header provided", 401);
         }
 
-        if (!$this->isAuthorizationHeaderVerifiable($request)) {
+        $authHeader = $request->header('Authorization');
+
+        if (!$this->jwtManager->isJwtVerified($authHeader)) {
             return response()->json("Token provided is not verifiable", 401);
         }
 
-        $userId = $this->jwtManager
-                    ->jwtFromString($request->header('Authorization'))
-                    ->getClaim($this->jwtMemberKey);
-
-        $this->auth->guard()->setUserId($userId);
-
+        $this->auth->guard()->setUserId(
+            $this->jwtManager->jwtFromHeader($authHeader)->claims()->get(RegisteredClaims::SUBJECT)
+        );
         return $next($request);
-    }
-
-    /**
-     * Helper function to ensure an Authorization header verifies.
-     *
-     * @param Request $request
-     *
-     * @return bool - `true` if the Authorization header verifies successfully.
-     */
-    private function isAuthorizationHeaderVerifiable(Request $request) {
-        return $this->jwtManager->isJwtVerified($request->header('Authorization'));
     }
 }

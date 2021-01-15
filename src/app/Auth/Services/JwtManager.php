@@ -4,13 +4,15 @@ namespace Bluewing\Auth\Services;
 
 use Bluewing\Contracts\MemberContract;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Carbon;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer\Key;
+use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\ValidationData;
+use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Constraint\ValidAt;
 
 /**
  * Managers the construction and verification of JSON Web Tokens for Bluewing properties.
@@ -18,27 +20,34 @@ use Lcobucci\JWT\ValidationData;
 class JwtManager {
 
     /**
-     * What scope is this JWT permitted for?
+     * @var Configuration
      */
-    private string $permitted;
+    private Configuration $config;
 
     /**
-     * The private key that should be used to sign the JWT.
-     *
      * @var string
      */
-    private string $key;
+    private string $bluewingIssuer = 'Bluewing';
 
     /**
      * Constructor for JwtManager.
      *
-     * @param string $permitted - What scope is this JWT permitted for.
+     * @param string $permitted - What scope is this JWT permitted for?
      * @param string $key - The private key that should be used to sign the JWT.
      */
-    public function __construct(string $permitted, string $key)
+    public function __construct(private string $permitted, private string $key)
     {
-        $this->permitted = $permitted;
-        $this->key = $key;
+        $this->config = Configuration::forSymmetricSigner(
+            new Sha256(),
+            InMemory::plainText($this->key)
+        );
+
+        $this->config->setValidationConstraints(
+            new IssuedBy($this->bluewingIssuer),
+            new PermittedFor($this->permitted),
+            new ValidAt(SystemClock::fromUTC()),
+            new SignedWith(new Sha256(), InMemory::plainText($this->key))
+        );
     }
 
     /**
@@ -51,7 +60,7 @@ class JwtManager {
      */
     public function buildJwtFor(MemberContract $authenticatable): string
     {
-        return 'Bearer ' . $this->buildJwt($authenticatable);
+        return 'Bearer ' . $this->buildJwt($authenticatable)->toString();
     }
 
     /**
@@ -67,12 +76,13 @@ class JwtManager {
     {
         $now = CarbonImmutable::now();
 
-        return (new Builder())->issuedBy('Bluewing')
+        return $this->config->builder()
             ->permittedFor($this->permitted)
+            ->issuedBy($this->bluewingIssuer)
             ->issuedAt($now)
             ->expiresAt($now->addMinutes(15))
-            ->withClaim('mid', $authenticatable->getAuthIdentifier())
-            ->getToken(new Sha256(), new Key($this->key));
+            ->relatedTo($authenticatable->getAuthIdentifier())
+            ->getToken($this->config->signer(), $this->config->signingKey());
     }
 
     /**
@@ -83,12 +93,12 @@ class JwtManager {
      *
      * @return Token - The parsed `Token` object.
      */
-    public function jwtFromString(string $jwtString): Token
+    public function jwtFromHeader(string $jwtString): Token
     {
         if ($this->doesJwtStringStartWithBearer($jwtString)) {
             $jwtString = $this->stripBearer($jwtString);
         }
-        return (new Parser())->parse($jwtString);
+        return $this->config->parser()->parse($jwtString);
     }
 
     /**
@@ -106,25 +116,10 @@ class JwtManager {
             return false;
         }
 
-        $jwt = $this->jwtFromString($jwtStringToVerify);
-
-        return $this->isJwtValid($jwt) && $jwt->verify(new Sha256(), new Key($this->key));
-    }
-
-    /**
-     * Ensures the provided `Token` is valid by comparing it against the `ValidationData`.
-     *
-     * @param Token $jwt - The JWT to check for validity.
-     *
-     * @return bool - `true` if the JWT is valid, `false` if it is not.
-     */
-    private function isJwtValid(Token $jwt): bool
-    {
-        $data = new ValidationData();
-        $data->setIssuer('Bluewing');
-        $data->setAudience($this->permitted);
-
-        return $jwt->validate($data);
+        return $this->config->validator()->validate(
+            $this->jwtFromHeader($jwtStringToVerify),
+            ...$this->config->validationConstraints()
+        );
     }
 
     /**

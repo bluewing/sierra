@@ -3,8 +3,8 @@
 namespace Tests\Unit\Auth;
 
 use Bluewing\Contracts\MemberContract;
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Exception;
 use Illuminate\Support\Str;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -27,39 +27,40 @@ final class JwtManagerTest extends TestCase
     protected MemberContract $authContract;
 
     /**
-     * The user ID for the JSON Web Token.
+     * The user ID for the JSON Web Token, that is stored in the `sub` claim of the JWT.
      *
      * @var string
      */
-    protected string $uid;
+    protected string $subject;
 
     /**
      * Sets up each test case. Instantiates an instance of JwtManager, creates a UUID, and mocks a
      * `UserOrganizationContract` for each test.
      *
      * @return void
+     * @throws Exception
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->jwtManager = new JwtManager('bluewing', 'key');
-        $this->uid = Str::uuid()->toString();
-        $this->authContract = $this->mockAuthContract($this->uid);
+        $this->jwtManager = new JwtManager('bluewing', 'base64:'.base64_encode(random_bytes(32)));
+        $this->subject = Str::uuid()->toString();
+        $this->authContract = $this->mockAuthContract($this->subject);
     }
 
     /**
      * Helper function that uses `Mockery` to fake an instance of `MemberContract`.
      *
-     * @param string $uid - The ID of the `MemberContract`.
+     * @param string $subject - The ID of the `MemberContract`.
      *
      * @return MemberContract - An instance conforming to the `MemberContract` that has a method called
      * `getAuthIdentifier` returning the UUID.
      */
-    protected function mockAuthContract(string $uid): MemberContract
+    protected function mockAuthContract(string $subject): MemberContract
     {
         $authContract = Mockery::mock(MemberContract::class);
-        $authContract->allows()->getAuthIdentifier()->andReturns($uid);
+        $authContract->allows()->getAuthIdentifier()->andReturns($subject);
         return $authContract;
     }
 
@@ -101,10 +102,11 @@ final class JwtManagerTest extends TestCase
     public function test_jwt_contains_correct_issuer(): void
     {
         $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
-        $token      = $this->jwtManager->jwtFromString($jwt);
+        $token      = $this->jwtManager->jwtFromHeader($jwt);
+        $claimType  = 'iss';
 
-        $this->assertTrue($token->hasClaim('iss'));
-        $this->assertEquals('Bluewing', $token->getClaim('iss'));
+        $this->assertTrue($token->claims()->has($claimType));
+        $this->assertEquals('Bluewing', $token->claims()->get($claimType));
     }
 
     /**
@@ -117,9 +119,9 @@ final class JwtManagerTest extends TestCase
     public function test_jwt_is_valid_for_15_minutes(): void
     {
         $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
-        $token      = $this->jwtManager->jwtFromString($jwt);
+        $token      = $this->jwtManager->jwtFromHeader($jwt);
 
-        $this->assertEqualsWithDelta(time() + (60 * 15), $token->getClaim('exp'), 1);
+        $this->assertEqualsWithDelta(time() + (60 * 15), $token->claims()->get('exp')->getTimestamp(), 1);
     }
 
     /**
@@ -132,26 +134,28 @@ final class JwtManagerTest extends TestCase
     public function test_jwt_is_permitted_properly(): void
     {
         $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
-        $token      = $this->jwtManager->jwtFromString($jwt);
+        $token      = $this->jwtManager->jwtFromHeader($jwt);
+        $claimType  = 'aud';
 
-        $this->assertTrue($token->hasClaim('aud'));
-        $this->assertEquals('bluewing', $token->getClaim('aud'));
+        $this->assertTrue($token->claims()->has($claimType));
+        $this->assertContains('bluewing', $token->claims()->get($claimType));
     }
 
     /**
-     * Check that the `mid` attribute of the token is properly set.
+     * Check that the `subject` attribute of the token is properly set.
      *
      * @group jwt
      *
      * @return void
      */
-    public function test_jwt_has_mid_set_correctly(): void
+    public function test_jwt_has_subject_set_correctly(): void
     {
         $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
-        $token      = $this->jwtManager->jwtFromString($jwt);
+        $token      = $this->jwtManager->jwtFromHeader($jwt);
+        $claimType  = 'sub';
 
-        $this->assertTrue($token->hasClaim('mid'));
-        $this->assertEquals($this->uid, $token->getClaim('mid'));
+        $this->assertTrue($token->claims()->has($claimType));
+        $this->assertEquals($this->subject, $token->claims()->get($claimType));
     }
 
     /**
@@ -184,7 +188,7 @@ final class JwtManagerTest extends TestCase
 
         // Decode the base64 formatting, convert to JSON, and update a parameter.
         $jsonPayload = json_decode(base64_decode($jwtComponents[1]));
-        $jsonPayload->uid = 2;
+        $jsonPayload->sub = Str::uuid()->toString();
 
         // Re-encode
         $jwtComponents[1] = base64_encode(json_encode($jsonPayload));
