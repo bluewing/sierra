@@ -3,11 +3,17 @@
 namespace Tests\Unit\Rules;
 
 use Bluewing\Rules\ValidEnumerationValue;
-use Bluewing\Enumerations\OrganizationPreference;
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use UnexpectedValueException;
 
 final class ValidEnumerationValueTest extends TestCase
 {
+    /**
+     * @var array|int[]
+     */
+    protected array $acceptableValues;
+
     /**
      * @var ValidEnumerationValue
      */
@@ -21,7 +27,18 @@ final class ValidEnumerationValueTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->rule = new ValidEnumerationValue(OrganizationPreference::class);
+        $this->acceptableValues = range(1, 5);
+
+        $this->rule = Mockery::mock(ValidEnumerationValue::class);
+        $this->rule->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('instantiateEnumeration')
+            ->with(Mockery::type('int'))
+            ->andReturnUsing(function($enumerationValue) {
+                if (!in_array($enumerationValue, $this->acceptableValues)) {
+                    throw new UnexpectedValueException();
+                }
+            });
     }
 
     /**
@@ -38,7 +55,7 @@ final class ValidEnumerationValueTest extends TestCase
 
     /**
      * Ensures that the validation rule will return `false` if the provided value does not exist in the enumeration.
-     * The provided value of 10 does not exist in the `OrganizationPreference` enumeration.
+     * The provided value of 10 does not exist in the mocked enumeration.
      *
      * @group rules
      *

@@ -8,11 +8,6 @@ use UnexpectedValueException;
 class ValidEnumerationValue implements Rule
 {
     /**
-     * @var string
-     */
-    protected string $enumerationClass;
-
-    /**
      * Create a new rule instance.
      *
      * @param string $enumerationClass - The dependency-injected instanced of the namespace of the
@@ -20,10 +15,7 @@ class ValidEnumerationValue implements Rule
      *
      * @return void
      */
-    public function __construct(string $enumerationClass)
-    {
-        $this->enumerationClass = $enumerationClass;
-    }
+    public function __construct(protected string $enumerationClass) {}
 
     /**
      * Determine if the validation rule passes by attempting to instantiate the enumeration class
@@ -39,9 +31,9 @@ class ValidEnumerationValue implements Rule
     public function passes($attribute, $value)
     {
         try {
-            new $this->enumerationClass(intval($value));
+            $this->instantiateEnumeration(intval($value));
             return true;
-        } catch (UnexpectedValueException $e) {
+        } catch (UnexpectedValueException) {
             return false;
         }
     }
@@ -54,5 +46,15 @@ class ValidEnumerationValue implements Rule
     public function message()
     {
         return 'The value :value is not valid for the property :attribute.';
+    }
+
+    /**
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function instantiateEnumeration($value): mixed
+    {
+        return new $this->enumerationClass($value);
     }
 }
