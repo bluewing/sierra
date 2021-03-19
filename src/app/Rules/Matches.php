@@ -8,13 +8,6 @@ use InvalidArgumentException;
 class Matches implements Rule
 {
     /**
-     * An array of possible values that the attribute must have.
-     *
-     * @var array
-     */
-    protected array $possibleValues;
-
-    /**
      * An optional condition that can be evaluated, if it's provided.
      */
     protected $condition;
@@ -24,13 +17,11 @@ class Matches implements Rule
      *
      * @param array $possibleValues - The possible values that the attribute can be.
      */
-    public function __construct(array $possibleValues)
+    public function __construct(protected array $possibleValues)
     {
         if (!is_array($possibleValues)) {
             throw new InvalidArgumentException('possible values must be an array');
         }
-
-        $this->possibleValues = $possibleValues;
     }
 
     /**

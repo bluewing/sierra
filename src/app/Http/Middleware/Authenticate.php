@@ -19,26 +19,12 @@ use Lcobucci\JWT\Token\RegisteredClaims;
 class Authenticate
 {
     /**
-     * @var JwtManager
-     */
-    public JwtManager $jwtManager;
-
-    /**
-     * @var AuthManager
-     */
-    public AuthManager $auth;
-
-    /**
      * Constructor for Authenticate middleware.
      *
      * @param AuthManager $auth - The dependency-injected instance of `AuthManager`.
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      */
-    public function __construct(AuthManager $auth, JwtManager $jwtManager)
-    {
-        $this->auth = $auth;
-        $this->jwtManager = $jwtManager;
-    }
+    public function __construct(public AuthManager $auth, public JwtManager $jwtManager) {}
 
     /**
      * Handle an incoming request.

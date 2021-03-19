@@ -24,13 +24,6 @@ class JwtGuard implements Guard
     use GuardHelpers;
 
     /**
-     * The `Request` object associated with the execution lifecycle.
-     *
-     * @var Request
-     */
-    protected Request $request;
-
-    /**
      * The ID of the `Member`. This custom property can be set by the `setUserId` method, if we have a need
      * to set the `Member` ID without retrieving the model from the database.
      *
@@ -44,10 +37,9 @@ class JwtGuard implements Guard
      * @param UserProvider $provider - The `UserProvider` used to handle the user.
      * @param Request $request - The `Request` object being guarded.
      */
-    public function __construct(UserProvider $provider, Request $request)
+    public function __construct(UserProvider $provider, protected Request $request)
     {
         $this->provider = $provider;
-        $this->request = $request;
         $this->id = null;
     }
 

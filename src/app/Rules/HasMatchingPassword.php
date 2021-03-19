@@ -8,19 +8,11 @@ use Illuminate\Support\Facades\Hash;
 class HasMatchingPassword implements Rule
 {
     /**
-     * @var string
-     */
-    protected string $password;
-
-    /**
      * Create a new rule instance.
      *
      * @param string $password - The dependency-injected instance of the hashed password to check.
      */
-    public function __construct(string $password)
-    {
-        $this->password = $password;
-    }
+    public function __construct(protected string $password) {}
 
     /**
      * This rule will evaluate to `true` if the provided value matches the provided password. It will return `false`

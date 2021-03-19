@@ -8,27 +8,13 @@ use Illuminate\Support\Facades\DB;
 class ExistsInTenancy implements Rule
 {
     /**
-     * The name of the table in the database to execute a search for.
-     */
-    protected string $databaseTable;
-
-    /**
-     * The name of the column in the table to execute a search against.
-     */
-    protected ?string $databaseColumn;
-
-    /**
      * Constructor for `ExistsInTenancy`.
      *
      * @param string $databaseTable - The string representing the database table that should be queried.
      * @param string|null $databaseColumn - The string representing the database column that should be queried. If not
      * provided, defaults to `id`.
      */
-    public function __construct(string $databaseTable, ?string $databaseColumn = 'id')
-    {
-        $this->databaseTable = $databaseTable;
-        $this->databaseColumn = $databaseColumn;
-    }
+    public function __construct(protected string $databaseTable, protected ?string $databaseColumn = 'id') {}
 
     /**
      * Executes a tenancy-aware query to retrieve an item with the prescribed value at the database table and column as

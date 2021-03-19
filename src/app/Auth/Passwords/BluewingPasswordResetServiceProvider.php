@@ -14,12 +14,8 @@ class BluewingPasswordResetServiceProvider extends PasswordResetServiceProvider
      */
     protected function registerPasswordBroker()
     {
-        $this->app->singleton('auth.password', function ($app) {
-            return new BluewingPasswordBrokerManager($app);
-        });
-
-        $this->app->bind('auth.password.broker', function ($app) {
-            return $app->make('auth.password')->broker();
-        });
+        $this->app->singleton('auth.password', fn($app) => new BluewingPasswordBrokerManager($app));
+        
+        $this->app->bind('auth.password.broker', fn($app) => $app->make('auth.password')->broker());
     }
 }

@@ -17,39 +17,13 @@ use Illuminate\Http\Response;
 class AppendTokensToResponse {
 
     /**
-     * An instance of the `Auth\Factory` contract that is dependency-injected into the class.
-     *
-     * @var AuthManager
-     */
-    protected AuthManager $auth;
-
-    /**
-     * An instance of `JwtManager`.
-     *
-     * @var JwtManager
-     */
-    protected JwtManager $jwtManager;
-
-    /**
-     * An instance of `RefreshTokenManagerTest`.
-     *
-     * @var RefreshTokenManager
-     */
-    protected RefreshTokenManager $refreshTokenManager;
-
-    /**
      * Constructor for `AppendTokensToResponse` middleware.
      *
-     * @param AuthManager $auth - The dependency-injected instance of `AuthManager`.
+     * @param AuthManager $auth - An instance of the `Auth\Factory` contract that is dependency-injected into the class.
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
-     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
+     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManager`.
      */
-    public function __construct(AuthManager $auth, JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager)
-    {
-        $this->auth = $auth;
-        $this->jwtManager = $jwtManager;
-        $this->refreshTokenManager = $refreshTokenManager;
-    }
+    public function __construct(protected AuthManager $auth, protected JwtManager $jwtManager, protected RefreshTokenManager $refreshTokenManager) {}
 
     /**
      * Handles the response by adding both a JWT and a Refresh Token to the `Response` headers. This is utilised

@@ -9,20 +9,6 @@ use InvalidArgumentException;
 class AroundNow implements Rule
 {
     /**
-     * The delta around the current instant of time that is acceptable.
-     *
-     * @var int
-     */
-    protected int $delta;
-
-    /**
-     * Customizes the delta that should be used if the date is ahead of now.
-     *
-     * @var int|null
-     */
-    protected ?int $forwardDelta;
-
-    /**
      * Create a new rule instance.
      *
      * @param int $delta - The duration in seconds that should be allowed as a delta on either side of the attribute
@@ -30,14 +16,11 @@ class AroundNow implements Rule
      * @param int|null $forwardDelta - An optional duration in seconds that should be allowed as a delta on the forward
      * side of the attribute value. This defaults to null, and if not provided, the $delta parameter is used instead.
      */
-    public function __construct(int $delta, int $forwardDelta = null)
+    public function __construct(protected int $delta, protected ?int $forwardDelta = null)
     {
         if ($delta < 0 || $forwardDelta < 0) {
             throw new InvalidArgumentException("Parameters must be greater than or equal to 0.");
         }
-
-        $this->delta = $delta;
-        $this->forwardDelta = $forwardDelta;
     }
 
     /**
