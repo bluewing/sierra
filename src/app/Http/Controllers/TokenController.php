@@ -14,34 +14,16 @@ use Throwable;
 class TokenController extends Controller
 {
     /**
-     * An instance of `JwtManager`.
-     *
-     * @var JwtManager
-     */
-    protected JwtManager $jwtManager;
-
-    /**
-     * An instance of `RefreshTokenManager`.
-     *
-     * @var RefreshTokenManager
-     */
-    protected RefreshTokenManager $refreshTokenManager;
-
-    /**
-     * Constructor for TokenController.
+     * Constructor for `TokenController`.
      *
      * @param JwtManager $jwtManager - The dependency-injected instance of `JwtManager`.
      * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
      */
-    public function __construct(JwtManager $jwtManager, RefreshTokenManager $refreshTokenManager)
-    {
-        $this->jwtManager = $jwtManager;
-        $this->refreshTokenManager = $refreshTokenManager;
-    }
+    public function __construct(protected JwtManager $jwtManager, protected RefreshTokenManager $refreshTokenManager) {}
 
     /**
      * @http-method    POST
-     * @url            /api/token
+     * @endpoint       /api/token
      *
      * Retrieves a new Access Token (JWT) by providing a refresh token in the body of the request.
      * If no `RefreshToken` is provided then the request fails.
@@ -52,9 +34,11 @@ class TokenController extends Controller
      *
      * @throws Throwable
      */
-    public function exchangeRefreshTokenForJwt(RefreshTokenRequest $request)
+    public function exchangeRefreshTokenForJwt(RefreshTokenRequest $request): JsonResponse
     {
-        $refreshToken = $this->refreshTokenManager->findRefreshTokenForUse($request->input('refreshToken'));
+        $refreshToken = $this->refreshTokenManager->findRefreshTokenForUse(
+            $request->input(RefreshTokenRequest::REFRESH_TOKEN_KEY)
+        );
 
         $jwt = $this->jwtManager->buildJwtFor($refreshToken->member);
 

@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RefreshTokenRequest extends FormRequest
 {
+    const REFRESH_TOKEN_KEY = 'refreshToken';
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,7 +26,7 @@ class RefreshTokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'refreshToken'  => ['required', 'size:64', 'exists:RefreshTokens,token']
+            self::REFRESH_TOKEN_KEY  => ['required', 'size:64', 'exists:RefreshTokens,token']
         ];
     }
 }

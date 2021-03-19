@@ -3,44 +3,35 @@
 namespace Bluewing\Http\Controllers;
 
 use Bluewing\Auth\Services\RefreshTokenManager;
+use Bluewing\Http\Requests\RefreshTokenRequest;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class LogoutController extends Controller
 {
     /**
-     * The instance of `RefreshTokenManagerTest`.
-     */
-    protected RefreshTokenManager $refreshTokenManager;
-
-    /**
-     * Constructor for LogoutController.
+     * Constructor for `LogoutController`.
      *
-     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManagerTest`.
+     * @param RefreshTokenManager $refreshTokenManager - The dependency-injected instance of `RefreshTokenManager`.
      */
-    public function __construct(RefreshTokenManager $refreshTokenManager)
-    {
-        $this->refreshTokenManager = $refreshTokenManager;
-    }
+    public function __construct(protected RefreshTokenManager $refreshTokenManager) {}
 
     /**
-     * @bluewing-http-method    POST
-     * @bluewing-url            /api/auth/logout
-     * @bluewing-auth           Authenticated
+     * @http-method     POST
+     * @endpoint        /api/auth/logout
      *
      * Logs a user out of the application by revoking their `RefreshToken` associated with the
      * current session.
      *
-     * @param Request $request - The `Request` object associated with the API endpoint.
+     * @param RefreshTokenRequest $request - The `RefreshTokenRequest` object associated with the API endpoint.
      *
      * @return JsonResponse - 204 No Content when the logout request is processed successfully.
      *
      * @throws Exception
      */
-    public function logout(Request $request)
+    public function __invoke(RefreshTokenRequest $request): JsonResponse
     {
-        $this->refreshTokenManager->revokeRefreshToken($request->input('refreshToken'));
+        $this->refreshTokenManager->revokeRefreshToken($request->input(RefreshTokenRequest::REFRESH_TOKEN_KEY));
         return response()->json(null, 204);
     }
 }

@@ -13,30 +13,12 @@ use Throwable;
 class RefreshTokenManager
 {
     /**
-     * An instance of `TokenGenerator`.
-     *
-     * @var TokenGenerator
-     */
-    protected TokenGenerator $tokenGenerator;
-
-    /**
-     * An instance of the `RefreshToken` model used to query the database.
-     *
-     * @var Model
-     */
-    protected Model $refreshTokenModel;
-
-    /**
      * Constructor for `RefreshTokenManager`.
      *
      * @param TokenGenerator $tokenGenerator - A dependency-injected instance of `TokenGenerator`.
-     * @param Model $model - A dependency-injected instance of the `RefreshToken` model.
+     * @param Model $refreshTokenModel - An instance of the `RefreshToken` model used to query the database.
      */
-    public function __construct(TokenGenerator $tokenGenerator, Model $model)
-    {
-        $this->tokenGenerator = $tokenGenerator;
-        $this->refreshTokenModel = $model;
-    }
+    public function __construct(protected TokenGenerator $tokenGenerator, protected Model $refreshTokenModel) {}
 
     /**
      * Builds a refresh token for the specified `MemberContract`, and inserts it into the database,
@@ -127,7 +109,7 @@ class RefreshTokenManager
     {
         $this->refreshTokenModel
             ->newQuery()
-            ->where('updatedAt', '<', Carbon::now()->subWeek())
+            ->where($this->refreshTokenModel->getUpdatedAtColumn(), '<', Carbon::now()->subWeek())
             ->delete();
     }
 }
