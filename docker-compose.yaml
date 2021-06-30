@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  bluewing:
+    build:
+      context: .
+    environment:
+      PHP_IDE_CONFIG: serverName=bluewing
+    container_name: bluewing
+    volumes:
+      - .:/var/www
+      - ./infrastructure/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
