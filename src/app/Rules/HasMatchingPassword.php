@@ -11,8 +11,9 @@ class HasMatchingPassword implements Rule
      * Create a new rule instance.
      *
      * @param string $password - The dependency-injected instance of the hashed password to check.
+     * @param string|null $message - The optional message to use in place of the default message.
      */
-    public function __construct(protected string $password) {}
+    public function __construct(protected string $password, protected ?string $message = null) {}
 
     /**
      * This rule will evaluate to `true` if the provided value matches the provided password. It will return `false`
@@ -39,6 +40,6 @@ class HasMatchingPassword implements Rule
      */
     public function message()
     {
-        return 'The provided password does not match.';
+        return $this->message ?? 'The provided password does not match.';
     }
 }

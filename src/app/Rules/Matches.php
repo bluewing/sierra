@@ -16,8 +16,9 @@ class Matches implements Rule
      * Create a new rule instance.
      *
      * @param array $possibleValues - The possible values that the attribute can be.
+     * @param string|null $message - The optional message to use in place of the default message.
      */
-    public function __construct(protected array $possibleValues)
+    public function __construct(protected array $possibleValues, protected ?string $message = null)
     {
         if (!is_array($possibleValues)) {
             throw new InvalidArgumentException('possible values must be an array');
@@ -56,6 +57,6 @@ class Matches implements Rule
      */
     public function message()
     {
-        return ':attribute needs to equal ' . $this->possibleValues[0];
+        return $this->message ?? ':attribute needs to equal ' . $this->possibleValues[0];
     }
 }

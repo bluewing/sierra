@@ -69,4 +69,18 @@ final class MatchesTest extends TestCase
             $this->assertFalse($rule->passes('test', $needle));
         }
     }
+
+    /**
+     * The `Matches` rule should allow a custom message to be provided if the validation fails, as the second
+     * parameter to the constructor.
+     *
+     * @group rules
+     *
+     * @return void
+     */
+    public function test_match_supports_custom_error_message()
+    {
+        $rule = new Matches([], 'Custom error message');
+        $this->assertEquals('Custom error message', $rule->message());
+    }
 }
