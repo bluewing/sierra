@@ -11,8 +11,17 @@ class BluewingFormRequest extends FormRequest
 {
 
     /**
+     * The array of allowed properties that are accepted as part of the `FormRequest` that undergo no validation.
+     * Providing additional properties to an API endpoint that utilizes `BluewingFormRequest` will result in validation
+     * errors.
+     *
+     * @var string[]
+     */
+    protected array $allowlist = [];
+
+    /**
      * Get the validator instance for the request. Provides additional functionality to validate an optional
-     * `whitelist` property on the `FormRequest`, ensuring that no unexpected keys exist.
+     * `allowlist` property on the `FormRequest`, ensuring that no unexpected keys exist.
      *
      * @return Validator
      *
@@ -22,23 +31,19 @@ class BluewingFormRequest extends FormRequest
     {
         $validator = parent::getValidatorInstance();
 
-        if (property_exists($this, 'whitelist')) {
+        $keysNotInAllowList = array_diff(
+            array_keys($this->request->all()),
+            $this->allowlist,
+            array_keys($this->container->call([$this, 'rules']))
+        );
 
-            $keysNotInWhitelist = array_diff(
-                array_keys($this->request->all()),
-                $this->whitelist,
-                array_keys($this->container->call([$this, 'rules']))
-            );
+        if (count($keysNotInAllowList) > 0) {
+            $errors = array_reduce($keysNotInAllowList, function($carry, $prop) {
+                $carry[$prop] = ["\"{$prop}\" property not allowed here."];
+                return $carry;
+            }, []);
 
-            if (count($keysNotInWhitelist) > 0) {
-                $errors = [];
-
-                foreach ($keysNotInWhitelist as $property) {
-                    $errors[$property] = ['Property not allowed here.'];
-                }
-
-                throw ValidationException::withMessages($errors);
-            }
+            throw ValidationException::withMessages($errors);
         }
 
         return $validator;
