@@ -2,13 +2,12 @@
 
 namespace Bluewing\Auth\Concerns;
 
-use Bluewing\Eloquent\Model;
-use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Auth\MustVerifyEmail as BaseMustVerifyEmail;
 
 /**
- * Trait BluewingMustVerifyEmail
- *
- * @property Model user - The `User` model that is related to the model that traits the `MustVerifyEmail` functionality.
+ * Provides functionality for the model that can verify an email address. This assumes the existence of an
+ * `emailVerifiedAt` and `email` property on the model. For example, in showcrew, both an organization and a user can
+ * verify addresses.
  *
  * @package Bluewing
  *
@@ -16,49 +15,33 @@ use Illuminate\Auth\Notifications\VerifyEmail;
  * @method freshTimestamp();
  * @method notify();
  *
- * @see Illuminate\Auth\MustVerifyEmail
+ * @see Illuminate\Contracts\Auth\MustVerifyEmail - The interface that is fulfilled by providing this trait on a model.
+ * @see Illuminate\Auth\MustVerifyEmail - The initial trait which this trait overrides. Some methods are not redefined.
+ * @see \Illuminate\Auth\Notifications\VerifyEmai - The email that is sent as part of the verification process.
  */
 trait MustVerifyEmail {
 
+    use BaseMustVerifyEmail;
+
     /**
-     * Determine if the user has verified their email address.
+     * Determine if the verifyee has verified their email address.
      *
      * @return bool
      */
     public function hasVerifiedEmail()
     {
-        return ! is_null($this->user->emailVerifiedAt);
+        return ! is_null($this->emailVerifiedAt);
     }
 
     /**
-     * Mark the given user's email as verified.
+     * Mark the given verifyee's email as verified.
      *
      * @return bool
      */
     public function markEmailAsVerified()
     {
-        return $this->user->forceFill([
+        return $this->forceFill([
             'emailVerifiedAt' => $this->freshTimestamp(),
         ])->save();
-    }
-
-    /**
-     * Send the email verification notification.
-     *
-     * @return void
-     */
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new VerifyEmail);
-    }
-
-    /**
-     * Get the email address that should be used for verification.
-     *
-     * @return string
-     */
-    public function getEmailForVerification()
-    {
-        return $this->user->email;
     }
 }
