@@ -13,4 +13,11 @@ use Illuminate\Notifications\Notifiable;
 class User extends BluewingModel implements MustVerifyEmailContract
 {
     use MustVerifyEmail, Notifiable;
+
+    /**
+     * The name of the table in the database.
+     *
+     * @var string
+     */
+    protected $table = 'Users';
 }

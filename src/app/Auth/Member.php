@@ -18,4 +18,11 @@ use Illuminate\Notifications\Notifiable;
 class Member extends BluewingPivot implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use BluewingAuthenticatable, BluewingCanResetPassword, Authorizable, Notifiable;
+
+    /**
+     * The name of the table in the database.
+     *
+     * @var string
+     */
+    protected $table = 'Members';
 }
