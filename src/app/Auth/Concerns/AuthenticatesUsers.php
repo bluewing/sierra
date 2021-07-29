@@ -3,6 +3,7 @@
 namespace Bluewing\Auth\Concerns;
 
 use Bluewing\Http\Requests\LoginRequest;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -94,13 +95,15 @@ trait AuthenticatesUsers {
 
     /**
      * TODO: Fill out completely.
+     *
      * @param LoginRequest $request
      *
-     * @return ResponseFactory|Response
+     * @throws AuthenticationException - An `AuthenticationException` is thrown, which returns a 401 Unauthorized
+     * JSON response to the client.
      */
     protected function sendFailedLoginResponse(LoginRequest $request)
     {
-        return response(null, 401);
+        throw new AuthenticationException;
     }
 
     /**

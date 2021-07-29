@@ -13,13 +13,13 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Constructor for `LoginController`.
-     *
-     * Ensures that JWT and refresh tokens are appropriately appended to the headers
-     * of each response.
+     * `LoginController` uses the `AuthenticatesUsers` trait to handle login functionality, while also appending
+     * JSON Web Tokens and Refresh Tokens to the headers of successful login responses.
      */
     public function __construct()
     {
-        $this->middleware(AppendTokensToResponse::class);
+        $this->middleware([
+            AppendTokensToResponse::class
+        ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Bluewing\Providers;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -73,6 +74,9 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
      * @param mixed $identifier - The identifier used to identify an `Authenticatable`.
      *
      * @return Authenticatable|null
+     *
+     * @throws AuthenticationException - An `AuthenticationException` will be thrown if no model is found that
+     * matches the provided identifier.
      */
     public function retrieveById($identifier)
     {
@@ -84,7 +88,7 @@ class BluewingUserProvider extends EloquentUserProvider implements UserProvider
                 ->where($model->getAuthIdentifierName(), $identifier)
                 ->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            abort(401);
+            throw new AuthenticationException;
         }
     }
 
