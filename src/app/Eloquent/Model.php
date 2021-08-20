@@ -56,12 +56,11 @@ abstract class Model extends EloquentModel
      */
     protected static function boot()
     {
-        static::bootTraits();
-
         static::creating(function(EloquentModel $model) {
             if (!$model->getKey()) {
                 $model->{$model->getKeyName()} = Str::uuid()->toString();
             }
         });
+        parent::boot();
     }
 }
