@@ -17,7 +17,7 @@ use Illuminate\Auth\MustVerifyEmail as BaseMustVerifyEmail;
  *
  * @see Illuminate\Contracts\Auth\MustVerifyEmail - The interface that is fulfilled by providing this trait on a model.
  * @see Illuminate\Auth\MustVerifyEmail - The initial trait which this trait overrides. Some methods are not redefined.
- * @see \Illuminate\Auth\Notifications\VerifyEmai - The email that is sent as part of the verification process.
+ * @see \Illuminate\Auth\Notifications\VerifyEmail - The email that is sent as part of the verification process.
  */
 trait MustVerifyEmail {
 
