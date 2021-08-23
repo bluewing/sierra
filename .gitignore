@@ -2,3 +2,4 @@ vendor/
 /.idea
 *.cache
 .DS_Store
+xdebug.log
