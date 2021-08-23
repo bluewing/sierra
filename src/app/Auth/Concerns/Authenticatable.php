@@ -11,16 +11,15 @@ use Illuminate\Database\Eloquent\Model;
 trait Authenticatable {
 
     /**
-     * Override the default remember token field name from `remember_token` to `rememberToken`,
-     * to match our preferred camelCase style for database fields.
+     * Override the default remember token field name from `remember_token` to `rememberToken`, to match our
+     * preferred camelCase style for database fields.
      */
     protected string $rememberTokenName = 'rememberToken';
 
     /**
-     * Retrieves the name of the field associated with the identifier for the `MemberContract`
-     * implementing class.
+     * Retrieves the name of the field associated with the identifier for the `Authenticatable` implementing class.
      *
-     * @return string - The identifier name of the `MemberContract`.
+     * @return string - The identifier name of the `Authenticatable`.
      */
     public function getAuthIdentifierName()
     {
@@ -28,7 +27,7 @@ trait Authenticatable {
     }
 
     /**
-     * Retrieve the actual identifier associated with the `MemberContract` implementing object.
+     * Retrieve the actual identifier associated with the `Authenticatable` implementing object.
      *
      * @return object
      */
@@ -38,7 +37,7 @@ trait Authenticatable {
     }
 
     /**
-     * Retrieve the password associated with the user. Because the `MemberContract` refers to the `Member`, this must
+     * Retrieve the password associated with the user. Because the `Authenticatable` refers to the `Member`, this must
      * be retrieved from the `User` relationship.
      *
      * @return string - The `User`'s password.
@@ -49,8 +48,8 @@ trait Authenticatable {
     }
 
     /**
-     * Retrieves the remember token from the `MemberContract`. Because Bluewing applications utilise
-     * stateless JSON Web Tokens for authentication, this method is not needed.
+     * Retrieves the remember token from the `Authenticatable`. Because Bluewing applications utilise stateless JSON
+     * Web Tokens for authentication, this method is not needed.
      *
      * @return string|void - The remember token, if it exists.
      */

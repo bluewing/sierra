@@ -2,8 +2,8 @@
 
 namespace Bluewing\Auth\Services;
 
-use Bluewing\Contracts\MemberContract;
 use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -56,28 +56,26 @@ class JwtManager {
     }
 
     /**
-     * Builds a JWT or the entity which implements `MemberContract`. Usually, this is a `Member`.
+     * Builds a JWT or the entity which implements `Authenticatable`. Usually, this is a `Member`.
      *
-     * @param MemberContract $authenticatable - The entity which implements the
-     * authentication functionality.
+     * @param Authenticatable $authenticatable - The entity which implements the authentication functionality.
      *
      * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildJwtFor(MemberContract $authenticatable): string
+    public function buildJwtFor(Authenticatable $authenticatable): string
     {
         return 'Bearer ' . $this->buildJwt($authenticatable)->toString();
     }
 
     /**
-     * Constructs a `Token` object using information supplied by the `MemberContract`
-     * implementor. JWTs generated will be valid for fifteen minutes from time of generation.
+     * Constructs a `Token` object using information supplied by the `Authenticatable` implementor. JWTs generated
+     * will be valid for fifteen minutes from time of generation.
      *
-     * @param MemberContract $authenticatable - The entity which implements the
-     * authentication functionality.
+     * @param Authenticatable $authenticatable - The entity which implements the authentication functionality.
      *
      * @return Token - The JWT for the user.
      */
-    private function buildJwt(MemberContract $authenticatable): Token
+    private function buildJwt(Authenticatable $authenticatable): Token
     {
         $now = CarbonImmutable::now();
 
@@ -91,8 +89,8 @@ class JwtManager {
     }
 
     /**
-     * Retrieves a `Token` from the provided `jwtString`. If the string is prefixed with "Bearer",
-     * strip it from the `jwtString`.
+     * Retrieves a `Token` from the provided `jwtString`. If the string is prefixed with "Bearer", strip it from the
+     * `jwtString`.
      *
      * @param string $jwtString - A string of the `Token`.
      *
@@ -112,8 +110,8 @@ class JwtManager {
      *
      * @param string $jwtStringToVerify - The string representation of the `Token`.
      *
-     * @return bool - `true` if the JWT verifies successfully, `false` if the JWT is invalid or otherwise
-     * not verifiable.
+     * @return bool - `true` if the JWT verifies successfully, `false` if the JWT is invalid or otherwise not
+     * verifiable.
      */
     public function isJwtVerified(string $jwtStringToVerify): bool
     {
@@ -140,11 +138,8 @@ class JwtManager {
     }
 
     /**
-     * Splits the provided `tokenString` into an array separated by the space in the token
-     * string, and returns the token component only.
-     *
-     * The function must only be called if the token string conforms to the expected
-     * design.
+     * Splits the provided `tokenString` into an array separated by the space in the token string, and returns the
+     * token component only. The function must only be called if the token string conforms to the expected design.
      *
      * @param string $tokenString - The string to strip.
      *

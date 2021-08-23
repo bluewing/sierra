@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Auth;
 
-use Bluewing\Contracts\MemberContract;
 use Carbon\CarbonImmutable;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -20,11 +20,11 @@ final class JwtManagerTest extends TestCase
     protected JwtManager $jwtManager;
 
     /**
-     * A mocked instance of a `MemberContract`.
+     * A mocked instance of an `Authenticatable`.
      *
-     * @var MemberContract
+     * @var Authenticatable
      */
-    protected MemberContract $authContract;
+    protected Authenticatable $authContract;
 
     /**
      * The user ID for the JSON Web Token, that is stored in the `sub` claim of the JWT.
@@ -44,22 +44,22 @@ final class JwtManagerTest extends TestCase
     {
         parent::setUp();
 
-        $this->jwtManager = new JwtManager('bluewing', 'base64:'.base64_encode(random_bytes(32)));
-        $this->subject = Str::uuid()->toString();
+        $this->jwtManager   = new JwtManager('bluewing', 'base64:'.base64_encode(random_bytes(32)));
+        $this->subject      = Str::uuid()->toString();
         $this->authContract = $this->mockAuthContract($this->subject);
     }
 
     /**
-     * Helper function that uses `Mockery` to fake an instance of `MemberContract`.
+     * Helper function that uses `Mockery` to fake an instance of `Authenticatable`.
      *
-     * @param string $subject - The ID of the `MemberContract`.
+     * @param string $subject - The ID of the `Authenticatable`.
      *
-     * @return MemberContract - An instance conforming to the `MemberContract` that has a method called
+     * @return Authenticatable - An instance conforming to the `Authenticatable` that has a method called
      * `getAuthIdentifier` returning the UUID.
      */
-    protected function mockAuthContract(string $subject): MemberContract
+    protected function mockAuthContract(string $subject): Authenticatable
     {
-        $authContract = Mockery::mock(MemberContract::class);
+        $authContract = Mockery::mock(Authenticatable::class);
         $authContract->allows()->getAuthIdentifier()->andReturns($subject);
         return $authContract;
     }

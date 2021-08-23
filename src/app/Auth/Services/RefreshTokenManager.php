@@ -2,10 +2,10 @@
 
 namespace Bluewing\Auth\Services;
 
-use Bluewing\Contracts\MemberContract;
 use Bluewing\Services\TokenGenerator;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
@@ -21,20 +21,20 @@ class RefreshTokenManager
     public function __construct(protected TokenGenerator $tokenGenerator, protected Model $refreshTokenModel) {}
 
     /**
-     * Builds a refresh token for the specified `MemberContract`, and inserts it into the database,
-     * returning the `RefreshToken`'s token string.
+     * Builds a refresh token for the specified `Authenticatable`, and inserts it into the database, returning the
+     * `RefreshToken`'s token string.
      *
-     * @param MemberContract $authenticatable - The entity which implements the
-     * authentication functionality (in our case, `Member`).
+     * @param Authenticatable $authenticatable - The entity which implements the authentication functionality (in our
+     * case, `Member`).
      *
      * @return string - The `RefreshToken` string that can be exchanged for a new JSON web token.
      *
      * @throws Exception
      */
-    public function buildRefreshTokenFor(MemberContract $authenticatable): string
+    public function buildRefreshTokenFor(Authenticatable $authenticatable): string
     {
         $refreshToken = $this->refreshTokenModel->newQuery()->create([
-            'organizationId'    => $authenticatable->user->id,
+            'organizationId'    => $authenticatable->user->id,                      // TODO: Is this correct?
             'memberId'          => $authenticatable->getAuthIdentifier(),
             'token'             => $this->tokenGenerator->generate(64, 'refresh'),
             'device'            => null
@@ -98,10 +98,8 @@ class RefreshTokenManager
     }
 
     /**
-     * Find and delete all `RefreshToken` entries where the last utilised date was a week ago.
-     *
-     * This functionality is utilised by the `DeleteExpiredRefreshTokensJob` class, which is set
-     * to run every hour as a cron task.
+     * Find and delete all `RefreshToken` entries where the last utilised date was a week ago. This functionality is
+     * utilised by the `DeleteExpiredRefreshTokensJob` class, which is set to run every hour as a cron task.
      *
      * @return void
      */
