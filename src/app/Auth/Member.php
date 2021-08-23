@@ -13,7 +13,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Bluewing\Auth\Concerns\Authenticatable as BluewingAuthenticatable;
 use Bluewing\Auth\Concerns\CanResetPassword as BluewingCanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Notifications\Notifiable;
+use Bluewing\Notifications\Notifiable;
 
 class Member extends BluewingPivot implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
