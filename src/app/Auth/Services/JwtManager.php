@@ -30,6 +30,11 @@ class JwtManager {
     private string $bluewingIssuer = 'Bluewing';
 
     /**
+     * @var int
+     */
+    private int $validityDurationInMinutes = 15;
+
+    /**
      * Constructor for JwtManager.
      *
      * @param string $permitted - What scope is this JWT permitted for?
@@ -80,7 +85,7 @@ class JwtManager {
             ->permittedFor($this->permitted)
             ->issuedBy($this->bluewingIssuer)
             ->issuedAt($now)
-            ->expiresAt($now->addMinutes(15))
+            ->expiresAt($now->addMinutes($this->validityDurationInMinutes))
             ->relatedTo($authenticatable->getAuthIdentifier())
             ->getToken($this->config->signer(), $this->config->signingKey());
     }
