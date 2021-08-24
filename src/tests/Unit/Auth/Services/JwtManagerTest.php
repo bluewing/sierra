@@ -172,7 +172,9 @@ final class JwtManagerTest extends TestCase
     }
 
     /**
-     * Test that the JWT is not verified if the properties of the token are tampered with.
+     * Test that the JWT is not verified if the properties of the token are tampered with. Furthermore, aJWT that has
+     * invalid content (for example, being base64 with the `=` padding remaining on the end of the base64 string)
+     * should not be able to be verified.
      *
      * @group jwt
      *
@@ -180,6 +182,22 @@ final class JwtManagerTest extends TestCase
      */
     public function test_tampered_jwt_cannot_be_verified(): void
     {
+        $scenarios = [
+            'tamperedJwt' => function($jsonPayload) {
+                $jsonPayload->sub = Str::uuid()->toString();
+                // Re-encode. Note that base64 padding ins trimmed as per RFC7515
+                // https://datatracker.ietf.org/doc/html/rfc7515#section-2
+                $jwtComponents[1] = trim(base64_encode(json_encode($jsonPayload)), "=");
+                return implode(".", $jwtComponents);
+            },
+
+            'tamperedJwtWithInvalidContent' => function($jsonPayload) {
+                $jsonPayload->sub = Str::uuid()->toString();
+                $jwtComponents[1] = base64_encode(json_encode($jsonPayload));
+                return implode(".", $jwtComponents);
+            }
+        ];
+
         // Create the token.
         $jwt = $this->jwtManager->buildJwtFor($this->authContract);
 
@@ -188,14 +206,13 @@ final class JwtManagerTest extends TestCase
 
         // Decode the base64 formatting, convert to JSON, and update a parameter.
         $jsonPayload = json_decode(base64_decode($jwtComponents[1]));
-        $jsonPayload->sub = Str::uuid()->toString();
 
-        // Re-encode
-        $jwtComponents[1] = base64_encode(json_encode($jsonPayload));
-        $jwt = implode(".", $jwtComponents);
-
-        // Assert that the token is not verified.
-        $this->assertFalse($this->jwtManager->isJwtVerified($jwt));
+        // Fetch each invalid JWT.
+        foreach ($scenarios as $scenario) {
+            $jwt = $scenario($jsonPayload);
+            // Assert that the token is not verified.
+            $this->assertFalse($this->jwtManager->isJwtVerified($jwt));
+        }
     }
 
     /**

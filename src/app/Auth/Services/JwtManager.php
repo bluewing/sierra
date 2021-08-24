@@ -5,13 +5,16 @@ namespace Bluewing\Auth\Services;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Encoding\CannotDecodeContent;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\UnsupportedHeaderFound;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Constraint\StrictValidAt;
 use Lcobucci\JWT\Validation\Constraint\ValidAt;
 
 /**
@@ -50,7 +53,7 @@ class JwtManager {
         $this->config->setValidationConstraints(
             new IssuedBy($this->bluewingIssuer),
             new PermittedFor($this->permitted),
-            new ValidAt(SystemClock::fromUTC()),
+            new StrictValidAt(SystemClock::fromUTC()),
             new SignedWith(new Sha256(), InMemory::plainText($this->key))
         );
     }
@@ -83,6 +86,7 @@ class JwtManager {
             ->permittedFor($this->permitted)
             ->issuedBy($this->bluewingIssuer)
             ->issuedAt($now)
+            ->canOnlyBeUsedAfter($now)
             ->expiresAt($now->addMinutes($this->validityDurationInMinutes))
             ->relatedTo($authenticatable->getAuthIdentifier())
             ->getToken($this->config->signer(), $this->config->signingKey());
@@ -119,10 +123,12 @@ class JwtManager {
             return false;
         }
 
-        return $this->config->validator()->validate(
-            $this->jwtFromHeader($jwtStringToVerify),
-            ...$this->config->validationConstraints()
-        );
+        try {
+            $token = $this->jwtFromHeader($jwtStringToVerify);
+            return $this->config->validator()->validate($token, ...$this->config->validationConstraints());
+        } catch (CannotDecodeContent|Token\InvalidTokenStructure|UnsupportedHeaderFound) {
+            return false;
+        }
     }
 
     /**
