@@ -2,20 +2,23 @@
 
 namespace Bluewing\Auth\Services;
 
+use Bluewing\Auth\Contracts\Claimable;
 use Carbon\CarbonImmutable;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Encoding\CannotDecodeContent;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\InvalidTokenStructure;
+use Lcobucci\JWT\Token\RegisteredClaims;
 use Lcobucci\JWT\Token\UnsupportedHeaderFound;
+use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Constraint\StrictValidAt;
-use Lcobucci\JWT\Validation\Constraint\ValidAt;
 
 /**
  * Managers the construction and verification of JSON Web Tokens for Bluewing properties.
@@ -38,7 +41,7 @@ class JwtManager {
     private int $validityDurationInMinutes = 15;
 
     /**
-     * Constructor for JwtManager.
+     * Constructor for `JwtManager`.
      *
      * @param string $permitted - What scope is this JWT permitted for?
      * @param string $key - The private key that should be used to sign the JWT.
@@ -59,37 +62,60 @@ class JwtManager {
     }
 
     /**
-     * Builds a JWT or the entity which implements `Authenticatable`. Usually, this is a `Member`.
+     * Builds a JWT or the entity which implements the `Claimable` contract. Usually, this is a `Member`.
      *
-     * @param Authenticatable $authenticatable - The entity which implements the authentication functionality.
+     * @param Claimable $claimable - The entity which is vended a JSON Web Token.
      *
      * @return string - The completed JWT, prefixed with the string 'Bearer'.
      */
-    public function buildJwtFor(Authenticatable $authenticatable): string
+    public function buildJwtFor(Claimable $claimable): string
     {
-        return 'Bearer ' . $this->buildJwt($authenticatable)->toString();
+        return 'Bearer ' . $this->buildJwt($claimable)->toString();
     }
 
     /**
-     * Constructs a `Token` object using information supplied by the `Authenticatable` implementor. JWTs generated
-     * will be valid for fifteen minutes from time of generation.
+     * Constructs a `Token` object using information supplied by the `Claimable` implementor. JWTs generated will be
+     * valid for fifteen minutes from time of generation.
      *
-     * @param Authenticatable $authenticatable - The entity which implements the authentication functionality.
+     * @param Claimable $claimable - The entity which implements the authentication functionality.
      *
      * @return Token - The JWT for the user.
      */
-    private function buildJwt(Authenticatable $authenticatable): Token
+    private function buildJwt(Claimable $claimable): Token
     {
         $now = CarbonImmutable::now();
 
-        return $this->config->builder()
+        return $this->buildCustomClaims($claimable)
             ->permittedFor($this->permitted)
             ->issuedBy($this->bluewingIssuer)
             ->issuedAt($now)
             ->canOnlyBeUsedAfter($now)
             ->expiresAt($now->addMinutes($this->validityDurationInMinutes))
-            ->relatedTo($authenticatable->getAuthIdentifier())
+            ->relatedTo($claimable->getAuthIdentifier())
             ->getToken($this->config->signer(), $this->config->signingKey());
+    }
+
+    /**
+     * Configures custom claims for the JSON Web Token by retrieving an array of claims from the provided `Claimable`.
+     * Each claim specified is added to the `Builder` object. If no claims are specified (i.e. `null` is returned
+     * from `getClaimsForJwt`), then the `Builder` will be returned unchanged.
+     *
+     * @param Claimable $claimable - The `Claimable` to fetch custom claims from.
+     *
+     * @return Builder - The `Builder` used to build the JSON Web Token.
+     */
+    private function buildCustomClaims(Claimable $claimable): Builder
+    {
+        $claims     = $claimable->getClaimsForJwt();
+        $builder    = $this->config->builder();
+
+        if (!is_null($claims)) {
+            foreach ($claims as $claimKey => $claimValue) {
+                $builder = $builder->withClaim(strtolower("$this->bluewingIssuer:$claimKey"), $claimValue);
+            }
+        }
+
+        return $builder;
     }
 
     /**
@@ -126,9 +152,25 @@ class JwtManager {
         try {
             $token = $this->jwtFromHeader($jwtStringToVerify);
             return $this->config->validator()->validate($token, ...$this->config->validationConstraints());
-        } catch (CannotDecodeContent|Token\InvalidTokenStructure|UnsupportedHeaderFound) {
+        } catch (CannotDecodeContent|InvalidTokenStructure|UnsupportedHeaderFound) {
             return false;
         }
+    }
+
+    /**
+     * Retrieves a particular `RegisteredClaims` claim (a claim that is listed in the IANA JSON Web Token Claims
+     * registry), or a custom claim identified by a string, from the provided JWT string.
+     *
+     * @param string $jwtString - The JWT string to retrieve the claim from.
+     * @param RegisteredClaims|string $claim - The claim that is being retrieved.
+     *
+     * @return mixed - The value of the claim requested, or `null` if no claim exists in the JSON Web Token.
+     */
+    public function getClaimFromJwt(string $jwtString, RegisteredClaims|string $claim): mixed
+    {
+        $token = $this->jwtFromHeader($jwtString);
+        assert($token instanceof UnencryptedToken);
+        return $token->claims()->get($claim);
     }
 
     /**

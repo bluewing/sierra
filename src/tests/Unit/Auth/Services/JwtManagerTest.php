@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Auth;
 
+use Bluewing\Auth\Contracts\Claimable;
 use Carbon\CarbonImmutable;
 use Exception;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -20,11 +20,11 @@ final class JwtManagerTest extends TestCase
     protected JwtManager $jwtManager;
 
     /**
-     * A mocked instance of an `Authenticatable`.
+     * A mocked instance of an `Claimable`.
      *
-     * @var Authenticatable
+     * @var Claimable
      */
-    protected Authenticatable $authContract;
+    protected Claimable $claimableContract;
 
     /**
      * The user ID for the JSON Web Token, that is stored in the `sub` claim of the JWT.
@@ -44,24 +44,27 @@ final class JwtManagerTest extends TestCase
     {
         parent::setUp();
 
-        $this->jwtManager   = new JwtManager('bluewing', 'base64:'.base64_encode(random_bytes(32)));
-        $this->subject      = Str::uuid()->toString();
-        $this->authContract = $this->mockAuthContract($this->subject);
+        $this->jwtManager           = new JwtManager('bluewing', 'base64:'.base64_encode(random_bytes(32)));
+        $this->subject              = Str::uuid()->toString();
+        $this->claimableContract    = $this->mockClaimableContract($this->subject, null);
     }
 
     /**
-     * Helper function that uses `Mockery` to fake an instance of `Authenticatable`.
+     * Helper function that uses `Mockery` to fake an instance of `Claimable`.
      *
-     * @param string $subject - The ID of the `Authenticatable`.
+     * @param string $subject - The ID of the `Claimable`.
+     * @param array|null $claims - An `array` of claims to lodge for the JWT, or `null` if none are present.
      *
-     * @return Authenticatable - An instance conforming to the `Authenticatable` that has a method called
+     * @return Claimable - An instance conforming to the `Claimable` interface that has a method called
      * `getAuthIdentifier` returning the UUID.
      */
-    protected function mockAuthContract(string $subject): Authenticatable
+    protected function mockClaimableContract(string $subject, ?array $claims): Claimable
     {
-        $authContract = Mockery::mock(Authenticatable::class);
-        $authContract->allows()->getAuthIdentifier()->andReturns($subject);
-        return $authContract;
+        $claimsContract = Mockery::mock(Claimable::class);
+        $claimsContract->allows()->getAuthIdentifier()->andReturns($subject);
+        $claimsContract->allows()->getClaimsForJwt()->andReturns($claims);
+
+        return $claimsContract;
     }
 
     /**
@@ -88,7 +91,7 @@ final class JwtManagerTest extends TestCase
      */
     public function test_jwt_begins_with_bearer(): void
     {
-        $jwt = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt = $this->jwtManager->buildJwtFor($this->claimableContract);
         $this->assertStringStartsWith("Bearer", $jwt);
     }
 
@@ -101,7 +104,7 @@ final class JwtManagerTest extends TestCase
      */
     public function test_jwt_contains_correct_issuer(): void
     {
-        $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt        = $this->jwtManager->buildJwtFor($this->claimableContract);
         $token      = $this->jwtManager->jwtFromHeader($jwt);
         $claimType  = 'iss';
 
@@ -118,7 +121,7 @@ final class JwtManagerTest extends TestCase
      */
     public function test_jwt_is_valid_for_15_minutes(): void
     {
-        $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt        = $this->jwtManager->buildJwtFor($this->claimableContract);
         $token      = $this->jwtManager->jwtFromHeader($jwt);
 
         $this->assertEqualsWithDelta(time() + (60 * 15), $token->claims()->get('exp')->getTimestamp(), 1);
@@ -133,7 +136,7 @@ final class JwtManagerTest extends TestCase
      */
     public function test_jwt_is_permitted_properly(): void
     {
-        $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt        = $this->jwtManager->buildJwtFor($this->claimableContract);
         $token      = $this->jwtManager->jwtFromHeader($jwt);
         $claimType  = 'aud';
 
@@ -150,12 +153,43 @@ final class JwtManagerTest extends TestCase
      */
     public function test_jwt_has_subject_set_correctly(): void
     {
-        $jwt        = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt        = $this->jwtManager->buildJwtFor($this->claimableContract);
         $token      = $this->jwtManager->jwtFromHeader($jwt);
         $claimType  = 'sub';
 
         $this->assertTrue($token->claims()->has($claimType));
         $this->assertEquals($this->subject, $token->claims()->get($claimType));
+    }
+
+    /**
+     * If the `Claimable` contract object has custom claims that can be provided, they should be added to the
+     * @group jwt
+     *
+     * @return void
+     */
+    public function test_custom_claims_can_be_provided_in_jwt(): void
+    {
+        $now = CarbonImmutable::now();
+        $scenarios = [
+            'claimableHasNoClaims'      => [
+                'claimable'     => $this->mockClaimableContract($this->subject, null),
+                'claimToGet'    => []
+            ],
+            'claimableHasBluewingClaim' => [
+                'claimable'     => $this->mockClaimableContract($this->subject, ['trialExpiresAt' => $now]),
+                'claimToGet'    => ['bluewing:trialexpiresat' => $now->toISOString()]
+            ]
+        ];
+
+        foreach ($scenarios as $scenario) {
+            $jwt = $this->jwtManager->buildJwtFor($scenario['claimable']);
+
+            foreach ($scenario['claimToGet'] as $claimKeyToGet => $claimValueToGet) {
+                $actualClaimValue = $this->jwtManager->getClaimFromJwt($jwt, $claimKeyToGet);
+                $this->assertNotNull($actualClaimValue);
+                $this->assertEquals($claimValueToGet, $actualClaimValue);
+            }
+        }
     }
 
     /**
@@ -167,7 +201,7 @@ final class JwtManagerTest extends TestCase
      */
     public function test_jwt_verifies(): void
     {
-        $jwt = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt = $this->jwtManager->buildJwtFor($this->claimableContract);
         $this->assertTrue($this->jwtManager->isJwtVerified($jwt));
     }
 
@@ -199,7 +233,7 @@ final class JwtManagerTest extends TestCase
         ];
 
         // Create the token.
-        $jwt = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt = $this->jwtManager->buildJwtFor($this->claimableContract);
 
         // Split the token into its components
         $jwtComponents = explode(".", $jwt);
@@ -232,7 +266,7 @@ final class JwtManagerTest extends TestCase
         $thirtyMinutesAgo = CarbonImmutable::now()->subMinutes(30);
         CarbonImmutable::setTestNow($thirtyMinutesAgo);
 
-        $jwt = $this->jwtManager->buildJwtFor($this->authContract);
+        $jwt = $this->jwtManager->buildJwtFor($this->claimableContract);
 
         CarbonImmutable::setTestNow(); // clear the mock.
         $this->assertFalse($this->jwtManager->isJwtVerified($jwt));

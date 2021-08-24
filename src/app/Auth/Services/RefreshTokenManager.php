@@ -2,10 +2,10 @@
 
 namespace Bluewing\Auth\Services;
 
+use Bluewing\Auth\Contracts\Claimable;
 use Bluewing\Services\TokenGenerator;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
@@ -21,21 +21,21 @@ class RefreshTokenManager
     public function __construct(protected TokenGenerator $tokenGenerator, protected Model $refreshTokenModel) {}
 
     /**
-     * Builds a refresh token for the specified `Authenticatable`, and inserts it into the database, returning the
+     * Builds a refresh token for the specified `Claimable`, and inserts it into the database, returning the
      * `RefreshToken`'s token string.
      *
-     * @param Authenticatable $authenticatable - The entity which implements the authentication functionality (in our
-     * case, `Member`).
+     * @param Claimable $claimable - The entity which implements the authentication functionality (in our case,
+     * `Member`).
      *
      * @return string - The `RefreshToken` string that can be exchanged for a new JSON web token.
      *
      * @throws Exception
      */
-    public function buildRefreshTokenFor(Authenticatable $authenticatable): string
+    public function buildRefreshTokenFor(Claimable $claimable): string
     {
         $refreshToken = $this->refreshTokenModel->newQuery()->create([
-            'organizationId'    => $authenticatable->user->id,                      // TODO: Is this correct?
-            'memberId'          => $authenticatable->getAuthIdentifier(),
+            'organizationId'    => $claimable->getTenancyIdentifier(),
+            'memberId'          => $claimable->getAuthIdentifier(),
             'token'             => $this->tokenGenerator->generate(64, 'refresh'),
             'device'            => null
         ]);
@@ -90,11 +90,7 @@ class RefreshTokenManager
      */
     public function revokeRefreshToken(string $refreshTokenString): void
     {
-        $refreshToken = $this->findRefreshToken($refreshTokenString);
-
-        if ($refreshToken) {
-            $refreshToken->delete();
-        }
+        $this->findRefreshToken($refreshTokenString)?->delete();
     }
 
     /**
