@@ -2,11 +2,14 @@
 
 namespace Bluewing\Notifications;
 
+use Bluewing\Http\Filters\AllowsFiltering;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\DatabaseNotification as BaseDatabaseNotification;
 
 class DatabaseNotification extends BaseDatabaseNotification
 {
+    use AllowsFiltering;
+    
     /**
      * The table associated with the model.
      *
