@@ -7,22 +7,21 @@ use Illuminate\Notifications\Notification as BaseNotification;
 abstract class Notification extends BaseNotification
 {
     /**
-     * The disposition that defines how the notification should be displayed by the receiver.
-     *
-     * @var
+     * The handler that defines how the notification should be displayed by the receiver, and handled when being
+     * marked as read.
      */
-    public $disposition;
+    public int $handler;
 
     /**
-     * Sets the `disposition` property of the `Notification` model.
+     * Sets the `handler` property of the `Notification` model.
      * 
-     * @param $disposition - The disposition to be set on the `Notification`.
+     * @param int $handler - The handler to be set on the `Notification`.
      *
      * @return $this - An instance of the `Notification` class, to allow for fluent chaining.
      */
-    public function disposition($disposition): self
+    public function handler(int $handler): self
     {
-        $this->disposition = $disposition;
+        $this->handler =  $handler;
         return $this;
     }
 }

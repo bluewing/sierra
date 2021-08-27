@@ -9,7 +9,7 @@ class DatabaseChannel extends BaseDatabaseChannel
 {
     /**
      * Build an array payload for the `DatabaseNotification` Model. This is customized to have the `read_at` property
-     * to be camelcased, and also provides a `disposition` property that customizes how the notification should be
+     * to be camelcased, and also provides a `handler` property that customizes how the notification should be
      * displayed when received. Finally, this class is bound in the `AppServiceProvider` to replace the
      * `BaseDatabaseChannel` provided by `Illuminate`.
      *
@@ -21,7 +21,7 @@ class DatabaseChannel extends BaseDatabaseChannel
     {
         return [
             'id'            => $notification->id,
-            'disposition'   => property_exists($notification, 'disposition') ? $notification->disposition : null,
+            'handler'       => property_exists($notification, 'handler') ? $notification->handler : null,
             'type'          => get_class($notification),
             'data'          => $this->getData($notifiable, $notification),
             'readAt'        => null,

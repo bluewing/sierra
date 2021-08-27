@@ -95,8 +95,8 @@ class DatabaseNotification extends BaseDatabaseNotification
     /**
      * Scope a query to only include read notifications.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeRead(Builder $query)
     {
@@ -106,8 +106,8 @@ class DatabaseNotification extends BaseDatabaseNotification
     /**
      * Scope a query to only include unread notifications.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeUnread(Builder $query)
     {
