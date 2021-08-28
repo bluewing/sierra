@@ -83,7 +83,7 @@ class JwtManager {
      */
     private function buildJwt(Claimable $claimable): Token
     {
-        $now = CarbonImmutable::now();
+        $now = CarbonImmutable::now()->setMillisecond(0);
 
         return $this->buildCustomClaims($claimable)
             ->permittedFor($this->permitted)
