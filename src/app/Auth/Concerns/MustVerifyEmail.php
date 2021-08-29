@@ -13,7 +13,6 @@ use Illuminate\Auth\MustVerifyEmail as BaseMustVerifyEmail;
  *
  * @method forceFill(array $properties);
  * @method freshTimestamp();
- * @method notify();
  *
  * @see Illuminate\Contracts\Auth\MustVerifyEmail - The interface that is fulfilled by providing this trait on a model.
  * @see Illuminate\Auth\MustVerifyEmail - The initial trait which this trait overrides. Some methods are not redefined.
