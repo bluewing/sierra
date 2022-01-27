@@ -17,7 +17,6 @@
         "ext-openssl": "*",
         "lcobucci/jwt": "^4.1.5",
         "laravel/framework": "^8.81.0",
-        "myclabs/php-enum": "^1.8.3",
         "stripe/stripe-php": "^7.112.0",
         "laravel/ui": "^3.4.2"
     },
