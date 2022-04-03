@@ -1,40 +1,45 @@
 <?php
 
 
-namespace Bluewing\Concerns;
+namespace Bluewing\Expandables;
 
-use Bluewing\Contracts\HasExpandableRelations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Arr;
-use ReflectionClass;
 use ReflectionException;
 
 /**
  * A trait which provides the functionality of the `expands` scope to traited models.
  *
- * @package Bluewing\Concerns
+ * @package Bluewing\Expandables
  */
 trait AllowsExpansion
 {
     /**
-     * Retrieves the `Relations` instance for the current model.
+     * @var string - The query string parameter from which expandable requests are extracted.
+     */
+    private string $expandQueryParameter = 'expand';
+
+    /**
+     * Retrieves an `ExpandablesInterface` instance for the current model that defines the current expandables for
+     * the model and whether the user performing the expansion request is authorized to do so.
      *
-     * @return mixed - An instance of the `Relations` class associated with the Eloquent model that is being fetched.
+     * @return BaseExpandables - An instance of the `BaseExpandables` associated with the Eloquent model that
+     * is being fetched.
      *
      * @throws ReflectionException - Reflection is needed to compute the short name of the Eloquent class to match
-     * with the associated `Relations` class. If this is unable to be completed, a `ReflectionException` will be thrown.
+     * with the associated `ExpandablesInterface` class. If this is unable to be completed, a `ReflectionException` will
+     * be thrown.
      */
-    public function expandableRelations()
+    public function expandableInstance(): BaseExpandables
     {
-        $className = (new ReflectionClass($this))->getShortName();
-        $relationsClassName = config('bluewing.relations.namespace') . '\\' . $className . 'Relations';
-
-        return new $relationsClassName();
+        $relationClassName = config('bluewing.relations.namespace') . '\\' . getShortName(self::class) . 'Expandables';
+        return new $relationClassName;
     }
 
     /**
-     * Fetches the valid expandable relations for the primary model, as requested by the user.
+     * Fetches the valid expandables for the primary model, as requested by the user. If no `expand` parameter is
+     * present in the request, return an empty `array`.
      *
      * @return array - An `array` of expandable relations that can be safely retrieved from the database alongside
      * the primary model.
@@ -42,20 +47,16 @@ trait AllowsExpansion
      * @throws ReflectionException - Reflection is needed to compute the short name of the Eloquent class to match
      * with the associated `Relations` class. If this is unable to be completed, a `ReflectionException` will be thrown.
      */
-    public function getExpandableRelations(): array
+    public function expandableRelations(): array
     {
-        if (!request()->has('expand')) return [];
-
-        $requestedExpansions = Arr::wrap(request()->query('expand'));
-        $expansions = [];
-
-        foreach ($requestedExpansions as $requestedExpansion) {
-            if ($this->checkExpansionIsValid($requestedExpansion)) {
-                $expansions[] = $requestedExpansion;
-            }
+        if (request()->missing($this->expandQueryParameter)) {
+            return [];
         }
 
-        return $expansions;
+        return array_filter(
+            Arr::wrap(request()->query($this->expandQueryParameter)),
+            fn($re) => $this->isExpansionValid($re)
+        );
     }
 
     /**
@@ -71,43 +72,33 @@ trait AllowsExpansion
      * @throws ReflectionException - Reflection is needed to compute the short name of the Eloquent class to match
      * with the associated `Relations` class. If this is unable to be completed, a `ReflectionException` will be thrown.
      */
-    private function checkExpansionIsValid(string $expansion): bool
+    private function isExpansionValid(string $expansion): bool
     {
         $expansionArray = explode('.', $expansion);
 
+        // Precondition preventing the expansion array from being more than four nested expansions deep.
         if (count($expansionArray) > 4) {
             return false;
         }
 
         $model = $this;
 
-        foreach ($expansionArray as $expansionString) {
+        foreach ($expansionArray as $expansionComponent) {
+            // Each database model must itself implement `HasExpandableRelations`.
             if (!($model instanceof HasExpandableRelations)) {
                 return false;
             }
+            // If the expansion component is present in the current model's expandable instance, then the expansion
+            // is allowed. Internally, this checks both for the presence of the model in the `always` method, as well
+            // as checking if the expansion is its own method which makes a static check over whether authorization to
+            // the expansion is allowed.
+            $model = $model->expandableInstance()->getExpandableModel($expansionComponent);
 
-            if (in_array($expansionString, array_keys($model->expandableRelations()->always()))) {
-                $nextClass = $model->expandableRelations()->always()[$expansionString];
-                $model = new $nextClass();
-
+            if (!is_null($model)) {
                 continue;
             }
-
-            if (method_exists($model->expandableRelations(), $expansionString)) {
-                list('model' => $nextClass, 'isAuthorized' => $authorizationFn) = $model->expandableRelations()
-                    ->{$expansionString}();
-
-                if (!$authorizationFn()) {
-                    return false;
-                }
-
-                $model = new $nextClass();
-                continue;
-            }
-
             return false;
         }
-
         return true;
     }
 
@@ -125,9 +116,9 @@ trait AllowsExpansion
      */
     public function scopeExpands(Builder $query): Builder
     {
-        $expandableRelations = $this->getExpandableRelations();
+        $expandableRelations = $this->expandableRelations();
 
-        if (empty($expandableRelations) || !method_exists($query->getModel(), 'expandableRelations')) {
+        if (empty($expandableRelations) || !method_exists($query->getModel(), 'expandableInstance')) {
             return $query;
         }
 
@@ -136,7 +127,7 @@ trait AllowsExpansion
 
     /**
      * Override the routing binding resolution to explicitly capture any expandable objects requested, by binding to
-     * the local `expands` scope defined in `AllowsExpansion` trait.
+     * the local `expands` scope defined in this `AllowsExpansion` trait.
      *
      * @see UrlRoutable
      *
