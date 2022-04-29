@@ -8,46 +8,38 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
 use Bluewing\Schema\Blueprint as BluewingBlueprint;
 
 /**
- * Class Schema
- *
  * @package Bluewing\Schema
  *
- * Subclass of `Schema` that returns the appropriate instance of `Blueprint` containing
- * additional utility functions.
+ * Subclass of `Schema` that returns the appropriate instance of `Blueprint` containing additional utility functions.
  *
  * @see https://stackoverflow.com/questions/22444685/extend-blueprint-class/57539154#57539154
  */
 class Schema extends BaseSchema
 {
-
     /**
      * Get a schema builder instance for a connection.
      *
-     * @param  string|null  $name
+     * @param string|null $name
+     *
      * @return Builder
      */
     public static function connection($name): Builder
     {
-        /** @var Builder $builder */
-        $builder = static::$app['db']->connection($name)->getSchemaBuilder();
-        $builder->blueprintResolver(static function($table, $callback) {
-            return new BluewingBlueprint($table, $callback);
-        });
-        return $builder;
+        return static::customizedSchemaBuilder($name);
     }
 
     /**
-     * Get a schema builder instance for the default connection.
+     * Retrieves an instance of the schema `Builder` with a customized `Blueprint` class.
+     *
+     * @param string|null $name
      *
      * @return Builder
      */
-    protected static function getFacadeAccessor(): Builder
+    public static function customizedSchemaBuilder(string|null $name = null): Builder
     {
         /** @var Builder $builder */
-        $builder = static::$app['db']->connection()->getSchemaBuilder();
-        $builder->blueprintResolver(static function($table, $callback) {
-            return new BluewingBlueprint($table, $callback);
-        });
+        $builder = static::$app['db']->connection($name)->getSchemaBuilder();
+        $builder->blueprintResolver(static fn($table, $callback) => new BluewingBlueprint($table, $callback));
         return $builder;
     }
 }

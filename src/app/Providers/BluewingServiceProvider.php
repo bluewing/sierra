@@ -3,6 +3,7 @@
 namespace Bluewing\Providers;
 
 use Bluewing\Database\PostgresConnection as BluewingPostgresConnection;
+use Bluewing\Schema\Schema;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +15,7 @@ class BluewingServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-
+        $this->app->bind('db.schema', fn() => Schema::customizedSchemaBuilder());
     }
 
     /**
