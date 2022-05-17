@@ -1,7 +1,7 @@
-FROM php:8.1.2-fpm-alpine as sierra
+FROM php:8.1.4-fpm-alpine as sierra
 LABEL maintainer="lukedavia@icloud.com"
 
-COPY --from=composer:2.2.5 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 COPY . /var/www
