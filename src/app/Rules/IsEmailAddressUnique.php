@@ -4,7 +4,7 @@ namespace Bluewing\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class MemberIsNew implements Rule
+class IsEmailAddressUnique implements Rule
 {
     /**
      * Determine if the validation rule passes.
@@ -32,6 +32,6 @@ class MemberIsNew implements Rule
      */
     public function message()
     {
-        return 'This user already exists for this organization.';
+        return "The email address \":input\" has already been taken.";
     }
 }
