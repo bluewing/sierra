@@ -23,7 +23,8 @@
     "require-dev": {
         "mockery/mockery": "^1.5.0",
         "phpunit/phpunit": "^9.5.20",
-        "orchestra/testbench": "^7.4.0"
+        "orchestra/testbench": "^7.4.0",
+        "fakerphp/faker": "^1.19"
     },
     "autoload": {
         "classmap": [],
